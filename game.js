@@ -1,4 +1,16 @@
 const GRID = 30
+const WIDTH = 30
+const HEIGHT = 20
+
+const TRAY_HEIGHT = 5
+
+function hex2rgb(hex) {
+    // Convert hex color to rgb
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    return `${r},${g},${b}`;
+}
 
 class Block {
     constructor(x, y, parts, color) {
@@ -6,11 +18,25 @@ class Block {
         this.y = y;
         this.parts = parts; // Array of {x, y} parts relative to the block's position
         this.color = color;
+        this.colliding = false;
+    }
+
+    draw(ctx) {
+        ctx.fillStyle = this.colliding ? `rgba(${this.getRgb(this.color)},0.2)` : this.color; // Set transparency on collision
+        this.parts.forEach(part => {
+            const partX = this.x + part.x * GRID;
+            const partY = this.y + part.y * GRID;
+            ctx.fillRect(partX, partY, GRID, GRID);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(partX, partY, GRID, GRID);
+        });
+        this.drawShapeOutline(ctx); // Only draw the outline if not colliding
     }
 
     draw(ctx) {
         // Draw individual parts with a thin outline
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = this.colliding ? `rgba(${hex2rgb(this.color)},0.2)` : this.color; // Set transparency on collision
         this.parts.forEach(part => {
             const partX = this.x + part.x * GRID;
             const partY = this.y + part.y * GRID;
@@ -21,11 +47,12 @@ class Block {
         });
 
         // Now, draw the thick border around the shape
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 2;
         this.drawShapeOutline(ctx);
     }
 
+
+
+    // Other methods remain unchanged
     rotate() {
         // Rotate the block 90 degrees clockwise around the first part
         const pivot = this.parts[0];
@@ -38,6 +65,8 @@ class Block {
     }
 
     drawShapeOutline(ctx) {
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
         // Helper function to check if there is an adjacent part
         const hasAdjacentPart = (dx, dy) => {
             return this.parts.some(part => part.x === dx && part.y === dy);
@@ -100,7 +129,13 @@ class Block {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById('gameCanvas');
+    const canvas = $('<canvas>')
+    .prop({
+        width: WIDTH*GRID,
+        height: HEIGHT*GRID
+    })
+    .appendTo($('#blocksCanvasContainer'))[0]
+    // const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
     let isDragging = false;
@@ -109,26 +144,54 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentBlock = null; // To keep track of the block being dragged
 
     // Define blocks, including an L-shaped block
-    const blocks = [
-        new Block(60, 60, [{x: 0, y: 0}], 'cyan'),
-        new Block(120, 60, [{x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 1, y: 2}], 'orange')
-    ];
+    const blocks = new Set([
+        new Block(60, 60, [{x: 0, y: 0}], '#4292FA'),
+        new Block(120, 60, [{x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 1, y: 2}], '#D4609A')
+    ]);
 
-    // Function to draw all blocks
-    function drawBlocks() {
+
+
+    function drawCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        blocks.forEach(block => block.draw(ctx));
+
+        drawTray()
+        drawBlocks()
+    }
+
+    function drawTray() {
+        ctx.fillStyle = '#BBBBBB'
+        ctx.fillRect(0, (HEIGHT-TRAY_HEIGHT) * GRID, WIDTH*GRID, (HEIGHT-TRAY_HEIGHT)*GRID);
+        // ctx.fillRect(0, 0, GRID, canvas.height);
+        // ctx.fillRect(canvas.width - GRID, 0, GRID, canvas.height);
+        // ctx.fillRect(0, 0, canvas.width, GRID);
+
+    }
+
+    function drawBlocks() {
+        // Draw all blocks except the currentBlock
+        blocks.forEach(block => {
+            if (block !== currentBlock) {
+                block.draw(ctx);
+            }
+        });
+
+        // Now draw the currentBlock, if it exists, so it's on top
+        if (currentBlock) {
+            currentBlock.draw(ctx);
+        }
     }
 
     function checkCollision(movingBlock) {
         if (!movingBlock.isWithinBoundary(canvas)) return true;
-        for (let block of blocks) {
-            if (block === movingBlock) continue; // Skip the moving block itself
 
-            // Check each part of the moving block against all parts of the current block
-            for (let part of movingBlock.parts) {
-                const partX = movingBlock.x + part.x * GRID;
-                const partY = movingBlock.y + part.y * GRID;
+        for (let part of movingBlock.parts) {
+            const partX = movingBlock.x + part.x * GRID;
+            const partY = movingBlock.y + part.y * GRID;
+
+            if (partY >= canvas.height - TRAY_HEIGHT * GRID) return true;
+
+            for (let block of blocks) {
+                if (block === movingBlock) continue; // Skip the moving block itself
 
                 if (block.contains(partX + GRID / 2, partY + GRID / 2)) {
                     // We add GRID / 2 to check the center of each part for a more accurate collision detection
@@ -139,12 +202,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return false; // No collision detected
     }
 
+    function tryUpdatePosition(block, x, y) {
+        oldX = block.x
+        oldY = block.y
+        block.x = x;
+        block.y = y;
+
+        if (!block.isWithinBoundary(canvas)) {
+            block.x = oldX;
+            block.y = oldY;
+            return false
+        };
+        return true
+    }
+
     // Event listener for keydown to detect if the spacebar is pressed
     document.addEventListener('keydown', (e) => {
         if (e.code === 'Space' && isDragging) {
             e.preventDefault(); // Prevent default to avoid scrolling the page
             if (currentBlock) {
                 currentBlock.rotate();
+                drawCanvas(); // Redraw all blocks
             }
         }
     });
@@ -162,6 +240,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    canvas.addEventListener("mouseout", (e) => {
+        isDragging = false
+        currentBlock = null
+    });
+
     canvas.addEventListener('mousemove', (e) => {
         if (isDragging && currentBlock) {
             const newX = e.offsetX - dragOffsetX;
@@ -171,34 +254,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const snappedX = Math.round(newX / GRID) * GRID;
             const snappedY = Math.round(newY / GRID) * GRID;
 
-            // Boundary check
-            if (snappedX < 0 || snappedY < 0 || snappedX + GRID > canvas.width || snappedY + GRID > canvas.height) {
-                return; // Block would move outside the canvas, so ignore this move
-            }
 
-            // Collision detection for detailed shapes
-            oldX = currentBlock.x
-            oldY = currentBlock.y
-            // Apply new position
-            currentBlock.x = snappedX;
-            currentBlock.y = snappedY;
-            if (checkCollision(currentBlock)) {
-                currentBlock.x = oldX
-                currentBlock.y = oldY
-                return; // Collision detected, so ignore this move
+            const updated = tryUpdatePosition(currentBlock, snappedX, snappedY)
+            if (updated) {
+                currentBlock.colliding = checkCollision(currentBlock);
+                drawCanvas(); // Redraw all blocks
             }
-
-            // Clear the previous position
-            drawBlocks(); // Redraw all blocks
         }
     });
 
     canvas.addEventListener('mouseup', () => {
         if (isDragging) {
             isDragging = false;
+            if (currentBlock.colliding) {
+                blocks.delete(currentBlock)
+                currentBlock = null;
+                drawCanvas()
+            }
             currentBlock = null;
         }
     });
 
-    drawBlocks();
+    drawCanvas();
 });
