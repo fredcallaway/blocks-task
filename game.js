@@ -133,6 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
     .prop({
         width: WIDTH*GRID,
         height: HEIGHT*GRID
+    }).css({
+        'margin-left': 'auto',
+        'margin-right': 'auto',
+        'display': 'block',
     })
     .appendTo($('#blocksCanvasContainer'))[0]
     // const canvas = document.getElementById('gameCanvas');
