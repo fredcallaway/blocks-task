@@ -26,6 +26,17 @@ class Block {
         this.drawShapeOutline(ctx);
     }
 
+    rotate() {
+        // Rotate the block 90 degrees clockwise around the first part
+        const pivot = this.parts[0];
+        this.parts.forEach(part => {
+            const x = part.x - pivot.x;
+            const y = part.y - pivot.y;
+            part.x = -y + pivot.x;
+            part.y = x + pivot.y;
+        });
+    }
+
     drawShapeOutline(ctx) {
         // Helper function to check if there is an adjacent part
         const hasAdjacentPart = (dx, dy) => {
@@ -68,8 +79,6 @@ class Block {
         });
     }
 
-
-
     contains(x, y) {
         return this.parts.some(part => {
             const partX = this.x + part.x * GRID;
@@ -95,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = canvas.getContext('2d');
 
     let isDragging = false;
+    let isSpacePressed = false;
     let dragOffsetX, dragOffsetY;
     let currentBlock = null; // To keep track of the block being dragged
 
@@ -128,6 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return false; // No collision detected
     }
+
+    // Event listener for keydown to detect if the spacebar is pressed
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && isDragging) {
+            e.preventDefault(); // Prevent default to avoid scrolling the page
+            if (currentBlock) {
+                currentBlock.rotate();
+            }
+        }
+    });
 
     canvas.addEventListener('mousedown', (e) => {
         const mouseX = e.offsetX;
