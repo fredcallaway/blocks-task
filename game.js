@@ -4,6 +4,8 @@ const HEIGHT = 20
 
 const TRAY_HEIGHT = 5
 
+
+
 function hex2rgb(hex) {
     // Convert hex color to rgb
     let r = parseInt(hex.slice(1, 3), 16);
@@ -30,8 +32,8 @@ class Block {
             const partX = this.x + part.x * GRID;
             const partY = this.y + part.y * GRID;
             ctx.fillRect(partX, partY, GRID, GRID);
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+            ctx.lineWidth = 2;
             ctx.strokeRect(partX, partY, GRID, GRID);
         });
 
@@ -137,10 +139,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentBlock = null; // To keep track of the block being dragged
 
     // Define blocks, including an L-shaped block
-    const blocks = new Set([
+    const activeBlocks = new Set([
         new Block(60, 60, [{x: 0, y: 0}], '#4292FA'),
         new Block(120, 60, [{x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 1, y: 2}], '#D4609A')
     ]);
+
+    const library = [
+        new Block(0, 0, [{x: 0, y: 0}], '#4292FA'),
+        new Block(0, 0, [{x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 1, y: 2}], '#D4609A')
+    ];
 
 
 
@@ -154,6 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function drawTray() {
         ctx.fillStyle = '#BBBBBB'
         ctx.fillRect(0, (HEIGHT-TRAY_HEIGHT) * GRID, WIDTH*GRID, (HEIGHT-TRAY_HEIGHT)*GRID);
+
+        library.forEach((block, i, x) => {
+            block.x = GRID * (1 + 4*i)
+            block.y = GRID * (HEIGHT - TRAY_HEIGHT + 1)
+            block.draw(ctx)
+        })
         // ctx.fillRect(0, 0, GRID, canvas.height);
         // ctx.fillRect(canvas.width - GRID, 0, GRID, canvas.height);
         // ctx.fillRect(0, 0, canvas.width, GRID);
@@ -162,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function drawBlocks() {
         // Draw all blocks except the currentBlock
-        blocks.forEach(block => {
+        activeBlocks.forEach(block => {
             if (block !== currentBlock) {
                 block.draw(ctx);
             }
@@ -183,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (partY >= canvas.height - TRAY_HEIGHT * GRID) return true;
 
-            for (let block of blocks) {
+            for (let block of activeBlocks) {
                 if (block === movingBlock) continue; // Skip the moving block itself
 
                 if (block.contains(partX + GRID / 2, partY + GRID / 2)) {
@@ -224,8 +237,19 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('mousedown', (e) => {
         const mouseX = e.offsetX;
         const mouseY = e.offsetY;
-        blocks.forEach(block => {
+        activeBlocks.forEach(block => {
             if (block.contains(mouseX, mouseY)) {
+                isDragging = true;
+                currentBlock = block;
+                dragOffsetX = mouseX - block.x;
+                dragOffsetY = mouseY - block.y;
+            }
+        });
+        library.forEach((block, i) => {
+            if (block.contains(mouseX, mouseY)) {
+                window.block = block
+                block = _.cloneDeep(block)
+                activeBlocks.add(block)
                 isDragging = true;
                 currentBlock = block;
                 dragOffsetX = mouseX - block.x;
@@ -234,10 +258,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    canvas.addEventListener("mouseout", (e) => {
-        isDragging = false
-        currentBlock = null
-    });
+    // canvas.addEventListener("mouseout", (e) => {
+    //     isDragging = false
+    //     currentBlock = null
+    // });
 
     canvas.addEventListener('mousemove', (e) => {
         if (isDragging && currentBlock) {
@@ -261,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isDragging) {
             isDragging = false;
             if (currentBlock.colliding) {
-                blocks.delete(currentBlock)
+                activeBlocks.delete(currentBlock)
                 currentBlock = null;
                 drawCanvas()
             }
