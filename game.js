@@ -4,6 +4,17 @@ const HEIGHT = 20
 
 const TRAY_HEIGHT = 5
 
+const BACKGROUND = "#ADADAD"
+
+const COLORS = [
+    "#E41A1C",
+    "#377EB8",
+    "#4DAF4A",
+    "#984EA3",
+    "#FF7F00",
+    "#FFDD47",
+]
+
 
 
 function hex2rgb(hex) {
@@ -23,7 +34,13 @@ class Block {
         this.colliding = false;
     }
 
+    width() {
+        _(this.parts).map((part) => part.x).max()
+    }
 
+    height() {
+        _(this.parts).map((part) => part.y).max()
+    }
 
     draw(ctx) {
         // Draw individual parts with a thin outline
@@ -40,8 +57,6 @@ class Block {
         // Now, draw the thick border around the shape
         this.drawShapeOutline(ctx);
     }
-
-
 
     // Other methods remain unchanged
     rotate() {
@@ -119,6 +134,45 @@ class Block {
 
 }
 
+
+
+function string2block(s, x, y, colorIndex) {
+    let rows = s.trim().split('\n')
+    let parts = []
+    rows.forEach((row, y) => {
+        row.trim().split('').forEach((v, x) => {
+            if (v == "X") {
+                parts.push({x, y})
+            }
+        })
+    })
+    return new Block(x, y, parts, COLORS[colorIndex])
+}
+
+BLOCK_DEFS = [
+    `
+        X
+    `, `
+        .X
+        .X
+        XX
+    `, `
+        XX
+        XX
+    `
+]
+
+function buildLibrary() {
+    let xPos = 1
+    return BLOCK_DEFS.map((s, i) => {
+        let block = string2block(s, GRID * xPos, GRID * (HEIGHT - TRAY_HEIGHT), i)
+        xPos += block.width()
+        return block
+    })
+
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = $('<canvas>')
     .prop({
@@ -139,17 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentBlock = null; // To keep track of the block being dragged
 
     // Define blocks, including an L-shaped block
-    const activeBlocks = new Set([
-        new Block(60, 60, [{x: 0, y: 0}], '#4292FA'),
-        new Block(120, 60, [{x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 1, y: 2}], '#D4609A')
-    ]);
+    const activeBlocks = new Set();
 
-    const library = [
-        new Block(0, 0, [{x: 0, y: 0}], '#4292FA'),
-        new Block(0, 0, [{x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 1, y: 2}], '#D4609A')
-    ];
-
-
+    const library = buildLibrary()
 
     function drawCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
