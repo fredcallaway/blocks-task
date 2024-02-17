@@ -21,18 +21,7 @@ class Block {
         this.colliding = false;
     }
 
-    draw(ctx) {
-        ctx.fillStyle = this.colliding ? `rgba(${this.getRgb(this.color)},0.2)` : this.color; // Set transparency on collision
-        this.parts.forEach(part => {
-            const partX = this.x + part.x * GRID;
-            const partY = this.y + part.y * GRID;
-            ctx.fillRect(partX, partY, GRID, GRID);
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(partX, partY, GRID, GRID);
-        });
-        this.drawShapeOutline(ctx); // Only draw the outline if not colliding
-    }
+
 
     draw(ctx) {
         // Draw individual parts with a thin outline
@@ -65,7 +54,7 @@ class Block {
     }
 
     drawShapeOutline(ctx) {
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = this.colliding ? 'rgba(0,0,0,0.2)' : 'black';
         ctx.lineWidth = 2;
         // Helper function to check if there is an adjacent part
         const hasAdjacentPart = (dx, dy) => {
@@ -226,6 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault(); // Prevent default to avoid scrolling the page
             if (currentBlock) {
                 currentBlock.rotate();
+                currentBlock.colliding = checkCollision(currentBlock);
                 drawCanvas(); // Redraw all blocks
             }
         }
