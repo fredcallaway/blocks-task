@@ -57,9 +57,16 @@ class Block {
   }
 
   // Other methods remain unchanged
-  rotate() {
+  rotate(x, y) {
     // Rotate the block 90 degrees clockwise around the first part
-    const pivot = this.parts[0];
+    let pivot = this.parts[0];
+    for (let part of this.parts) {
+      if (this.partContains(part, x, y)) {
+        pivot = part
+        break
+      }
+    }
+
     this.parts.forEach(part => {
       const x = part.x - pivot.x;
       const y = part.y - pivot.y;
@@ -112,11 +119,16 @@ class Block {
     });
   }
 
+  partContains(part, x, y) {
+    const partX = this.x + part.x * GRID;
+    const partY = this.y + part.y * GRID;
+    return x >= partX && x < partX + GRID && y >= partY && y < partY + GRID;
+
+  }
+
   contains(x, y) {
     return this.parts.some(part => {
-      const partX = this.x + part.x * GRID;
-      const partY = this.y + part.y * GRID;
-      return x >= partX && x < partX + GRID && y >= partY && y < partY + GRID;
+      return this.partContains(part, x, y)
     });
   }
 
@@ -149,28 +161,37 @@ function string2block(s, x, y, color) {
     return new Block(x, y, parts, color)
 }
 
-const TARGET = `
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXX
+var searchParams = new URLSearchParams(location.search);
+var TARGET;
+if (searchParams.get('blank')) {
+  TARGET = `
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  `
+} else {
+  TARGET = `
+  .XX.
+  XXXX
+  XXXX
+  XXXX
+  XXXX
+  .XX.
+  XXXX
+  XXXX
+  XXXX
 `
-// const TARGET = `
-// XXXXXXXX
-// .XXXXXXXXX
-// ..XXXXXX
-// ...XXXXXXX
-// ....XXXX
-// `
+}
 
 const BLOCK_DEFS = [
   `
@@ -186,7 +207,8 @@ const BLOCK_DEFS = [
     .X
     XX
   `, `
-    XX
+    X
+    X
     XX
   `
 ]
@@ -214,6 +236,15 @@ jsPsych.plugins["blocks"] = (function() {
   plugin.trial = async function(display_element, trial) {
 
 
+    $('<div>')
+    .css({
+      'width': '100%',
+      'text-align': 'center',
+      'margin-bottom': '10px'
+    })
+    .html(`
+      Fill in all the white squares. Press <b>space</b> to rotate a piece
+    `).appendTo($(display_element))
     const canvas = $('<canvas>')
     .prop({
       width: WIDTH*GRID,
@@ -231,6 +262,8 @@ jsPsych.plugins["blocks"] = (function() {
     let isSpacePressed = false;
     let dragOffsetX, dragOffsetY;
     let currentBlock = null; // To keep track of the block being dragged
+    let mouseX = null;
+    let mouseY = null;
 
     // Define blocks, including an L-shaped block
     const activeBlocks = new Set();
@@ -238,7 +271,7 @@ jsPsych.plugins["blocks"] = (function() {
     const library = buildLibrary()
     const target = string2block(TARGET, 0, 0, 'white')
     target.x = GRID * Math.floor((WIDTH - target.width()) / 2)
-    target.y = GRID * (HEIGHT - target.height())
+    target.y = GRID * Math.ceil(1+(HEIGHT - target.height()) / 2)
 
     function drawCanvas() {
       // ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -282,6 +315,24 @@ jsPsych.plugins["blocks"] = (function() {
       }
     }
 
+    function checkVictory() {
+      for (let part of target.parts) {
+        const partX = target.x + part.x * GRID;
+        const partY = target.y + part.y * GRID;
+        if (!isCovered(partX, partY)) return false;
+      }
+      return true;
+    }
+
+    function isCovered(x, y) {
+      for (let block of activeBlocks) {
+        if (block.contains(x + GRID / 2, y + GRID / 2)) {
+          return true; // Collision detected
+        }
+      }
+      return false;
+    }
+
     function checkCollision(movingBlock) {
       if (!movingBlock.isWithinBoundary(canvas)) return true;
 
@@ -323,7 +374,7 @@ jsPsych.plugins["blocks"] = (function() {
       if (e.code === 'Space' && isDragging) {
         e.preventDefault(); // Prevent default to avoid scrolling the page
         if (currentBlock) {
-          currentBlock.rotate();
+          currentBlock.rotate(mouseX, mouseY);
           currentBlock.colliding = checkCollision(currentBlock);
           drawCanvas(); // Redraw all blocks
         }
@@ -331,8 +382,8 @@ jsPsych.plugins["blocks"] = (function() {
     });
 
     canvas.addEventListener('mousedown', (e) => {
-      const mouseX = e.offsetX;
-      const mouseY = e.offsetY;
+      mouseX = e.offsetX;
+      mouseY = e.offsetY;
       activeBlocks.forEach(block => {
         if (block.contains(mouseX, mouseY)) {
           isDragging = true;
@@ -361,6 +412,8 @@ jsPsych.plugins["blocks"] = (function() {
 
     canvas.addEventListener('mousemove', (e) => {
       if (isDragging && currentBlock) {
+        mouseX = e.offsetX
+        mouseY = e.offsetY
         const newX = e.offsetX - dragOffsetX;
         const newY = e.offsetY - dragOffsetY;
 
@@ -386,6 +439,9 @@ jsPsych.plugins["blocks"] = (function() {
           drawCanvas()
         }
         currentBlock = null;
+        if (checkVictory()) {
+          alert("You did it!")
+        }
       }
     });
 
