@@ -1,0 +1,2009 @@
+[2020-11-04 13:10:51 -0800] [49683] [INFO] Secret key: 'this is my secret key which is hard to guess, i should change this'
+2020-11-04 13:10:51,205 Secret key: 'this is my secret key which is hard to guess, i should change this'
+[2020-11-04 13:10:51 -0800] [49683] [ERROR] There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+2020-11-04 13:10:51,213 There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+[2020-11-04 13:10:51 -0800] [49683] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/arbiter.py", line 583, in spawn_worker
+    worker.init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/ggevent.py", line 162, in init_process
+    super().init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 119, in init_process
+    self.load_wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 144, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_server.py", line 50, in load
+    return util.import_app("psiturk.experiment:app")
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/util.py", line 358, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/local/lib/miniconda3/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment.py", line 91, in <module>
+    from custom import custom_code
+  File "/Users/fred/heroku/memory-cues/custom.py", line 9, in <module>
+    from psiturk.experiment_errors import ExperimentError, InvalidUsage
+ImportError: cannot import name 'InvalidUsage' from 'psiturk.experiment_errors' (/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_errors.py)
+[2020-11-04 13:11:20 -0800] [49680] [CRITICAL] WORKER TIMEOUT (pid:49683)
+[2020-11-04 13:11:20 -0800] [49729] [INFO] Secret key: 'this is my secret key which is hard to guess, i should change this'
+2020-11-04 13:11:20,815 Secret key: 'this is my secret key which is hard to guess, i should change this'
+[2020-11-04 13:11:20 -0800] [49729] [ERROR] There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+2020-11-04 13:11:20,821 There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+[2020-11-04 13:11:20 -0800] [49729] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/arbiter.py", line 583, in spawn_worker
+    worker.init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/ggevent.py", line 162, in init_process
+    super().init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 119, in init_process
+    self.load_wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 144, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_server.py", line 50, in load
+    return util.import_app("psiturk.experiment:app")
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/util.py", line 358, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/local/lib/miniconda3/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment.py", line 91, in <module>
+    from custom import custom_code
+  File "/Users/fred/heroku/memory-cues/custom.py", line 9, in <module>
+    from psiturk.experiment_errors import ExperimentError, InvalidUsage
+ImportError: cannot import name 'InvalidUsage' from 'psiturk.experiment_errors' (/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_errors.py)
+[2020-11-04 13:11:50 -0800] [49680] [CRITICAL] WORKER TIMEOUT (pid:49729)
+[2020-11-04 13:11:50 -0800] [49731] [INFO] Secret key: 'this is my secret key which is hard to guess, i should change this'
+2020-11-04 13:11:50,917 Secret key: 'this is my secret key which is hard to guess, i should change this'
+[2020-11-04 13:11:50 -0800] [49731] [ERROR] There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+2020-11-04 13:11:50,923 There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+[2020-11-04 13:11:50 -0800] [49731] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/arbiter.py", line 583, in spawn_worker
+    worker.init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/ggevent.py", line 162, in init_process
+    super().init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 119, in init_process
+    self.load_wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 144, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_server.py", line 50, in load
+    return util.import_app("psiturk.experiment:app")
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/util.py", line 358, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/local/lib/miniconda3/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment.py", line 91, in <module>
+    from custom import custom_code
+  File "/Users/fred/heroku/memory-cues/custom.py", line 9, in <module>
+    from psiturk.experiment_errors import ExperimentError, InvalidUsage
+ImportError: cannot import name 'InvalidUsage' from 'psiturk.experiment_errors' (/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_errors.py)
+2021-01-03 17:18:03,890 DB error: Unique user not found.
+2021-01-03 17:18:03,890 Exception on /sync/{{ uniqueId }} [GET]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:18:03,978 DB error: Unique user not found.
+2021-01-03 17:18:03,978 Exception on /sync/{{ uniqueId }} [PUT]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 592, in update
+    user.datastring = json.dumps(request.json)
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:19:07,164 DB error: Unique user not found.
+2021-01-03 17:19:07,165 Exception on /sync/{{ uniqueId }} [GET]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:19:07,195 DB error: Unique user not found.
+2021-01-03 17:19:07,196 Exception on /sync/{{ uniqueId }} [PUT]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 592, in update
+    user.datastring = json.dumps(request.json)
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:19:50,759 DB error: Unique user not found.
+2021-01-03 17:19:50,759 Exception on /sync/{{ uniqueId }} [GET]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:19:50,813 DB error: Unique user not found.
+2021-01-03 17:19:50,814 Exception on /sync/{{ uniqueId }} [PUT]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 592, in update
+    user.datastring = json.dumps(request.json)
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:19:52,560 DB error: Unique user not found.
+2021-01-03 17:19:52,560 Exception on /sync/{{ uniqueId }} [GET]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:19:52,614 DB error: Unique user not found.
+2021-01-03 17:19:52,615 Exception on /sync/{{ uniqueId }} [PUT]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 592, in update
+    user.datastring = json.dumps(request.json)
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:20:02,987 DB error: Unique user not found.
+2021-01-03 17:20:02,988 Exception on /sync/{{ uniqueId }} [GET]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:20:03,036 DB error: Unique user not found.
+2021-01-03 17:20:03,037 Exception on /sync/{{ uniqueId }} [PUT]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 592, in update
+    user.datastring = json.dumps(request.json)
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:20:08,781 DB error: Unique user not found.
+2021-01-03 17:20:08,782 Exception on /sync/{{ uniqueId }} [GET]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:20:08,837 DB error: Unique user not found.
+2021-01-03 17:20:08,838 Exception on /sync/{{ uniqueId }} [PUT]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 592, in update
+    user.datastring = json.dumps(request.json)
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:20:18,857 DB error: Unique user not found.
+2021-01-03 17:20:18,858 Exception on /sync/{{ uniqueId }} [GET]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:20:47,356 DB error: Unique user not found.
+2021-01-03 17:20:47,357 Exception on /sync/{{ uniqueId }} [GET]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-03 17:21:13,281 DB error: Unique user not found.
+2021-01-03 17:21:13,282 Exception on /sync/{{ uniqueId }} [GET]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+[2021-01-03 18:38:45 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:15672)
+[2021-01-03 19:17:07 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:19456)
+[2021-01-03 19:54:41 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:19518)
+[2021-01-03 21:07:18 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:19563)
+[2021-01-03 21:28:14 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:19720)
+[2021-01-03 21:30:02 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:19765)
+[2021-01-03 22:00:00 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:19783)
+[2021-01-03 22:27:24 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:19803)
+[2021-01-03 22:30:27 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:19982)
+[2021-01-03 22:34:28 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20297)
+[2021-01-03 22:53:56 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20354)
+[2021-01-03 22:59:06 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20377)
+[2021-01-03 23:03:08 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20452)
+[2021-01-03 23:06:00 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20517)
+[2021-01-03 23:38:48 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20586)
+[2021-01-04 00:16:09 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20747)
+[2021-01-04 00:31:55 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20788)
+[2021-01-04 02:32:46 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20890)
+[2021-01-04 03:11:58 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20905)
+[2021-01-04 04:10:20 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:20929)
+[2021-01-04 05:43:48 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:21018)
+[2021-01-04 07:24:56 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:21080)
+[2021-01-04 08:00:01 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:21114)
+[2021-01-04 11:03:03 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:21187)
+[2021-01-04 11:46:40 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:26715)
+[2021-01-04 11:48:48 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:27442)
+[2021-01-04 12:20:00 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:27478)
+[2021-01-04 12:25:43 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:27497)
+[2021-01-04 12:32:57 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:27599)
+[2021-01-04 14:39:09 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:27626)
+[2021-01-04 14:40:41 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:32721)
+[2021-01-04 15:03:06 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:32759)
+[2021-01-04 16:02:25 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:32994)
+[2021-01-04 16:03:44 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:37281)
+[2021-01-04 19:27:25 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:37336)
+[2021-01-04 19:55:35 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:42315)
+[2021-01-04 20:08:42 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:42341)
+[2021-01-04 20:36:09 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:42372)
+[2021-01-04 20:58:56 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:42475)
+[2021-01-04 21:04:08 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:43086)
+[2021-01-04 21:38:03 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:43103)
+[2021-01-04 22:00:00 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:43173)
+[2021-01-04 22:03:09 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:43267)
+[2021-01-04 22:15:41 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:43403)
+[2021-01-04 22:29:53 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:43426)
+[2021-01-04 22:46:02 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:43449)
+[2021-01-04 23:17:59 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:44172)
+[2021-01-04 23:57:48 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:44195)
+[2021-01-05 01:30:17 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:44233)
+[2021-01-05 04:00:30 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:44332)
+[2021-01-05 06:02:11 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:44696)
+[2021-01-05 06:03:49 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:44822)
+[2021-01-05 06:38:35 -0800] [15669] [CRITICAL] WORKER TIMEOUT (pid:44844)
+2021-01-05 06:48:44,547 DB error: Unique user not found.
+2021-01-05 06:48:44,547 Exception on /sync/{{ uniqueId }} [GET]
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+[2021-01-20 09:36:41 -0800] [65989] [ERROR] Connection in use: ('0.0.0.0', 22362)
+[2021-01-20 09:36:41 -0800] [65989] [ERROR] Retrying in 1 second.
+[2021-01-20 09:36:42 -0800] [65989] [ERROR] Connection in use: ('0.0.0.0', 22362)
+[2021-01-20 09:36:42 -0800] [65989] [ERROR] Retrying in 1 second.
+[2021-01-20 09:36:43 -0800] [65989] [ERROR] Connection in use: ('0.0.0.0', 22362)
+[2021-01-20 09:36:43 -0800] [65989] [ERROR] Retrying in 1 second.
+[2021-01-20 09:36:44 -0800] [65989] [ERROR] Connection in use: ('0.0.0.0', 22362)
+[2021-01-20 09:36:44 -0800] [65989] [ERROR] Retrying in 1 second.
+[2021-01-20 09:36:45 -0800] [65989] [ERROR] Connection in use: ('0.0.0.0', 22362)
+[2021-01-20 09:36:45 -0800] [65989] [ERROR] Retrying in 1 second.
+[2021-01-20 09:36:46 -0800] [65989] [ERROR] Can't connect to ('0.0.0.0', 22362)
+[2021-01-27 11:22:04 -0800] [90263] [ERROR] Connection in use: ('0.0.0.0', 22362)
+[2021-01-27 11:22:04 -0800] [90263] [ERROR] Retrying in 1 second.
+[2021-01-27 11:22:05 -0800] [90263] [ERROR] Connection in use: ('0.0.0.0', 22362)
+[2021-01-27 11:22:05 -0800] [90263] [ERROR] Retrying in 1 second.
+[2021-01-27 11:22:06 -0800] [90263] [ERROR] Connection in use: ('0.0.0.0', 22362)
+[2021-01-27 11:22:06 -0800] [90263] [ERROR] Retrying in 1 second.
+[2021-01-27 11:22:07 -0800] [90263] [ERROR] Connection in use: ('0.0.0.0', 22362)
+[2021-01-27 11:22:07 -0800] [90263] [ERROR] Retrying in 1 second.
+[2021-01-27 11:22:08 -0800] [90263] [ERROR] Connection in use: ('0.0.0.0', 22362)
+[2021-01-27 11:22:08 -0800] [90263] [ERROR] Retrying in 1 second.
+[2021-01-27 11:22:09 -0800] [90263] [ERROR] Can't connect to ('0.0.0.0', 22362)
+[2021-01-27 11:22:30 -0800] [90290] [INFO] Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 11:22:30,802 Secret key: 'this is my secret key which is hard to guess, i should change this'
+[2021-01-27 11:22:30 -0800] [90290] [ERROR] There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+2021-01-27 11:22:30,809 There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+[2021-01-27 11:22:30 -0800] [90290] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/arbiter.py", line 583, in spawn_worker
+    worker.init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/ggevent.py", line 162, in init_process
+    super().init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 119, in init_process
+    self.load_wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 144, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_server.py", line 50, in load
+    return util.import_app("psiturk.experiment:app")
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/util.py", line 358, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/local/lib/miniconda3/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment.py", line 91, in <module>
+    from custom import custom_code
+  File "/Users/fred/heroku/memory-cues/custom.py", line 9, in <module>
+    from psiturk.experiment_errors import ExperimentError, InvalidUsage
+ImportError: cannot import name 'InvalidUsage' from 'psiturk.experiment_errors' (/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_errors.py)
+[2021-01-27 11:22:45 -0800] [90306] [INFO] Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 11:22:45,498 Secret key: 'this is my secret key which is hard to guess, i should change this'
+[2021-01-27 11:22:45 -0800] [90306] [ERROR] There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+2021-01-27 11:22:45,503 There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+[2021-01-27 11:22:45 -0800] [90306] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/arbiter.py", line 583, in spawn_worker
+    worker.init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/ggevent.py", line 162, in init_process
+    super().init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 119, in init_process
+    self.load_wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 144, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_server.py", line 50, in load
+    return util.import_app("psiturk.experiment:app")
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/util.py", line 358, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/local/lib/miniconda3/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment.py", line 91, in <module>
+    from custom import custom_code
+  File "/Users/fred/heroku/memory-cues/custom.py", line 9, in <module>
+    from psiturk.experiment_errors import ExperimentError, InvalidUsage
+ImportError: cannot import name 'InvalidUsage' from 'psiturk.experiment_errors' (/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_errors.py)
+[2021-01-27 11:23:33 -0800] [90345] [INFO] Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 11:23:33,399 Secret key: 'this is my secret key which is hard to guess, i should change this'
+[2021-01-27 11:23:33 -0800] [90345] [ERROR] There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+2021-01-27 11:23:33,406 There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+[2021-01-27 11:23:33 -0800] [90345] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/arbiter.py", line 583, in spawn_worker
+    worker.init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/ggevent.py", line 162, in init_process
+    super().init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 119, in init_process
+    self.load_wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 144, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_server.py", line 50, in load
+    return util.import_app("psiturk.experiment:app")
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/util.py", line 358, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/local/lib/miniconda3/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment.py", line 91, in <module>
+    from custom import custom_code
+  File "/Users/fred/heroku/memory-cues/custom.py", line 9, in <module>
+    from psiturk.experiment_errors import ExperimentError, InvalidUsage
+ImportError: cannot import name 'InvalidUsage' from 'psiturk.experiment_errors' (/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_errors.py)
+[2021-01-27 11:24:10 -0800] [90387] [INFO] Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 11:24:10,536 Secret key: 'this is my secret key which is hard to guess, i should change this'
+[2021-01-27 11:24:10 -0800] [90387] [ERROR] There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+2021-01-27 11:24:10,541 There is custom code (custom.py) associated with this                       project but it doesn't import cleanly.  Raising exception,
+[2021-01-27 11:24:10 -0800] [90387] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/arbiter.py", line 583, in spawn_worker
+    worker.init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/ggevent.py", line 162, in init_process
+    super().init_process()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 119, in init_process
+    self.load_wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/workers/base.py", line 144, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_server.py", line 50, in load
+    return util.import_app("psiturk.experiment:app")
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/gunicorn/util.py", line 358, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/local/lib/miniconda3/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment.py", line 91, in <module>
+    from custom import custom_code
+  File "/Users/fred/heroku/memory-cues/custom.py", line 9, in <module>
+    from psiturk.experiment_errors import ExperimentError, InvalidUsage
+ImportError: cannot import name 'InvalidUsage' from 'psiturk.experiment_errors' (/usr/local/lib/miniconda3/lib/python3.7/site-packages/psiturk/experiment_errors.py)
+2021-01-27 11:24:32,220 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 11:24:32,226 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+2021-01-27 11:24:37,069 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:24:37,073 DB error: Unique user not found.
+[2021-01-27 11:24:37 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:25:02,770 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:25:02,772 DB error: Unique user not found.
+[2021-01-27 11:25:02 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:25:36,328 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:25:36,331 DB error: Unique user not found.
+[2021-01-27 11:25:36 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:25:39,265 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:25:39,266 DB error: Unique user not found.
+[2021-01-27 11:25:39 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:25:42,876 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:25:42,880 DB error: Unique user not found.
+[2021-01-27 11:25:42 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:27:10,221 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:27:10,224 DB error: Unique user not found.
+[2021-01-27 11:27:10 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:27:13,243 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:27:13,245 DB error: Unique user not found.
+[2021-01-27 11:27:13 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:27:15,611 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:27:15,614 DB error: Unique user not found.
+[2021-01-27 11:27:15 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:27:20,417 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:27:20,420 DB error: Unique user not found.
+[2021-01-27 11:27:20 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:27:23,988 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:27:23,991 DB error: Unique user not found.
+[2021-01-27 11:27:23 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:27:35,405 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:27:35,408 DB error: Unique user not found.
+[2021-01-27 11:27:35 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:32:34,519 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:32:34,522 DB error: Unique user not found.
+[2021-01-27 11:32:34 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:32:52,747 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:32:52,750 DB error: Unique user not found.
+[2021-01-27 11:32:52 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:34:41,198 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:34:41,200 DB error: Unique user not found.
+[2021-01-27 11:34:41 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 11:35:20,015 GET /sync route with id: {{ uniqueId }}
+2021-01-27 11:35:20,018 DB error: Unique user not found.
+[2021-01-27 11:35:20 -0800] [90406] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+[2021-01-27 13:06:21 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:90406)
+2021-01-27 13:06:24,938 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 13:06:24,951 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+2021-01-27 13:54:18,105 GET /sync route with id: {{ uniqueId }}
+2021-01-27 13:54:18,114 DB error: Unique user not found.
+[2021-01-27 13:54:18 -0800] [93506] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 13:54:41,386 GET /sync route with id: {{ uniqueId }}
+2021-01-27 13:54:41,388 DB error: Unique user not found.
+[2021-01-27 13:54:41 -0800] [93506] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-27 13:54:47,573 GET /sync route with id: {{ uniqueId }}
+2021-01-27 13:54:47,576 DB error: Unique user not found.
+[2021-01-27 13:54:47 -0800] [93506] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+[2021-01-27 16:17:45 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:93506)
+2021-01-27 16:17:48,007 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 16:17:48,022 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-27 19:25:20 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:2929)
+2021-01-27 19:25:22,589 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 19:25:22,600 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-27 20:04:23 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:6330)
+2021-01-27 20:04:24,788 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 20:04:24,796 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-27 22:00:01 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:6618)
+2021-01-27 22:00:03,787 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 22:00:03,801 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-27 22:33:55 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:6838)
+2021-01-27 22:33:57,874 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 22:33:57,881 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-27 23:07:12 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:7388)
+2021-01-27 23:07:14,675 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 23:07:14,690 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-27 23:38:18 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:7548)
+2021-01-27 23:38:20,612 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-27 23:38:20,625 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 00:20:05 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:7716)
+2021-01-28 00:20:07,750 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 00:20:07,760 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 02:20:52 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:8084)
+2021-01-28 02:20:54,613 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 02:20:54,621 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 04:21:39 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:8252)
+2021-01-28 04:21:41,726 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 04:21:41,736 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 06:22:26 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:8410)
+2021-01-28 06:22:28,301 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 06:22:28,309 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 08:23:12 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:8642)
+2021-01-28 08:23:14,317 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 08:23:14,330 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 08:41:10 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:8881)
+2021-01-28 08:41:12,206 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 08:41:12,223 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 15:38:19 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:9085)
+2021-01-28 15:38:22,256 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 15:38:22,287 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 16:16:50 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:25827)
+2021-01-28 16:16:52,350 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 16:16:52,360 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 16:41:05 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:26041)
+2021-01-28 16:41:08,042 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 16:41:08,059 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 19:20:55 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:26305)
+2021-01-28 19:20:57,563 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 19:20:57,573 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 19:58:46 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:28428)
+2021-01-28 19:58:48,606 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 19:58:48,617 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 21:39:39 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:28609)
+2021-01-28 21:39:41,214 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 21:39:41,225 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 22:00:01 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:31102)
+2021-01-28 22:00:03,977 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 22:00:03,991 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 22:33:42 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:31303)
+2021-01-28 22:33:44,211 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 22:33:44,220 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-28 23:56:02 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:31698)
+2021-01-28 23:56:04,185 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-28 23:56:04,196 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 01:59:30 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:31857)
+2021-01-29 01:59:32,220 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 01:59:32,230 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 04:00:17 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:32139)
+2021-01-29 04:00:19,453 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 04:00:19,465 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 06:01:04 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:32335)
+2021-01-29 06:01:06,066 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 06:01:06,078 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 07:24:39 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:32587)
+2021-01-29 07:24:41,929 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 07:24:41,942 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 11:15:32 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:32788)
+2021-01-29 11:15:35,084 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 11:15:35,092 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 11:19:44 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:39970)
+2021-01-29 11:19:46,335 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 11:19:46,344 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 13:17:03 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:40154)
+2021-01-29 13:17:05,001 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 13:17:05,008 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 13:19:19 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:44361)
+2021-01-29 13:19:21,149 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 13:19:21,166 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 14:25:27 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:44526)
+2021-01-29 14:25:30,590 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 14:25:30,607 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+2021-01-29 15:50:40,751 GET /sync route with id: {{ uniqueId }}
+2021-01-29 15:50:40,758 DB error: Unique user not found.
+[2021-01-29 15:50:40 -0800] [48946] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-01-29 15:50:44,147 Accessing /exp: prolific 0ijw846ixv09 5e14f5764f849eb01102a0da 
+2021-01-29 15:50:44,152 given Counter({(0, 0): 0}) chose (0, 0)
+2021-01-29 15:50:44,277 GET /sync route with id: 5e14f5764f849eb01102a0da:0ijw846ixv09
+2021-01-29 15:50:44,314 PUT /sync route with id: 5e14f5764f849eb01102a0da:0ijw846ixv09
+2021-01-29 15:50:44,324 saved data for 5e14f5764f849eb01102a0da:0ijw846ixv09 (current trial: 0)
+2021-01-29 15:50:58,519 Accessing /exp: prolific 0ijw846ixv09 5e14f5764f849eb01102a0da 
+2021-01-29 15:50:58,762 GET /sync route with id: 5e14f5764f849eb01102a0da:0ijw846ixv09
+2021-01-29 15:50:58,819 PUT /sync route with id: 5e14f5764f849eb01102a0da:0ijw846ixv09
+2021-01-29 15:50:58,829 saved data for 5e14f5764f849eb01102a0da:0ijw846ixv09 (current trial: 0)
+2021-01-29 15:51:00,388 Accessing /exp: prolific 0ijw846ixv09 5e14f5764f849eb01102a0da 
+2021-01-29 15:51:00,618 GET /sync route with id: 5e14f5764f849eb01102a0da:0ijw846ixv09
+2021-01-29 15:51:00,669 PUT /sync route with id: 5e14f5764f849eb01102a0da:0ijw846ixv09
+2021-01-29 15:51:00,674 saved data for 5e14f5764f849eb01102a0da:0ijw846ixv09 (current trial: 0)
+[2021-01-29 16:37:50 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:48946)
+2021-01-29 16:37:52,992 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 16:37:53,003 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 16:54:33 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:53153)
+2021-01-29 16:54:36,022 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 16:54:36,037 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 19:51:42 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:53464)
+2021-01-29 19:51:44,082 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 19:51:44,097 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 21:37:56 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:56596)
+2021-01-29 21:37:58,988 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 21:37:59,004 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 22:00:01 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:59411)
+2021-01-29 22:00:03,789 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 22:00:03,800 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 22:32:24 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:59824)
+2021-01-29 22:32:25,967 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 22:32:25,973 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-29 22:46:42 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:60021)
+2021-01-29 22:46:44,650 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-29 22:46:44,660 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-30 11:35:02 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:60191)
+2021-01-30 11:35:06,540 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-30 11:35:06,556 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-30 11:36:52 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:3263)
+2021-01-30 11:36:54,858 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-30 11:36:54,872 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-30 14:25:18 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:3445)
+2021-01-30 14:25:22,104 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-30 14:25:22,119 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-30 16:54:39 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:7404)
+2021-01-30 16:54:41,574 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-30 16:54:41,581 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-30 17:32:33 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:22707)
+2021-01-30 17:32:35,763 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-30 17:32:35,774 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-30 19:58:59 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:22862)
+2021-01-30 19:59:01,208 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-30 19:59:01,215 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-30 20:32:52 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:25831)
+2021-01-30 20:32:54,163 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-30 20:32:54,171 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-30 22:00:01 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:26005)
+2021-01-30 22:00:04,024 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-30 22:00:04,042 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-30 22:34:18 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:26253)
+2021-01-30 22:34:20,223 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-30 22:34:20,229 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-30 23:54:01 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:26538)
+2021-01-30 23:54:03,047 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-30 23:54:03,056 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 00:39:29 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:26708)
+2021-01-31 00:39:31,289 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 00:39:31,297 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 02:40:16 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:27059)
+2021-01-31 02:40:17,937 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 02:40:17,948 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 04:41:02 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:27215)
+2021-01-31 04:41:04,077 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 04:41:04,090 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 06:41:49 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:27384)
+2021-01-31 06:41:50,872 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 06:41:50,884 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 08:37:03 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:27627)
+2021-01-31 08:37:05,632 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 08:37:05,645 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 10:00:00 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:27779)
+2021-01-31 10:00:03,585 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 10:00:03,600 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 10:17:45 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:28920)
+2021-01-31 10:17:47,759 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 10:17:47,773 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 12:49:21 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:29242)
+2021-01-31 12:49:24,497 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 12:49:24,511 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 14:00:00 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:32024)
+2021-01-31 14:00:03,410 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 14:00:03,421 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 14:39:43 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:33881)
+2021-01-31 14:39:45,683 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 14:39:45,692 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 14:53:42 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:34080)
+2021-01-31 14:53:45,051 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 14:53:45,067 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 17:45:39 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:34382)
+2021-01-31 17:45:40,768 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 17:45:40,781 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+[2021-01-31 17:50:22 -0800] [90403] [CRITICAL] WORKER TIMEOUT (pid:39035)
+2021-01-31 17:50:25,412 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-01-31 17:50:25,427 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+2021-02-06 11:29:47,318 Secret key: 'this is my secret key which is hard to guess, i should change this'
+2021-02-06 11:29:47,327 /Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/psiturk_js/psiturk.js
+2021-02-06 11:29:50,765 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:29:50,770 DB error: Unique user not found.
+[2021-02-06 11:29:50 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-02-06 11:30:30,675 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:30:30,679 DB error: Unique user not found.
+[2021-02-06 11:30:30 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-02-06 11:31:49,872 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:31:49,874 DB error: Unique user not found.
+[2021-02-06 11:31:49 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-02-06 11:32:16,171 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:32:16,172 DB error: Unique user not found.
+[2021-02-06 11:32:16 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-02-06 11:32:19,898 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:32:19,900 DB error: Unique user not found.
+[2021-02-06 11:32:19 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-02-06 11:32:21,262 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:32:21,264 DB error: Unique user not found.
+[2021-02-06 11:32:21 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-02-06 11:32:26,368 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:32:26,370 DB error: Unique user not found.
+[2021-02-06 11:32:26 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-02-06 11:32:55,911 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:32:55,912 DB error: Unique user not found.
+[2021-02-06 11:32:55 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-02-06 11:34:14,977 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:34:14,980 DB error: Unique user not found.
+[2021-02-06 11:34:14 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-02-06 11:34:19,389 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:34:19,391 DB error: Unique user not found.
+[2021-02-06 11:34:19 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
+2021-02-06 11:34:25,025 GET /sync route with id: {{ uniqueId }}
+2021-02-06 11:34:25,027 DB error: Unique user not found.
+[2021-02-06 11:34:25 -0800] [69470] [ERROR] Error handling request /sync/%7B%7B%20uniqueId%20%7D%7D
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 562, in load
+    resp = json.loads(user.datastring)
+UnboundLocalError: local variable 'user' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 135, in handle
+    self.handle_request(listener, req, client, addr)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/gunicorn/workers/sync.py", line 176, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2334, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2320, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1766, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 2317, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1840, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1743, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/_compat.py", line 36, in reraise
+    raise value
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1838, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/flask/app.py", line 1824, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/fred/heroku/webofcash2/env/lib/python3.7/site-packages/psiturk/experiment.py", line 565, in load
+    "condition": user.cond,
+UnboundLocalError: local variable 'user' referenced before assignment
