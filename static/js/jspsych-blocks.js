@@ -144,53 +144,41 @@ class Block {
 
 }
 
+const BLANK = `
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXX
+`
+
+
 
 function string2block(s, x, y, color) {
+    if (s == 'blank') {
+      s = BLANK
+    }
     if (typeof(color) == 'number') {
-        color = COLORS[color]
+      color = COLORS[color]
     }
     let rows = s.trim().split('\n')
     let parts = []
     rows.forEach((row, y) => {
-        row.trim().split('').forEach((v, x) => {
-            if (v == "X") {
-                parts.push({x, y})
-            }
-        })
+      row.trim().split('').forEach((v, x) => {
+        if (v == "X") {
+          parts.push({x, y})
+        }
+      })
     })
     return new Block(x, y, parts, color)
-}
-
-var searchParams = new URLSearchParams(location.search);
-var TARGET;
-if (searchParams.get('blank')) {
-  TARGET = `
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  XXXXXXXXXXXXXXXXXXXXXXXXXX
-  `
-} else {
-  TARGET = `
-  .XX.
-  XXXX
-  XXXX
-  XXXX
-  XXXX
-  .XX.
-  XXXX
-  XXXX
-  XXXX
-`
 }
 
 const BLOCK_DEFS = [
@@ -234,8 +222,9 @@ jsPsych.plugins["blocks"] = (function() {
   }
 
   plugin.trial = async function(display_element, trial) {
+    console.log('trial.target', trial.target)
 
-
+    $(display_element).empty()
     $('<div>')
     .css({
       'width': '100%',
@@ -269,7 +258,7 @@ jsPsych.plugins["blocks"] = (function() {
     const activeBlocks = new Set();
 
     const library = buildLibrary()
-    const target = string2block(TARGET, 0, 0, 'white')
+    const target = string2block(trial.target, 0, 0, 'white')
     target.x = GRID * Math.floor((WIDTH - target.width()) / 2)
     target.y = GRID * Math.ceil(1+(HEIGHT - target.height()) / 2)
 
@@ -371,7 +360,7 @@ jsPsych.plugins["blocks"] = (function() {
 
     // Event listener for keydown to detect if the spacebar is pressed
     document.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && isDragging) {
+      if ((e.code === 'Space' || e.code == 'KeyT') && isDragging) {
         e.preventDefault(); // Prevent default to avoid scrolling the page
         if (currentBlock) {
           currentBlock.rotate(mouseX, mouseY);
@@ -440,7 +429,8 @@ jsPsych.plugins["blocks"] = (function() {
         }
         currentBlock = null;
         if (checkVictory()) {
-          alert("You did it!")
+          alert("You did it!");
+          jsPsych.finishTrial();
         }
       }
     });

@@ -20,6 +20,36 @@ function button_trial(html, opts={}) {
   }
 }
 
+const targets = [
+  `
+    XXXX
+    XXXX
+  `,
+  `
+    .XX.
+    XXXX
+    XXXX
+    XXXX
+    XXXX
+    .XX.
+    XXXX
+    XXXX
+    XXXX
+  `, `
+    ..XX..
+    .XXXX.
+    .XXXX.
+    .XXXX.
+    XXXXXX
+    ..XXX.
+    .XXXXX
+    .XXXX
+    XXXXX.
+    .XXX..
+  `,
+  'blank'
+]
+
 async function initializeExperiment() {
   LOG_DEBUG('initializeExperiment');
 
@@ -34,7 +64,9 @@ async function initializeExperiment() {
 
   let main_block = {
     type: 'blocks',
+    timeline: targets.map(t => ({target: t}))
   }
+  console.log('main_block', main_block)
 
   let debrief = {
     type: 'survey-text',
