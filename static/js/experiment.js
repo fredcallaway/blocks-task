@@ -66,9 +66,15 @@ async function initializeExperiment() {
     timeline: targets.map(t => ({target: t}))
   }
 
+  let display = $('#jspsych-target')
+
+  text_box(display, "What's up doc?")
+  radio_buttons(display, "Is it good?")
+  await button(display, 'continue', {delay: 1000}).clicked
+
   for (let target of targets) {
     console.log('hello')
-    await runBlockTrial($('#jspsych-target'), {target})
+    await runBlockTrial(display, {target})
   }
 };
 
