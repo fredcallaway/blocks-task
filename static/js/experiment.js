@@ -55,13 +55,6 @@ async function initializeExperiment() {
 
   // const stimuli = await $.getJSON('static/stimuli/stimuli.json')
 
-  
-  let welcome_block = button_trial(`
-    # Instructions
-
-    In this experiment, you will ...
-  `)
-
   if (searchParams.get('blank')) {
     targets = ['blank']
   } else if (searchParams.get('trial')) {
@@ -72,50 +65,11 @@ async function initializeExperiment() {
     type: 'blocks',
     timeline: targets.map(t => ({target: t}))
   }
-  console.log('main_block', main_block)
 
-  let debrief = {
-    type: 'survey-text',
-    preamble: () => {
-      psiturk.recordUnstructuredData('bonus', BONUS / 100);
-      return markdown(`
-        # Study complete
-
-        Thanks for participating! You earned a bonus of $${(BONUS / 100).toFixed(2)}.
-        Please provide feedback on the study below.
-        You can leave a box blank if you have no relevant comments.
-      `)
-    },
-    questions: [
-      'Were the instructions confusing, hard to understand, or too long?',
-      'Was the interface at all difficult to use?',
-      'Did you experience any technical problems (e.g., images not displaying)?',
-      'Any other comments?',
-    ].map(prompt => ({prompt, rows: 2, columns: 70}))
+  for (let target of targets) {
+    console.log('hello')
+    await runBlockTrial($('#jspsych-target'), {target})
   }
-
-  /////////////////////////
-  // Experiment timeline //
-  /////////////////////////
-
-  let timeline = [
-    // welcome_block,
-    main_block,
-    debrief,
-  ];
-
-  let skip = searchParams.get('skip');
-  if (skip != null) {
-    timeline = timeline.slice(skip);
-  }
-
-  return startExperiment({
-    timeline,
-    exclusions: {
-      min_width: 800,
-      min_height: 600
-    },
-  });
 };
 
 

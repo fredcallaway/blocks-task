@@ -1,3 +1,9 @@
+function make_promise() {
+  let {promise, resolve, reject} = Promise.withResolvers();
+  promise.resolve = resolve
+  promise.reject = reject
+  return promise
+}
 
 function make_radio(div, question, choices) {
   $("<p>")
