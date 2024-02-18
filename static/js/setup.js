@@ -1,13 +1,9 @@
-// Initialize PsiTurk
 const psiturk = new PsiTurk(uniqueId, adServerLoc, mode);
+const urlParams = mapObject(Object.fromEntries(new URLSearchParams(window.location.search)), maybeJson)
+const prolific = true;
+
 var condition = 0
-
-
-const searchParams = new URLSearchParams(window.location.search);
-
 let local = false;
-let prolific = true;
-
 
 if (mode === "demo" || mode === "{{ mode }}") {
   local = true;
@@ -15,6 +11,31 @@ if (mode === "demo" || mode === "{{ mode }}") {
   condition = parseInt(condition, 10);
 }
 
+// Test connection to server, then initialize the experiment.
+
+
+
+$(window).on('load', async () => {
+  if (local) {
+    $('#display').empty()
+    await runExperiment()
+  } else {
+    await saveData()
+    await sleep(1000)
+    $('#load-icon').hide();
+    let btn = button($('#display'), 'begin')
+    btn.button.addClass('animate-bottom').css('margin-top', '40px')
+    await btn.clicked
+    logEvent('begin experiment')
+
+    $('#display').empty()
+    try {
+      await runExperiment()
+    } catch (err) {
+      handleError(err)
+    }
+  }
+});
 
 
 function logEvent(event, info={}){
@@ -56,20 +77,6 @@ function saveData() {
 };
 
 
-// Test connection to server, then initialize the experiment.
-$(window).on('load', () => {
-  saveData()
-    .then(() => delay(local ? 0 : 500, () => {
-      $('#welcome').hide();
-      if (local) {
-        return runExperiment();
-      } else {
-        return runExperiment().catch(handleError).then(completeExperiment);
-      }
-    }))
-    .catch(() => $('#data-error').show());
-});
-
 function completeExperiment() {
   $.ajax("complete_exp", {
     type: "POST",
@@ -81,7 +88,9 @@ function completeExperiment() {
     <p>Please do <b>NOT</b> refresh or leave the page!</p>
     <div id="load-icon"></div>
     <div id="submit-error" class="alert alert-danger">
-      <strong>Error!</strong> We couldn't contact the database. We will try <b><span id="ntry"></span></b> more times before continuing without saving the data.
+      <strong>Error!</strong> We couldn't contact the database.
+      We will try <b><span id="ntry"></span></b> more times before
+      continuing without saving the data.
     </div>
   `);
   $("#submit-error").hide();
@@ -121,7 +130,7 @@ async function showCompletionScreen() {
   if (prolific) {
     $("#load-icon").remove();
     $(window).off("beforeunload");
-    $('body').html(`
+    $('#display').html(`
       <div class='basic-content'>
         <h1>Thanks!</h1>
         <p>Your completion code is <b>${PROLIFIC_CODE}</b>. Click this link to submit:<br>
@@ -135,17 +144,20 @@ async function showCompletionScreen() {
 
 
 function handleError(e) {
-  console.log('Error in experiment', e);
-  let msg = e instanceof Error ? `${e.name}: ${e.message}\n${e.stack}` : `${e}`;
+  logEvent('handleError', e)
+  let msg = e.stack?.length > 10 ? e.stack : `${e}`;
   const workerIdMessage = typeof workerId !== "undefined" && workerId !== null ? workerId : 'N/A';
-  const message = `<pre>Prolific Id: ${workerIdMessage}\n${msg}</pre>`;
+  const message = `Prolific Id: ${workerIdMessage}\n${msg}`;
   const link = `<a href="mailto:fredcallaway@princeton.edu?subject=ERROR in experiment&body=${encodeURIComponent(message)}">Click here</a> to report the error by email.`;
+
   $('#display').html(`
-    # The experiment encountered an error!
-    <b>${link}</b> Please describe at what point in the study the error occurred, and include the following information.
-    ${message}
+    <h1>The experiment encountered an error!</h1>
+    <b>${link}</b>
+    <p>Please describe at what point in the study the error occurred, and include the following information.
+    <pre>${message}</pre>
     After reporting the error, click the button below to submit your data and see the completion code.
-    <button id="submit">I reported the error</button>
+    <p><br>
+    <button class="btn btn-primary" id="submit">I reported the error</button>
   `);
   $('#submit').click(completeExperiment);
 };

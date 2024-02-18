@@ -244,7 +244,7 @@ function buildLibrary() {
 
 async function runBlockTrial(div, trial) {
   console.log('trial.target', trial.target)
-
+  
   $(div).empty()
   $('<div>')
   .css({
