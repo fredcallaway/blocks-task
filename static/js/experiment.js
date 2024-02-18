@@ -8,36 +8,6 @@ psiturk.recordUnstructuredData('params', PARAMS);
 const PROLIFIC_CODE = 'TODO'
 var BONUS = 0
 
-var targets = [
-  `
-    XXXX
-    XXXX
-  `,
-  `
-    .XX.
-    XXXX
-    XXXX
-    XXXX
-    XXXX
-    .XX.
-    XXXX
-    XXXX
-    XXXX
-  `, `
-    ..XX..
-    .XXXX.
-    .XXXX.
-    .XXXX.
-    XXXXXX
-    ..XXX.
-    .XXXXX
-    .XXXX
-    XXXXX.
-    .XXX..
-  `,
-  'blank'
-]
-
 const display = $('#display')
 
 async function instructions() {
@@ -49,11 +19,11 @@ async function instructions() {
 
 async function main() {
   if (urlParams.trial) {
-    targets = targets.slice(parseInt(urlParams.trial) - 1)
+    trials = trials.slice(parseInt(urlParams.trial) - 1)
   }
 
-  for (let target of targets) {
-    await runBlockTrial(display, {target})
+  for (let trial of trials) {
+    await runBlockTrial(display, trial)
   }
 }
 
@@ -72,7 +42,7 @@ async function runTimeline(...blocks) {
 async function runExperiment() {
 
   if (urlParams.blank) {
-    await runBlockTrial(display, {target: 'blank'})
+    await runBlockTrial(display, {target: 'blank', blocks: urlParams.blank == 'hard' ? hard_blocks : easy_blocks})
     return
   }
 
@@ -80,7 +50,7 @@ async function runExperiment() {
   // await instructions()
   // await main()
   await runTimeline(
-    instructions,
+    // instructions,
     main
   )
 

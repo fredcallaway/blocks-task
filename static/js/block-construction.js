@@ -183,58 +183,9 @@ function string2block(s, x, y, color) {
     return new Block(x, y, parts, color)
 }
 
-const BLOCK_DEFS = [
-  `
-    X
-  `, `
-    .XX
-    XX.
-  `, `
-    XX.
-    .XX
-  `, `
-    .X
-    .X
-    XX
-  `, `
-    X
-    X
-    XX
-  `
-]
-
-// const BLOCK_DEFS = [
-//   `
-//     X
-//   `, `
-//     .XX
-//     XXX
-//   `, `
-//     X
-//     XX.
-//     .XX
-//   `, `
-//     .XX
-//     .X
-//     XX
-//   `, `
-//     XX
-//     .X
-//     .XX
-//   `, `
-//     XXX
-//     X
-//     X
-//   `, `
-//     XX
-//     X
-//     XX
-//   `
-// ]
-
-function buildLibrary() {
+function buildLibrary(blocks) {
     let xPos = 1
-    return BLOCK_DEFS.map((s, i) => {
+    return blocks.map((s, i) => {
         let block = string2block(s, GRID * xPos, 0, i)
         block.y = GRID * (HEIGHT + TRAY_HEIGHT - block.height() - 1)
         xPos += block.width() + 1
@@ -244,7 +195,7 @@ function buildLibrary() {
 
 async function runBlockTrial(div, trial) {
   console.log('trial.target', trial.target)
-  
+
   $(div).empty()
   $('<div>')
   .css({
@@ -278,7 +229,7 @@ async function runBlockTrial(div, trial) {
   // Define blocks, including an L-shaped block
   const activeBlocks = new Set();
 
-  const library = buildLibrary()
+  const library = buildLibrary(trial.blocks)
   let target = string2block(trial.target, 0, 0, 'white')
   target.x = GRID * Math.floor((WIDTH - target.width()) / 2)
   target.y = GRID * Math.ceil(1+(HEIGHT - target.height()) / 2)
