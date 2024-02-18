@@ -37,7 +37,7 @@ class TextBox extends Input {
 
     this.textarea = $('<textarea>')
     .css({
-      margin: '10px 10%',
+      // margin: '10px 10%',
       padding: '10px',
       width,
       height

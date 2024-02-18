@@ -81,41 +81,19 @@ $(window).on('load', function() {
   });
 });
 
-// This function is called once at the end of initializeExperiment.
-startExperiment = function(config) {
-  var defaults;
-  LOG_DEBUG('run');
-  defaults = {
-    show_progress_bar: false,
-    display_element: 'jspsych-target',
-    on_finish: function() {
-      console.log('on_finish')
-      if (DEBUG) {
-        return jsPsych.data.displayData();
-      } else {
-        return submitHit();
-      }
-    },
-    on_data_update: function(data) {
-      console.log('data', data);
-      return psiturk.recordTrialData(data);
-    }
-  };
-  return jsPsych.init(_.extend(defaults, config));
-};
 
 completeHIT = async function() {
   await $.ajax("complete_exp", {
     type: "POST",
     data: {uniqueId}
   });
-  $('#jspsych-target').empty()
+  $('#display').empty()
   console.log('completeHIT')
   if (PROLIFIC) {
     $("#load-icon").remove()
     $(window).off("beforeunload");
     $('body').html(`
-      <div class='jspsych-content'>
+      <div class='basic-content'>
           <h1>Thanks!</h1>
 
           <p>
@@ -135,7 +113,7 @@ completeHIT = async function() {
 submitHit = function() {
   var promptResubmit, triesLeft;
   console.log('submitHit');
-  $('#jspsych-target').html(`
+  $('#display').html(`
     <h1>Saving data</h1>
 
     <p>Please do <b>NOT</b> refresh or leave the page!
@@ -160,7 +138,7 @@ submitHit = function() {
       return saveData().catch(promptResubmit);
     } else {
       console.log('GIVE UP');
-      $('#jspsych-target').html(`
+      $('#display').html(`
         <h1>Saving data</h1>
 
         <div class="alert alert-danger">
@@ -173,7 +151,7 @@ submitHit = function() {
       `);
       return new Promise(function(resolve) {
         return $('#resubmit').click(function() {
-          $('#jspsych-target').empty()
+          $('#display').empty()
           return resolve('gave up');
         });
       });
@@ -203,7 +181,7 @@ handleError = function(e) {
   
   link = `<a href="mailto:fredcallaway@princeton.edu?subject=ERROR in experiment&
     body=${encodeURIComponent(message)}">Click here</a>`;
-  $('#jspsych-target').html(markdown(`
+  $('#display').html(markdown(`
     # The experiment encountered an error!
 
     <b>${link}</b> to report the error by email. Please describe at what point in the

@@ -2,10 +2,33 @@ canvas {
   border: thick black solid;
 }
 
-.jspsych-html-button-response-button {
-  text-align: center;
-  width: 100%;
-}
+#welcome-message {
+   max-width: 95%; /* this is mainly an IE 10-11 fix */
+   /*text-align: center;*/
+   margin: auto;
+   margin-top: 20px;
+   text-align: center
+ }
+
+ #display {
+  max-width: 1200px;
+  margin: auto;
+  margin-top: 20px;
+/*  display: flex;*/
+/*  flex-direction: column;*/
+   /*justify-content: center;
+   align-items: center;*/
+   /*height: 100%;
+   width: 100%;*/
+   /*overflow-y: scroll;*/
+ }
+
+ #display:focus {
+   outline: none;
+ }
+
+
+
 .image-container {
   position: relative;
   text-align: center;
@@ -35,12 +58,6 @@ canvas {
   font-size: 20pt;
   font-weight: bold;
   text-align: center;
-}
-
-#jspsych-target {
-  max-width: 1200px;
-  margin: auto;
-  margin-top: 20px;
 }
 
 .center {

@@ -66,15 +66,16 @@ async function initializeExperiment() {
     timeline: targets.map(t => ({target: t}))
   }
 
-  let display = $('#jspsych-target')
+  let display = $('#display')
+  let instructions = $('<div>').css({'max-width': 800, 'margin': 'auto'}).appendTo(display)
 
-  text_box(display, "What's up doc?")
-  radio_buttons(display, "Is it good?")
-  await button(display, 'continue', {delay: 1000}).clicked
+  text_box(instructions, "What's up doc?")
+  radio_buttons(instructions, "Is it good?")
+  await button(instructions, 'continue', {delay: 1000}).clicked
 
   for (let target of targets) {
     console.log('hello')
-    await runBlockTrial(display, {target})
+    await runBlockTrial(instructions, {target})
   }
 };
 
