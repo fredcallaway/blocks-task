@@ -476,7 +476,7 @@ async function runBlockTrial(div, trial) {
   });
 
   let trialDone = make_promise()
-  canvas.addEventListener('mouseup', () => {
+  window.addEventListener('mouseup', () => {
     if (isDragging) {
       isDragging = false;
       currentBlock = null;
