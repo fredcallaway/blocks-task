@@ -5,42 +5,7 @@ function make_promise() {
   return promise
 }
 
-function make_radio(div, question, choices) {
-  $("<p>")
-  .css('margin-top', 20)
-  .html(question)
-  .appendTo(div)
 
-  let name = ('R' + Math.random()).replace('.', '')
-  $('<div>')
-  .html(choices.map(choice => `
-    <input type="radio" id="${choice}" name="${name}" value="${choice}">
-    <label for="${choice}">${choice}</label>
-  `).join('\n'))
-  .appendTo(div)
-  console.log('radio name', name)
-  return () => $(`input[name=${name}]:checked`).val()
-}
-
-function make_text(div, question, opts={}) {
-      let {height=50, width='80%'} = opts
-      $("<p>")
-      .css('margin-top', 20)
-      .html(question)
-      .appendTo(div)
-
-      let text = $('<textarea>')
-      .css({
-        margin: '10px 10%',
-        padding: '10px',
-        width,
-        height
-      })
-      .appendTo(div)
-      .focus()
-
-      return () => text.val()
-}
 
 /*
 Example:
@@ -57,57 +22,7 @@ make_slider({
   }
 }).appendTo(display)
 */
-function make_slider(opt) {
-  let slider = $("<div>")
-  .css('margin', '60px')
-  .slider(opt)
-  for (let [lab, val] of Object.entries(opt.labels)) {
-    let pos = (val - opt.min) / (opt.max - opt.min)
-    console.log(`${100 * pos}%`)
-    $(`<label>${lab}</label>`)
-    .css({
-      'position': 'absolute',
-      'left': `${100 * pos}%`,
-      'text-align': 'center',
-      'width': '100px',
-      'transform': 'translate(-50%, 100%)',
-    })
-    .appendTo(slider)
-  }
-  return slider
-}
 
-/*
-Usage: await make_button(display, "Submit")
-*/
-
-function make_button(div, text) {
-  let container = $('<div>')
-  .css('text-align', 'center')
-  .appendTo(div)
-  let btn = $('<button>', {class: 'btn btn-primary'})
-  .text(text)
-  .appendTo(container)
-  return new Promise(function(resolve) {
-    btn.click(() => {
-      btn.prop('disabled', true)
-      sleep(1000).then(resolve)
-    })
-  })
-}
-
-async function make_buttons(div, texts, opts={}) {
-  container = $('<div>')
-  .css('text-align', 'center')
-  .appendTo(div)
-  opts.cls = 'btn btn-primary'
-  let buttons = texts.map(t => make_button(container, t, opts))
-  let prom = Promise.any(buttons)
-  if (opts.remove_after) {
-    prom.then(() => container.remove())
-  }
-  return prom
-}
 
 
 function updateExisting(target, src) {
