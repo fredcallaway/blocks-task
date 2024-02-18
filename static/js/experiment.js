@@ -20,7 +20,7 @@ function button_trial(html, opts={}) {
   }
 }
 
-const targets = [
+var targets = [
   `
     XXXX
     XXXX
@@ -61,6 +61,12 @@ async function initializeExperiment() {
 
     In this experiment, you will ...
   `)
+
+  if (searchParams.get('blank')) {
+    targets = ['blank']
+  } else if (searchParams.get('trial')) {
+    targets = targets.slice(parseInt(searchParams.get('trial')) - 1)
+  }
 
   let main_block = {
     type: 'blocks',
