@@ -8,7 +8,6 @@ const PROLIFIC_CODE = 'TODO'
 
 var BONUS = 0
 
-
 function button_trial(html, opts={}) {
   return {
     stimulus: markdown(html),
@@ -50,8 +49,7 @@ var targets = [
   'blank'
 ]
 
-async function initializeExperiment() {
-  LOG_DEBUG('initializeExperiment');
+async function runExperiment() {
 
   // const stimuli = await $.getJSON('static/stimuli/stimuli.json')
 
