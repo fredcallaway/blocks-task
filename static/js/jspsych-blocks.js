@@ -7,12 +7,14 @@ const TRAY_HEIGHT = 5
 const BACKGROUND = "#ADADAD"
 
 const COLORS = [
-  "#E41A1C",
-  "#377EB8",
-  "#4DAF4A",
-  "#984EA3",
-  "#FF7F00",
-  "#FFDD47",
+  "#e41a1c",
+  "#377eb8",
+  "#4daf4a",
+  "#984ea3",
+  "#ff7f00",
+  "#FFEF33",
+  "#f781bf",
+  "#a65628",
 ]
 
 function hex2rgb(hex) {
@@ -201,12 +203,40 @@ const BLOCK_DEFS = [
   `
 ]
 
+// const BLOCK_DEFS = [
+//   `
+//     X
+//   `, `
+//     .XX
+//     XXX
+//   `, `
+//     X
+//     XX.
+//     .XX
+//   `, `
+//     .XX
+//     .X
+//     XX
+//   `, `
+//     XX
+//     .X
+//     .XX
+//   `, `
+//     XXX
+//     X
+//     X
+//   `, `
+//     XX
+//     X
+//     XX
+//   `
+// ]
+
 function buildLibrary() {
     let xPos = 1
     return BLOCK_DEFS.map((s, i) => {
         let block = string2block(s, GRID * xPos, 0, i)
         block.y = GRID * (HEIGHT + TRAY_HEIGHT - block.height() - 1)
-        console.log('width', block.width())
         xPos += block.width() + 1
         return block
     })
@@ -258,9 +288,12 @@ jsPsych.plugins["blocks"] = (function() {
     const activeBlocks = new Set();
 
     const library = buildLibrary()
-    const target = string2block(trial.target, 0, 0, 'white')
+    let target = string2block(trial.target, 0, 0, 'white')
     target.x = GRID * Math.floor((WIDTH - target.width()) / 2)
     target.y = GRID * Math.ceil(1+(HEIGHT - target.height()) / 2)
+
+    window.activeBlocks = activeBlocks
+    window.target = target
 
     function drawCanvas() {
       // ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -313,6 +346,15 @@ jsPsych.plugins["blocks"] = (function() {
       return true;
     }
 
+    function captureState() {
+      let width = target.width()
+      return _.range(target.height()).map(y => {
+        return _.range(width).map(x => {
+          return isCovered(target.x + GRID*x, target.y + GRID*y) ? 'X' : '.'
+        }).join('')
+      }).join('\n')
+    }
+
     function isCovered(x, y) {
       for (let block of activeBlocks) {
         if (block.contains(x + GRID / 2, y + GRID / 2)) {
@@ -344,6 +386,15 @@ jsPsych.plugins["blocks"] = (function() {
       return false; // No collision detected
     }
 
+    function clearColliding() {
+      for (let block of activeBlocks) {
+        if (block != currentBlock && block.colliding) {
+          activeBlocks.delete(block)
+        }
+      }
+
+    }
+
     function tryUpdatePosition(block, x, y) {
       oldX = block.x
       oldY = block.y
@@ -360,7 +411,20 @@ jsPsych.plugins["blocks"] = (function() {
 
     // Event listener for keydown to detect if the spacebar is pressed
     document.addEventListener('keydown', (e) => {
-      if ((e.code === 'Space' || e.code == 'KeyT') && isDragging) {
+      if (e.code == 'KeyS') {
+        navigator.clipboard.writeText(captureState())
+      } else if (e.code == 'KeyC') {
+        console.log('CLEAR')
+        activeBlocks.clear()
+        drawCanvas()
+      } else if (e.code == 'KeyT') {
+        console.log('set target')
+        navigator.clipboard.writeText(captureState())
+        target = string2block(captureState(), 0, 0, 'white')
+        target.x = GRID * Math.floor((WIDTH - target.width()) / 2)
+        target.y = GRID * Math.ceil(1+(HEIGHT - target.height()) / 2)
+        drawCanvas()
+      } else if ((e.code === 'Space' || e.code == 'KeyR') && isDragging) {
         e.preventDefault(); // Prevent default to avoid scrolling the page
         if (currentBlock) {
           currentBlock.rotate(mouseX, mouseY);
@@ -414,6 +478,7 @@ jsPsych.plugins["blocks"] = (function() {
         const updated = tryUpdatePosition(currentBlock, snappedX, snappedY)
         if (updated) {
           currentBlock.colliding = checkCollision(currentBlock);
+          clearColliding()
           drawCanvas(); // Redraw all blocks
         }
       }
@@ -422,12 +487,9 @@ jsPsych.plugins["blocks"] = (function() {
     canvas.addEventListener('mouseup', () => {
       if (isDragging) {
         isDragging = false;
-        if (currentBlock.colliding) {
-          activeBlocks.delete(currentBlock)
-          currentBlock = null;
-          drawCanvas()
-        }
         currentBlock = null;
+        clearColliding()
+        drawCanvas()
         if (checkVictory()) {
           alert("You did it!");
           jsPsych.finishTrial();
