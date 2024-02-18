@@ -9,6 +9,10 @@ class Input {
 }
 
 class Button extends Input {
+  click(f) {
+    this.button.click(f)
+    return this
+  }
   constructor({text = 'continue', delay = 100} = {}) {
     super()
     this.div.css('text-align', 'center')

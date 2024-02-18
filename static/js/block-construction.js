@@ -194,7 +194,7 @@ function buildLibrary(blocks) {
 }
 
 async function runBlockTrial(div, trial) {
-  console.log('trial.target', trial.target)
+  // console.log('trial.target', trial.target)
 
   $(div).empty()
   $('<div>')
@@ -206,6 +206,7 @@ async function runBlockTrial(div, trial) {
   .html(`
     Fill in all the white squares. Press <b>space</b> to rotate a piece
   `).appendTo($(div))
+
   const canvas = $('<canvas>')
   .prop({
     width: WIDTH*GRID,
@@ -216,7 +217,34 @@ async function runBlockTrial(div, trial) {
     'display': 'block',
   })
   .appendTo($(div))[0]
-  // const canvas = document.getElementById('gameCanvas');
+
+  let buttons = $("<div>")
+  .css({
+    'margin': 'auto',
+    'margin-top': '20px',
+    'width': '600px'
+  }).appendTo(div)
+
+  $('<button>').addClass('btn').css('margin', '10pt').text('clear').appendTo(buttons).click(() => {
+      activeBlocks.clear()
+      drawCanvas()
+  })
+
+  $('<button>').addClass('btn').css('margin', '10pt').text('copy').appendTo(buttons).click(() => {
+      navigator.clipboard.writeText(captureState())
+      drawCanvas()
+  })
+
+  $('<button>').addClass('btn').css('margin', '10pt').text('set target').appendTo(buttons).click(() => {
+      navigator.clipboard.writeText(captureState())
+      let prev = target
+      target = string2block(captureState(), 0, 0, 'white')
+      activeBlocks.clear()
+      target.x = prev.x
+      target.y = prev.y
+      drawCanvas()
+  })
+
   const ctx = canvas.getContext('2d');
 
   let isDragging = false;
@@ -289,9 +317,9 @@ async function runBlockTrial(div, trial) {
   }
 
   function captureState() {
-    let width = target.width()
-    return _.range(target.height()).map(y => {
-      return _.range(width).map(x => {
+    // let width = target.width()
+    return _.range(HEIGHT).map(y => {
+      return _.range(WIDTH).map(x => {
         return isCovered(target.x + GRID*x, target.y + GRID*y) ? 'X' : '.'
       }).join('')
     }).join('\n')
@@ -353,20 +381,7 @@ async function runBlockTrial(div, trial) {
 
   // Event listener for keydown to detect if the spacebar is pressed
   document.addEventListener('keydown', (e) => {
-    if (e.code == 'KeyS') {
-      navigator.clipboard.writeText(captureState())
-    } else if (e.code == 'KeyC') {
-      console.log('CLEAR')
-      activeBlocks.clear()
-      drawCanvas()
-    } else if (e.code == 'KeyT') {
-      console.log('set target')
-      navigator.clipboard.writeText(captureState())
-      target = string2block(captureState(), 0, 0, 'white')
-      target.x = GRID * Math.floor((WIDTH - target.width()) / 2)
-      target.y = GRID * Math.ceil(1+(HEIGHT - target.height()) / 2)
-      drawCanvas()
-    } else if ((e.code === 'Space' || e.code == 'KeyR') && isDragging) {
+    if ((e.code === 'Space' || e.code == 'KeyR') && isDragging) {
       e.preventDefault(); // Prevent default to avoid scrolling the page
       if (currentBlock) {
         currentBlock.rotate(mouseX, mouseY);
