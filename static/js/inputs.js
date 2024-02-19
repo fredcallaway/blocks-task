@@ -122,3 +122,23 @@ function button(div, text, opts) {
 function radio_buttons(div, prompt, choices, opts) {
   return new RadioButtons({prompt, choices, ...opts}).appendTo(div)
 }
+
+
+function alert_success(opts = {}) {
+  let flavor = _.sample([
+    "You're on fire", "Top-notch stuff", "Absolutely brilliant",
+    "Out of this world", "Phenomenal", "You've outdone yourself", "A+ work",
+    "Nailed it", "Rock star status", "Unprecedented", "Most excellent",
+    "Smashed it", "You're a genius", "Spot on", "Gold, pure gold",
+    "Bang-up job", "Exceptional", "Superb", "You're a natural", "Knocked it out of the park"
+  ])
+  return Swal.fire({
+    title: 'Success!',
+    text: flavor,
+    icon: 'success',
+    confirmButtonText: 'Continue',
+    ...opts
+  })
+
+}
+

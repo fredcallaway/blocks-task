@@ -195,6 +195,7 @@ function buildLibrary(blocks) {
 
 async function runBlockTrial(div, trial) {
   // console.log('trial.target', trial.target)
+  logEvent('blocks.start')
 
   $(div).empty()
   $('<div>')
@@ -442,14 +443,15 @@ async function runBlockTrial(div, trial) {
   });
 
   let trialDone = make_promise()
-  window.addEventListener('mouseup', () => {
+  window.addEventListener('mouseup', async () => {
     if (isDragging) {
       isDragging = false;
       currentBlock = null;
       clearColliding()
       drawCanvas()
       if (checkVictory()) {
-        alert("You did it!");
+        logEvent('blocks.victory')
+        await alert_success()
         trialDone.resolve();
       }
     }
@@ -457,5 +459,4 @@ async function runBlockTrial(div, trial) {
 
   drawCanvas();
   await trialDone;
-  console.log('completed')
 };
