@@ -45,7 +45,9 @@ function logEvent(event, info={}){
     info.event = event;
   }
   info.time = Date.now();
-  console.log('logEvent', info);
+  if (!event.includes('mousemove')) {
+    console.log('logEvent', info);
+  }
   psiturk.recordTrialData(info);
 }
 

@@ -195,7 +195,7 @@ function buildLibrary(blocks) {
 
 async function runBlockTrial(div, trial) {
   // console.log('trial.target', trial.target)
-  logEvent('blocks.start')
+  logEvent('blocks.start', trial)
 
   $(div).empty()
   $('<div>')
@@ -382,8 +382,10 @@ async function runBlockTrial(div, trial) {
 
   // Event listener for keydown to detect if the spacebar is pressed
   document.addEventListener('keydown', (e) => {
+    logEvent('blocks.keydown', e)
     if ((e.code === 'Space' || e.code == 'KeyR') && isDragging) {
       e.preventDefault(); // Prevent default to avoid scrolling the page
+      logEvent('blocks.rotate')
       if (currentBlock) {
         currentBlock.rotate(mouseX, mouseY);
         currentBlock.colliding = checkCollision(currentBlock);
@@ -393,27 +395,29 @@ async function runBlockTrial(div, trial) {
   });
 
   canvas.addEventListener('mousedown', (e) => {
+    logEvent('blocks.mousedown', e)
     mouseX = e.offsetX;
     mouseY = e.offsetY;
-    activeBlocks.forEach(block => {
+    for (let block of activeBlocks) {
       if (block.contains(mouseX, mouseY)) {
         isDragging = true;
         currentBlock = block;
         dragOffsetX = mouseX - block.x;
         dragOffsetY = mouseY - block.y;
+        logEvent('blocks.pickup.active', {block})
       }
-    });
-    library.forEach((block, i) => {
+    };
+    for (let block of library) {
       if (block.contains(mouseX, mouseY)) {
-        window.block = block
         block = _.cloneDeep(block)
         activeBlocks.add(block)
         isDragging = true;
         currentBlock = block;
         dragOffsetX = mouseX - block.x;
         dragOffsetY = mouseY - block.y;
+        logEvent('blocks.pickup.library', {block})
       }
-    });
+    };
   });
 
   // canvas.addEventListener("mouseout", (e) => {
@@ -422,6 +426,7 @@ async function runBlockTrial(div, trial) {
   // });
 
   canvas.addEventListener('mousemove', (e) => {
+    logEvent('blocks.mousemove', e)
     if (isDragging && currentBlock) {
       mouseX = e.offsetX
       mouseY = e.offsetY
@@ -443,8 +448,12 @@ async function runBlockTrial(div, trial) {
   });
 
   let trialDone = make_promise()
-  window.addEventListener('mouseup', async () => {
+  window.addEventListener('mouseup', async (e) => {
+    logEvent('blocks.mouseup', e)
     if (isDragging) {
+
+      logEvent(currentBlock.colliding ? 'blocks.drop.erase' : 'blocks.drop.place',
+               {block: currentBlock, state: captureState()})
       isDragging = false;
       currentBlock = null;
       clearColliding()
