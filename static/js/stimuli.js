@@ -58,9 +58,10 @@ var trials = [
   {
     blocks: easy_blocks,
     target: `
-      X
-      X
-      XX
+      XXX
+      XXX
+      XXX
+      XXX
     `,
   },
   {

@@ -126,15 +126,15 @@ function radio_buttons(div, prompt, choices, opts) {
 
 function alert_success(opts = {}) {
   let flavor = _.sample([
-    "You're on fire", "Top-notch stuff", "Absolutely brilliant",
-    "Out of this world", "Phenomenal", "You've outdone yourself", "A+ work",
-    "Nailed it", "Rock star status", "Unprecedented", "Most excellent",
-    "Smashed it", "You're a genius", "Spot on", "Gold, pure gold",
-    "Bang-up job", "Exceptional", "Superb", "You're a natural", "Knocked it out of the park"
+    "you're on fire", "top-notch stuff", "absolutely brilliant",
+    "out of this world", "phenomenal", "you've outdone yourself", "a+ work",
+    "nailed it", "rock star status", "most excellent", "impressive stuff",
+    "smashed it", "genius", "spot on", "gold, pure gold",
+    "bang-up job", "exceptional", "superb", "you're a natural", "knocked it out of the park"
   ])
   return Swal.fire({
     title: 'Success!',
-    text: flavor,
+    html: `<em>${flavor}</em>`,
     icon: 'success',
     confirmButtonText: 'Continue',
     ...opts

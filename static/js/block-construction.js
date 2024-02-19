@@ -193,11 +193,14 @@ function buildLibrary(blocks) {
     })
 }
 
-async function runBlockTrial(div, trial) {
-  // console.log('trial.target', trial.target)
+async function runBlockTrial(display, trial) {
   logEvent('blocks.start', trial)
 
-  $(div).empty()
+  display.empty()
+  let div = $("<div>")
+  .css('text-align', 'center')
+  .appendTo(display)
+
   $('<div>')
   .css({
     'width': '100%',
@@ -222,21 +225,21 @@ async function runBlockTrial(div, trial) {
   let buttons = $("<div>")
   .css({
     'margin': 'auto',
-    'margin-top': '20px',
-    'width': '600px'
+    'margin-top': '10px',
+    'display': 'inline-block'
   }).appendTo(div)
 
-  $('<button>').addClass('btn').css('margin', '10pt').text('clear').appendTo(buttons).click(() => {
+  $('<button>').addClass('btn').css('margin', '10px').text('clear').appendTo(buttons).click(() => {
       activeBlocks.clear()
       drawCanvas()
   })
 
-  $('<button>').addClass('btn').css('margin', '10pt').text('copy').appendTo(buttons).click(() => {
+  $('<button>').addClass('btn').css('margin', '10px').text('copy').appendTo(buttons).click(() => {
       navigator.clipboard.writeText(captureState())
       drawCanvas()
   })
 
-  $('<button>').addClass('btn').css('margin', '10pt').text('set target').appendTo(buttons).click(() => {
+  $('<button>').addClass('btn').css('margin', '10px').text('set target').appendTo(buttons).click(() => {
       navigator.clipboard.writeText(captureState())
       let prev = target
       target = string2block(captureState(), 0, 0, 'white')
