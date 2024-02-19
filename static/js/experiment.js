@@ -23,7 +23,7 @@ async function main() {
   }
 
   for (let trial of trials) {
-    await runBlockTrial(display, trial)
+    await new BlockPuzzle(trial).attach(display).run()
   }
 }
 
@@ -40,7 +40,6 @@ async function runTimeline(...blocks) {
 }
 
 async function runExperiment() {
-
   if (urlParams.blank) {
     await runBlockTrial(display, {target: 'blank', blocks: urlParams.blank == 'hard' ? hard_blocks : easy_blocks})
     return
