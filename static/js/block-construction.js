@@ -30,20 +30,60 @@ class Block {
     return _(this.parts).map((part) => part.y).max() + 1
   }
 
-  draw(ctx) {
+  draw(ctx, grid) {
     // Draw individual parts with a thin outline
     ctx.fillStyle = this.colliding ? `rgba(${hex2rgb(this.color)},0.2)` : this.color; // Set transparency on collision
     this.parts.forEach(part => {
-      const partX = (this.x + part.x) * this.grid;
-      const partY = (this.y + part.y) * this.grid;
-      ctx.fillRect(partX, partY, this.grid, this.grid);
+      const partX = (this.x + part.x) * grid;
+      const partY = (this.y + part.y) * grid;
+      ctx.fillRect(partX, partY, grid, grid);
       ctx.strokeStyle = 'rgba(0,0,0,0.2)';
       ctx.lineWidth = 2;
-      ctx.strokeRect(partX, partY, this.grid, this.grid);
+      ctx.strokeRect(partX, partY, grid, grid);
     });
 
     // Now, draw the thick border around the shape
-    this.drawShapeOutline(ctx);
+    ctx.strokeStyle = this.colliding ? 'rgba(0,0,0,0.2)' : 'black';
+    ctx.lineWidth = 2;
+    // Helper function to check if there is an adjacent part
+    const hasAdjacentPart = (dx, dy) => {
+      return this.parts.some(part => part.x === dx && part.y === dy);
+    };
+
+    this.parts.forEach(part => {
+      const partX = (this.x + part.x) * grid;
+      const partY = (this.y + part.y) * grid;
+
+      // For each side of the part, draw a line if there is no adjacent part
+      if (!hasAdjacentPart(part.x, part.y - 1)) {
+        // No part above, draw top line
+        ctx.beginPath();
+        ctx.moveTo(partX, partY);
+        ctx.lineTo(partX + grid, partY);
+        ctx.stroke();
+      }
+      if (!hasAdjacentPart(part.x + 1, part.y)) {
+        // No part to the right, draw right line
+        ctx.beginPath();
+        ctx.moveTo(partX + grid, partY);
+        ctx.lineTo(partX + grid, partY + grid);
+        ctx.stroke();
+      }
+      if (!hasAdjacentPart(part.x, part.y + 1)) {
+        // No part below, draw bottom line
+        ctx.beginPath();
+        ctx.moveTo(partX, partY + grid);
+        ctx.lineTo(partX + grid, partY + grid);
+        ctx.stroke();
+      }
+      if (!hasAdjacentPart(part.x - 1, part.y)) {
+        // No part to the left, draw left line
+        ctx.beginPath();
+        ctx.moveTo(partX, partY);
+        ctx.lineTo(partX, partY + grid);
+        ctx.stroke();
+      }
+    });
   }
 
   rotate(x, y) {
@@ -65,50 +105,6 @@ class Block {
     });
   }
 
-  drawShapeOutline(ctx) {
-    ctx.strokeStyle = this.colliding ? 'rgba(0,0,0,0.2)' : 'black';
-    ctx.lineWidth = 2;
-    // Helper function to check if there is an adjacent part
-    const hasAdjacentPart = (dx, dy) => {
-      return this.parts.some(part => part.x === dx && part.y === dy);
-    };
-
-    this.parts.forEach(part => {
-      const partX = (this.x + part.x) * this.grid;
-      const partY = (this.y + part.y) * this.grid;
-
-      // For each side of the part, draw a line if there is no adjacent part
-      if (!hasAdjacentPart(part.x, part.y - 1)) {
-        // No part above, draw top line
-        ctx.beginPath();
-        ctx.moveTo(partX, partY);
-        ctx.lineTo(partX + this.grid, partY);
-        ctx.stroke();
-      }
-      if (!hasAdjacentPart(part.x + 1, part.y)) {
-        // No part to the right, draw right line
-        ctx.beginPath();
-        ctx.moveTo(partX + this.grid, partY);
-        ctx.lineTo(partX + this.grid, partY + this.grid);
-        ctx.stroke();
-      }
-      if (!hasAdjacentPart(part.x, part.y + 1)) {
-        // No part below, draw bottom line
-        ctx.beginPath();
-        ctx.moveTo(partX, partY + this.grid);
-        ctx.lineTo(partX + this.grid, partY + this.grid);
-        ctx.stroke();
-      }
-      if (!hasAdjacentPart(part.x - 1, part.y)) {
-        // No part to the left, draw left line
-        ctx.beginPath();
-        ctx.moveTo(partX, partY);
-        ctx.lineTo(partX, partY + this.grid);
-        ctx.stroke();
-      }
-    });
-  }
-
   partContains(part, x, y) {
     const partX = (this.x + part.x);
     const partY = (this.y + part.y);
@@ -122,13 +118,13 @@ class Block {
     });
   }
 
-  isWithinBoundary(canvas) {
+  isWithinBoundary(width, height) {
     return this.parts.every(part => {
-      const partX = (this.x + part.x) * this.grid;
-      const partY = (this.y + part.y) * this.grid;
+      const partX = (this.x + part.x);
+      const partY = (this.y + part.y);
 
-      return partX >= 0 && partX + this.grid <= canvas.width &&
-           partY >= 0 && partY + this.grid <= canvas.height;
+      return partX >= 0 && partX <= width &&
+           partY >= 0 && partY <= height;
     });
   }
 
@@ -177,7 +173,7 @@ const TETRIS_BLOCKS = [
 ]
 
 
-function string2block(s, x, y, color, grid) {
+function string2block(s, x, y, color) {
     if (s == 'blank') {
       s = BLANK
     }
@@ -193,7 +189,7 @@ function string2block(s, x, y, color, grid) {
         }
       })
     })
-    return new Block(x, y, parts, color, grid)
+    return new Block(x, y, parts, color)
 }
 
 
@@ -249,7 +245,7 @@ class BlockPuzzle {
   buildLibrary(blocks) {
     let xPos = 1;
     return blocks.map((s, i) => {
-      let block = string2block(s, xPos, 0, i, this.grid);
+      let block = string2block(s, xPos, 0, i);
       block.y = (this.height + this.tray_height - block.height() - 1);
       xPos += block.width() + 1;
       return block;
@@ -257,7 +253,7 @@ class BlockPuzzle {
   }
 
   buildTarget(block) {
-    let target = string2block(block, 0, 0, 'white', this.grid)
+    let target = string2block(block, 0, 0, 'white')
     target.x = Math.floor((this.width - target.width()) / 2)
     target.y = Math.ceil(1+(this.height - target.height()) / 2)
     return target
@@ -333,7 +329,7 @@ class BlockPuzzle {
         })
         if (res.value) {
           let prev = this.target
-          this.target = string2block(res.value, 0, 0, 'white', this.grid)
+          this.target = string2block(res.value, 0, 0, 'white')
           this.activeBlocks.clear()
           this.target.x = prev.x
           this.target.y = prev.y
@@ -346,17 +342,17 @@ class BlockPuzzle {
   drawCanvas() {
     this.ctx.fillStyle = BACKGROUND;
     this.ctx.fillRect(0, 0, this.width * this.grid, (this.height + this.tray_height) * this.grid);
-    this.target.draw(this.ctx);
+    this.target.draw(this.ctx, this.grid);
     this.library.forEach(block => {
-      block.draw(this.ctx);
+      block.draw(this.ctx, this.grid);
     });
     this.activeBlocks.forEach(block => {
       if (block !== this.currentBlock) {
-        block.draw(this.ctx);
+        block.draw(this.ctx, this.grid);
       }
     });
     if (this.currentBlock) {
-      this.currentBlock.draw(this.ctx);
+      this.currentBlock.draw(this.ctx, this.grid);
     }
   }
 
@@ -387,7 +383,7 @@ class BlockPuzzle {
   }
 
   checkCollision(movingBlock) {
-    if (!movingBlock.isWithinBoundary(this.canvas)) return true;
+    if (!movingBlock.isWithinBoundary(this.width, this.height)) return true;
 
     for (let part of movingBlock.parts) {
       const partX = movingBlock.x + part.x;
@@ -423,7 +419,7 @@ class BlockPuzzle {
     block.x = x;
     block.y = y;
 
-    if (!block.isWithinBoundary(this.canvas)) {
+    if (!block.isWithinBoundary(this.width, this.height)) {
       block.x = oldX;
       block.y = oldY;
       return false
