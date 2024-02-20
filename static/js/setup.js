@@ -1,3 +1,4 @@
+_.compose = _.flowRight  // for psiturk
 const psiturk = new PsiTurk(uniqueId, adServerLoc, mode);
 const urlParams = mapObject(Object.fromEntries(new URLSearchParams(window.location.search)), maybeJson)
 const prolific = true;
