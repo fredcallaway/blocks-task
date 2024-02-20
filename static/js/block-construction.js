@@ -11,6 +11,7 @@ const COLORS = [
   "#a65628",
 ]
 
+const blockListeners = new EventListeners()
 
 class Block {
   constructor(x, y, parts, color, grid) {
@@ -437,9 +438,11 @@ class BlockPuzzle {
   }
 
   startListeners() {
+    blockListeners.clear()
+
     // Event listener for keydown to detect if the spacebar is pressed
-    document.addEventListener('keydown', (e) => {
-      logEvent('blocks.keydown', e)
+    blockListeners.on('keydown', (e) => {
+      // logEvent('blocks.keydown', e)
       if ((e.code === 'Space' || e.code == 'KeyR') && this.isDragging) {
         e.preventDefault(); // Prevent default to avoid scrolling the page
         logEvent('blocks.rotate')
@@ -494,7 +497,7 @@ class BlockPuzzle {
       }
     });
 
-    window.addEventListener('mouseup', async (e) => {
+    blockListeners.on('mouseup', async (e) => {
       logEvent('blocks.mouseup', e)
       if (this.isDragging) {
         logEvent(this.currentBlock.colliding ? 'blocks.drop.erase' : 'blocks.drop.place',

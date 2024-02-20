@@ -14,24 +14,22 @@ function hex2rgb(hex) {
 }
 
 
-
-/*
-Example:
-
-make_slider({
-  value: 0,
-  min: -10,
-  max: 10,
-  step: 1,
-  labels: {
-    terrible: -10,
-    amazing: 10,
-    neutral: 0
+class EventListeners {
+  constructor() {
+    this.listeners = []
   }
-}).appendTo(display)
-*/
-
-
+  on(type, handler, options) {
+    this.listeners.push([type, handler, options])
+    document.addEventListener(type, handler, options)
+  }
+  clear() {
+    for (let [ltype, handler, options] of this.listeners) {
+      document.removeEventListener(ltype, handler, options)
+    }
+    this.listeners.length = 0 // weird way to clear an array
+  }
+}
+const globalListeners = new EventListeners()
 
 function updateExisting(target, src) {
   Object.keys(target)
