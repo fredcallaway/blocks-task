@@ -34,8 +34,8 @@ class Block {
     // Draw individual parts with a thin outline
     ctx.fillStyle = this.colliding ? `rgba(${hex2rgb(this.color)},0.2)` : this.color; // Set transparency on collision
     this.parts.forEach(part => {
-      const partX = this.x + part.x * this.grid;
-      const partY = this.y + part.y * this.grid;
+      const partX = (this.x + part.x) * this.grid;
+      const partY = (this.y + part.y) * this.grid;
       ctx.fillRect(partX, partY, this.grid, this.grid);
       ctx.strokeStyle = 'rgba(0,0,0,0.2)';
       ctx.lineWidth = 2;
@@ -46,9 +46,9 @@ class Block {
     this.drawShapeOutline(ctx);
   }
 
-  // Other methods remain unchanged
   rotate(x, y) {
-    // Rotate the block 90 degrees clockwise around the first part
+    // Rotate the block 90 degrees clockwise around a pivot
+    // Try to pivot around the block the mouse is on
     let pivot = this.parts[0];
     for (let part of this.parts) {
       if (this.partContains(part, x, y)) {
@@ -74,8 +74,8 @@ class Block {
     };
 
     this.parts.forEach(part => {
-      const partX = this.x + part.x * this.grid;
-      const partY = this.y + part.y * this.grid;
+      const partX = (this.x + part.x) * this.grid;
+      const partY = (this.y + part.y) * this.grid;
 
       // For each side of the part, draw a line if there is no adjacent part
       if (!hasAdjacentPart(part.x, part.y - 1)) {
@@ -110,9 +110,9 @@ class Block {
   }
 
   partContains(part, x, y) {
-    const partX = this.x + part.x * this.grid;
-    const partY = this.y + part.y * this.grid;
-    return x >= partX && x < partX + this.grid && y >= partY && y < partY + this.grid;
+    const partX = (this.x + part.x);
+    const partY = (this.y + part.y);
+    return x >= partX && x < partX + 1 && y >= partY && y < partY + 1;
 
   }
 
@@ -124,8 +124,8 @@ class Block {
 
   isWithinBoundary(canvas) {
     return this.parts.every(part => {
-      const partX = this.x + part.x * this.grid;
-      const partY = this.y + part.y * this.grid;
+      const partX = (this.x + part.x) * this.grid;
+      const partY = (this.y + part.y) * this.grid;
 
       return partX >= 0 && partX + this.grid <= canvas.width &&
            partY >= 0 && partY + this.grid <= canvas.height;
@@ -249,8 +249,8 @@ class BlockPuzzle {
   buildLibrary(blocks) {
     let xPos = 1;
     return blocks.map((s, i) => {
-      let block = string2block(s, this.grid * xPos, 0, i, this.grid);
-      block.y = this.grid * (this.height + this.tray_height - block.height() - 1);
+      let block = string2block(s, xPos, 0, i, this.grid);
+      block.y = (this.height + this.tray_height - block.height() - 1);
       xPos += block.width() + 1;
       return block;
     });
@@ -258,8 +258,8 @@ class BlockPuzzle {
 
   buildTarget(block) {
     let target = string2block(block, 0, 0, 'white', this.grid)
-    target.x = this.grid * Math.floor((this.width - target.width()) / 2)
-    target.y = this.grid * Math.ceil(1+(this.height - target.height()) / 2)
+    target.x = Math.floor((this.width - target.width()) / 2)
+    target.y = Math.ceil(1+(this.height - target.height()) / 2)
     return target
   }
 
@@ -279,8 +279,8 @@ class BlockPuzzle {
 
     this.canvas = $('<canvas>')
     .prop({
-      width: this.width*this.grid,
-      height: (this.height + this.tray_height) *this.grid
+      width: this.width * this.grid,
+      height: (this.height + this.tray_height) * this.grid
     }).css({
       'margin-left': 'auto',
       'margin-right': 'auto',
@@ -362,8 +362,8 @@ class BlockPuzzle {
 
   checkVictory() {
     for (let part of this.target.parts) {
-      const partX = this.target.x + part.x * this.grid;
-      const partY = this.target.y + part.y * this.grid;
+      const partX = (this.target.x + part.x);
+      const partY = (this.target.y + part.y);
       if (!this.isCovered(partX, partY)) return false;
     }
     return true;
@@ -371,7 +371,7 @@ class BlockPuzzle {
 
   isCovered(x, y) {
     for (let block of this.activeBlocks) {
-      if (block.contains(x + this.grid / 2, y + this.grid / 2)) {
+      if (block.contains(x + .5, y + .5)) {
         return true;
       }
     }
@@ -381,7 +381,7 @@ class BlockPuzzle {
   captureState() {
     return _.range(this.height).map(y => {
       return _.range(this.width).map(x => {
-        return this.isCovered(this.target.x + this.grid*x, this.target.y + this.grid*y) ? 'X' : '.'
+        return this.isCovered(this.target.x + x, this.target.y + y) ? 'X' : '.'
       }).join('')
     }).join('\n')
   }
@@ -390,17 +390,17 @@ class BlockPuzzle {
     if (!movingBlock.isWithinBoundary(this.canvas)) return true;
 
     for (let part of movingBlock.parts) {
-      const partX = movingBlock.x + part.x * this.grid;
-      const partY = movingBlock.y + part.y * this.grid;
+      const partX = movingBlock.x + part.x;
+      const partY = movingBlock.y + part.y;
 
-      // if (partY >= canvas.height - TRAY_HEIGHT * this.grid) return true;
-      if (!this.target.contains(partX + this.grid / 2, partY + this.grid / 2)) return true;
+      // Check if within target
+      if (!this.target.contains(partX + .5, partY + .5)) return true;
 
+      // Check if within another active block
       for (let block of this.activeBlocks) {
-        if (block === movingBlock) continue; // Skip the moving block itself
+        if (block === movingBlock) continue;
 
-        if (block.contains(partX + this.grid / 2, partY + this.grid / 2)) {
-          // We add this.grid / 2 to check the center of each part for a more accurate collision detection
+        if (block.contains(partX + .5, partY + .5)) {
           return true; // Collision detected
         }
       }
@@ -448,26 +448,26 @@ class BlockPuzzle {
 
     this.canvas.addEventListener('mousedown', (e) => {
       logEvent('blocks.mousedown', e)
-      this.mouseX = e.offsetX;
-      this.mouseY = e.offsetY;
+      this.mouseX = e.offsetX / this.grid;
+      this.mouseY = e.offsetY / this.grid;
       for (let block of this.activeBlocks) {
         if (block.contains(this.mouseX, this.mouseY)) {
+          logEvent('blocks.pickup.active', {block})
           this.isDragging = true;
           this.currentBlock = block;
           this.dragOffsetX = this.mouseX - block.x;
           this.dragOffsetY = this.mouseY - block.y;
-          logEvent('blocks.pickup.active', {block})
         }
       };
       for (let block of this.library) {
         if (block.contains(this.mouseX, this.mouseY)) {
           block = _.cloneDeep(block)
+          logEvent('blocks.pickup.library', {block})
           this.activeBlocks.add(block)
           this.isDragging = true;
           this.currentBlock = block;
           this.dragOffsetX = this.mouseX - block.x;
           this.dragOffsetY = this.mouseY - block.y;
-          logEvent('blocks.pickup.library', {block})
         }
       };
     });
@@ -475,17 +475,12 @@ class BlockPuzzle {
     this.canvas.addEventListener('mousemove', (e) => {
       logEvent('blocks.mousemove', e)
       if (this.isDragging && this.currentBlock) {
-        this.mouseX = e.offsetX
-        this.mouseY = e.offsetY
-        const newX = e.offsetX - this.dragOffsetX;
-        const newY = e.offsetY - this.dragOffsetY;
+        this.mouseX = e.offsetX / this.grid
+        this.mouseY = e.offsetY / this.grid
+        const newX = Math.round(this.mouseX - this.dragOffsetX);
+        const newY = Math.round(this.mouseY - this.dragOffsetY);
 
-        // Snap to this.grid
-        const snappedX = Math.round(newX / this.grid) * this.grid;
-        const snappedY = Math.round(newY / this.grid) * this.grid;
-
-
-        const updated = this.tryUpdatePosition(this.currentBlock, snappedX, snappedY)
+        const updated = this.tryUpdatePosition(this.currentBlock, newX, newY)
         if (updated) {
           this.currentBlock.colliding = this.checkCollision(this.currentBlock);
           this.clearColliding()
@@ -497,8 +492,6 @@ class BlockPuzzle {
     window.addEventListener('mouseup', async (e) => {
       logEvent('blocks.mouseup', e)
       if (this.isDragging) {
-        console.log('isDragging mouseup')
-
         logEvent(this.currentBlock.colliding ? 'blocks.drop.erase' : 'blocks.drop.place',
                  {block: this.currentBlock, state: this.captureState()})
         this.isDragging = false;
