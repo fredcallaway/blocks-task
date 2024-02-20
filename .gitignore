@@ -3,3 +3,5 @@ __pycache__
 .token
 server.log
 participants.db
+.database_url
+data

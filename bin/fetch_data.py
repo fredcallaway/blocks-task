@@ -5,7 +5,6 @@ import os
 import logging
 import requests
 from requests.auth import HTTPBasicAuth
-import pandas as pd
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 import hashlib
 import json
@@ -29,8 +28,6 @@ env["ON_CLOUD"] = "1"
 env["DATABASE_URL"] = get_database()
 
 from psiturk.models import Participant  # must be imported after setting params
-Participant.query.all()
-# %% --------
 
 class Anonymizer(object):
     def __init__(self):
@@ -45,8 +42,13 @@ class Anonymizer(object):
             self.mapping[worker_id] = 'w' + hashlib.md5(worker_id.encode()).hexdigest()[:7]
         return self.mapping[worker_id]
 
+def pick(obj, keys):
+    return {k: obj[k] for k in keys}
 
-def write_csvs(version, debug):
+
+def write_data(version, debug):
+    anonymize = Anonymizer()
+
     ps = Participant.query.filter(Participant.codeversion == version).all()
     if not debug:
         ps = [p for p in ps
@@ -55,47 +57,46 @@ def write_csvs(version, debug):
         ]
     # Note: we don't filter by completion status.
 
-    def qdata(p):
-        '''
-        A hack: to avoid needing to attach condition and other metadata to
-        every participant's qdata, we just sprinkle it in here from the DB.
-        '''
-        rows = p.get_question_data()
-        if rows:
-            assert rows[-1] == '\n'
-        rows += f'{p.uniqueid},condition,{p.cond}\n'
-        rows += f'{p.uniqueid},counterbalance,{p.counterbalance}\n'
-        rows += f'{p.uniqueid},status,{p.status}\n'
-        return rows
+    metakeys = ['condition', 'counterbalance', 'assignmentId', 'hitId', 'useragent', 'mode', 'status']
+    participants = []
 
-    # https://github.com/NYUCCL/psiTurk/blob/master/psiturk/models.py
-    contents = {
-        "trialdata": lambda p: p.get_trial_data(),
-        "eventdata": lambda p: p.get_event_data(),
-        "questiondata": qdata,
-    }
+    os.makedirs(f'data/raw/{version}/events/', exist_ok=True)
+    for p in ps:
+        if p.datastring is None:
+            continue
+        try:
+            datastring = json.loads(p.datastring)
+        except:
+            import IPython, time; IPython.embed(); time.sleep(0.5)
+        meta = pick(datastring, metakeys)
+        meta['wid'] = anonymize(datastring['workerId'])
+        participants.append(meta)
 
-    for filename in ["trialdata", "eventdata", "questiondata"]:
-        data = []
-        for p in ps:
-            try:
-                data.append(contents[filename](p))
-            except:
-                import traceback
-                traceback.print_exc()
-        data = "".join(data)
+        # datastring['eventdata']
+        trialdata = [d['trialdata'] for d in datastring['data']]
+        wid = anonymize(p.workerid)
 
-        # write out the data file
+        if version == 'v1.0':
+            # remove extraneous data we shouldn't have collected
+            trialdata = [d for d in trialdata if not (
+                d.get('event', '').startswith('blocks.mouse') or
+                d.get('event', '').startswith('blocks.keydown')
+            )]
 
-        dest = os.path.join('data/raw', version, "{}.csv".format(os.path.splitext(filename)[0]))
-        if not os.path.exists(os.path.dirname(dest)):
-            os.makedirs(os.path.dirname(dest), exist_ok=True)
-        with open(dest, "w") as fh:
-            fh.write(data)
+        with open(f'data/raw/{version}/events/{wid}.json', 'w') as f:
+            json.dump(trialdata, f)
+
+    with open(f'data/raw/{version}/participants.json', 'w') as f:
+        json.dump(participants, f)
+
+    with open(f'data/raw/{version}/identifiers.json', 'w') as f:
+        json.dump(anonymize.mapping, f)
+
+    print(len(participants), 'participants')
 
 
 def main(version, debug):
-    write_csvs(version, debug)
+    write_data(version, debug)
     # reformat(version)
 
 if __name__ == "__main__":
