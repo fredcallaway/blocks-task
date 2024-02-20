@@ -98,9 +98,9 @@ var TRIALS = {
     {
       library: LIBRARIES.hard,
       target: `
-  .........XXXXXX...............
-  .........XXXXXX...............
-  .........XXXXXX...............
+        XXXXXX
+        XXXXXX
+        XXXXXX
       `,
     },
     {

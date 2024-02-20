@@ -304,7 +304,7 @@ class BlockPuzzle {
       $('<button>').addClass('btn').css('margin', '10px').text('copy').appendTo(buttons)
       .click((e) => {
         quickDisable(e)
-        navigator.clipboard.writeText(this.captureState())
+        navigator.clipboard.writeText(this.captureStateCompact())
         // toast
         this.drawCanvas()
       })
@@ -318,15 +318,13 @@ class BlockPuzzle {
             input: 'textarea',
             customClass: {input: 'mono-text'},
             width: 400,
-            inputValue: this.captureState(),
+            inputValue: this.captureStateCompact(),
             showCancelButton: true
         })
         if (res.value) {
           let prev = this.target
-          this.target = string2block(res.value, 0, 0, 'white')
+          this.target = this.buildTarget(res.value)
           this.activeBlocks.clear()
-          this.target.x = prev.x
-          this.target.y = prev.y
           this.drawCanvas()
         }
       })
@@ -375,6 +373,21 @@ class BlockPuzzle {
         return this.isCovered(x, y) ? 'X' : '.'
       }).join('')
     }).join('\n')
+  }
+
+  captureStateCompact() {
+    let t = this.target
+    let rows = _.range(t.y, t.y + t.height + 1).map(y => {
+      return _.range(t.x, t.x + t.width + 1).map(x => this.isCovered(x, y))
+    })
+    console.log('rows', rows)
+    let y1 = _(rows).findIndex(row => _(row).some())
+    let y2 = _(rows).findLastIndex(row => _(row).some())
+    rows = rows.slice(y1, y2 + 1)
+    let x1 = _(rows).map(row => row.indexOf(true)).min()
+    let x2 = _(rows).map(row => row.lastIndexOf(true)).max()
+    console.log('xy', x1, x2, y1, y2)
+    return rows.map(row => row.slice(x1, x2+1).map(x => x ? 'X' : '.').join('')).join('\n')
   }
 
   checkCollision(movingBlock) {

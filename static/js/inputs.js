@@ -137,7 +137,7 @@ function alert_success(opts = {}) {
   ])
   return Swal.fire({
     title: 'Success!',
-    html: `<em>${flavor}</em>`,
+    html: `<em>${flavor}!</em>`,
     icon: 'success',
     confirmButtonText: 'Continue',
     ...opts
