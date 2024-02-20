@@ -379,7 +379,6 @@ class BlockPuzzle {
   }
 
   captureState() {
-    // let width = target.width()
     return _.range(this.height).map(y => {
       return _.range(this.width).map(x => {
         return this.isCovered(this.target.x + this.grid*x, this.target.y + this.grid*y) ? 'X' : '.'

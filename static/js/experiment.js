@@ -43,7 +43,7 @@ async function runExperiment() {
     return
   }
   if (urlParams.trial) {
-    trials = trials.slice(parseInt(urlParams.trial) - 1)
+    TRIALS.main = TRIALS.main.slice(parseInt(urlParams.trial) - 1)
     await main()
     return
   }
