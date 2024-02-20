@@ -1,1 +1,5 @@
 __pycache__
+.project_id
+.token
+server.log
+participants.db
