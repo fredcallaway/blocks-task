@@ -15,7 +15,7 @@ async function instructions(start=1) {
 }
 
 async function main() {
-  console.log('running main')
+  
   for (let trial of TRIALS.main) {
     await new BlockPuzzle(trial).attach(display).run()
   }
