@@ -5,7 +5,7 @@ const PARAMS = {
 updateExisting(PARAMS, urlParams)
 psiturk.recordUnstructuredData('params', PARAMS);
 
-const PROLIFIC_CODE = 'TODO'
+const PROLIFIC_CODE = 'CHDRYEDZ'
 var BONUS = 0
 var N_TRIAL = _(TRIALS.main).map(block => block.length).sum()
 
