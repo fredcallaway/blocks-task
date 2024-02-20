@@ -74,26 +74,139 @@ var TRIALS = {
         .XXXX.
         .XXXX.
         .XXXX.
-        .XXXX.
         XXXXXX
       `,
     },
   ],
   main: [
     {
+      name: 'diamond',
       library: LIBRARIES.easy,
       target: `
-        ..XX..
-        .XXXX.
-        .XXXX.
-        .XXXX.
-        XXXXXX
-        ..XXX.
-        .XXXXX
-        .XXXX
-        XXXXX.
-        .XXX..
-      `,
+      ...XX...
+      ..XXXX..
+      .XXXXXX.
+      XXXXXXXX
+      .XXXXXX.
+      ..XXXX..
+      ...XX...
+      `
+    }, {
+      name: 'spaceship',
+      library: LIBRARIES.easy,
+      target: `
+      ..XX..XX..
+      ..XX..XX..
+      ..XX..XX..
+      .XXXXXXXX.
+      XXXXXXXXXX
+      ....XX....
+      `
+    }, {
+      name: 'weird_x',
+      library: LIBRARIES.easy,
+      target: `
+      XXX....XX
+      .XXXXXXX.
+      .XXXXXXX.
+      XX....XXX
+      `
+    }, {
+      name: 'ingot',
+      library: LIBRARIES.easy,
+      target: `
+      ..XXX.
+      .XXXXX
+      .XXXX
+      XXXXX.
+      .XXX..
+      `
+    }, {
+      name: 'mushroom',
+      library: LIBRARIES.easy,
+      target: `
+      .XX.
+      XXXX
+      XXXX
+      .XX.
+      XXXX
+      `
+    }, {
+      name: 'hat',
+      library: LIBRARIES.easy,
+      target: `
+      ..XX..
+      .XXXX.
+      .XXXX.
+      .XXXX.
+      XXXXXX
+      `
+    }, {
+      name: 'wishbone',
+      library: LIBRARIES.easy,
+      target: `
+      ...XX...
+      ...XX...
+      ..XXXX..
+      .XXXXXX.
+      XXXXXXXX
+      XXX..XXX
+      XX....XX
+      `
+    }, {
+      name: 'slope',
+      library: LIBRARIES.easy,
+      target: `
+      ....XXX
+      ..XXXXX
+      ..XXXXX
+      .XXXXXX
+      .XXXXXX
+      XXXXXXX
+      `
+    }, {
+      name: 'paris',
+      library: LIBRARIES.easy,
+      target: `
+      ...XX...
+      ...XX...
+      ...XX...
+      ...XX...
+      ..XXXX..
+      ..XXXX..
+      ..XXXX..
+      ..XXXX..
+      ..XXXX..
+      .XXXXXX.
+      .XXXXXX.
+      XXX..XXX
+      X......X
+      `
+    }, {
+      name: 'wheel',
+      library: LIBRARIES.easy,
+      target: `
+      ..XX...
+      .XXXXX.
+      .XXXXXX
+      XXX.XXX
+      XXXXXX.
+      .XXXXX.
+      ...XX..
+      `
+    }, {
+      name: 'legs',
+      library: LIBRARIES.easy,
+      target: `
+      ........X
+      .XXXXXXXX
+      .XXXXXXXX
+      XXX......
+      XXX......
+      .XXXXXXXX
+      .XXXXXXXX
+      ........X
+      `
     },
     {
       library: LIBRARIES.hard,
@@ -115,44 +228,33 @@ var TRIALS = {
     {
       library: LIBRARIES.hard,
       target: `
-  ..............................
-  ..............................
-  ..............................
-  ..............................
-  ..............................
-  ............XXX...............
-  ..........XXXXX...............
-  ..........XXXXX...............
-  ..........XXX.................
-  ..............................
-  ..............................
-  ..............................
-  ..............................
-  ..............................
-  ..............................
+        ..XXX
+        XXXXX
+        XXXXX
+        XXX..
       `,
     },
     {
       library: LIBRARIES.hard,
       target: `
-        ........XXXXXX................
-        ........XXXXXX................
-        ........XXXXXXX...............
-        ........XXXXXX................
-        ........XXXXXX................
-        ........XXXXXX................
-        ........XXXXXX................
+        XXXXXX.
+        XXXXXX.
+        XXXXXXX
+        XXXXXX.
+        XXXXXX.
+        XXXXXX.
+        XXXXXX.
       `,
     },
     {
       library: LIBRARIES.hard,
       target: `
-        ............X............
-        ...........XXX...........
-        ..........XXXXX..........
-        ...........XXX...........
-        ...........XXX...........
-        ...........XXX...........
+        ..X..
+        .XXX.
+        XXXXX
+        .XXX.
+        .XXX.
+        .XXX.
       `,
     }
   ]
