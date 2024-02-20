@@ -133,9 +133,10 @@ async function runExperiment() {
     }).attach(display).run()
     return
   }
-  if (urlParams.trial) {
-    TRIALS.main = TRIALS.main.slice(parseInt(urlParams.trial) - 1)
-    await main()
+  if (urlParams.puzzle) {
+    for (let trial of buildTrials(urlParams.puzzle.split("_"))) {
+      await new BlockPuzzle(trial).attach(display).run()
+    }
     return
   }
   if (urlParams.instruct) {
