@@ -14,13 +14,14 @@ const COLORS = [
 const blockListeners = new EventListeners()
 
 class Block {
-  constructor(x, y, parts, color, grid) {
+  constructor(x, y, parts, color, id) {
     this.x = x;
     this.y = y;
     this.parts = parts; // Array of {x, y} parts relative to the block's position
     this.color = color;
+    this.id = id
     this.colliding = false;
-    this.grid = grid
+    this.rotation = 0  // just for analysis convenience
     this.width = _(this.parts).map((part) => part.x).max() + 1
     this.height = _(this.parts).map((part) => part.y).max() + 1
   }
@@ -84,6 +85,8 @@ class Block {
   rotate(x, y) {
     // Rotate the block 90 degrees clockwise around a pivot
     // Try to pivot around the block the mouse is on
+    this.rotation = (this.rotation + 1) % 4
+
     let pivot = this.parts[0];
     for (let part of this.parts) {
       if (this.partContains(part, x, y)) {
@@ -168,7 +171,7 @@ const TETRIS_BLOCKS = [
 ]
 
 
-function string2block(s, x, y, color) {
+function string2block(s, x, y, color, id='block') {
     if (s == 'blank') {
       s = BLANK
     }
@@ -184,7 +187,7 @@ function string2block(s, x, y, color) {
         }
       })
     })
-    return new Block(x, y, parts, color)
+    return new Block(x, y, parts, color, id)
 }
 
 
@@ -218,6 +221,7 @@ class BlockPuzzle {
 
     this.library = this.buildLibrary(this.library);
     this.target = this.buildTarget(this.target)
+    logEvent('blocks.target', this.target)
     this.buildDisplay()
     this.solved = make_promise()
 
@@ -241,7 +245,7 @@ class BlockPuzzle {
   buildLibrary(blocks) {
     let xPos = 1;
     return blocks.map((s, i) => {
-      let block = string2block(s, xPos, 0, i);
+      let block = string2block(s, xPos, 0, i, i);
       block.y = (this.height + this.tray_height - block.height - 1);
       xPos += block.width + 1;
       return block;
@@ -249,7 +253,7 @@ class BlockPuzzle {
   }
 
   buildTarget(block) {
-    let target = string2block(block, 0, 0, 'white')
+    let target = string2block(block, 0, 0, 'white', 'target')
     target.x = Math.floor((this.width - target.width) / 2)
     target.y = Math.ceil(1+(this.height - target.height) / 2)
     return target
@@ -370,8 +374,8 @@ class BlockPuzzle {
 
   captureState() {
     let t = this.target
-    return _.range(t.y, t.y + t.height + 1).map(y => {
-      return _.range(t.x, t.x + t.width + 1).map(x => {
+    return _.range(t.y, t.y + t.height).map(y => {
+      return _.range(t.x, t.x + t.width).map(x => {
         return this.isCovered(x, y) ? 'X' : '.'
       }).join('')
     }).join('\n')
@@ -382,13 +386,11 @@ class BlockPuzzle {
     let rows = _.range(t.y, t.y + t.height + 1).map(y => {
       return _.range(t.x, t.x + t.width + 1).map(x => this.isCovered(x, y))
     })
-    console.log('rows', rows)
     let y1 = _(rows).findIndex(row => _(row).some())
     let y2 = _(rows).findLastIndex(row => _(row).some())
     rows = rows.slice(y1, y2 + 1)
     let x1 = _(rows).map(row => row.indexOf(true)).min()
     let x2 = _(rows).map(row => row.lastIndexOf(true)).max()
-    console.log('xy', x1, x2, y1, y2)
     return rows.map(row => row.slice(x1, x2+1).map(x => x ? 'X' : '.').join('')).join('\n')
   }
 
@@ -467,9 +469,10 @@ class BlockPuzzle {
           this.dragOffsetY = this.mouseY - block.y;
         }
       };
-      for (let block of this.library) {
-        if (block.contains(this.mouseX, this.mouseY)) {
-          block = _.cloneDeep(block)
+      for (let liBlock of this.library) {
+        if (liBlock.contains(this.mouseX, this.mouseY)) {
+          let block = _.cloneDeep(liBlock)
+          block.id = liBlock.id + '-' + Date.now()
           logEvent('blocks.pickup.library', {block})
           this.activeBlocks.add(block)
           this.isDragging = true;
@@ -507,7 +510,8 @@ class BlockPuzzle {
         this.clearColliding()
         this.drawCanvas()
         if (this.checkVictory()) {
-          logEvent('blocks.victory')
+          // need Array.from b/c Set does not get converted to json properly
+          logEvent('blocks.victory', {configuration: Array.from(this.activeBlocks)})
           await alert_success()
           this.solved.resolve();
         }

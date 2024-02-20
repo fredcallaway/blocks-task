@@ -14,7 +14,7 @@ if (mode === "demo" || mode === "{{ mode }}") {
 
 // Test connection to server, then initialize the experiment.
 
-
+var QUIET = false
 
 $(window).on('load', async () => {
   if (local) {
@@ -23,11 +23,15 @@ $(window).on('load', async () => {
     $('#display').empty()
   } else {
     await saveData()
-    await sleep(1000)
-    $('#load-icon').hide();
-    let btn = button($('#display'), 'begin')
-    btn.button.addClass('animate-bottom').css('margin-top', '40px')
-    await btn.clicked
+    if (mode == 'live') {
+      await sleep(1000)
+      $('#load-icon').hide();
+      let btn = button($('#display'), 'begin')
+      btn.button.addClass('animate-bottom').css('margin-top', '40px')
+      await btn.clicked
+    } else {
+      $('#load-icon').hide();
+    }
     logEvent('experiment.begin')
     $('#display').empty()
     try {
@@ -52,7 +56,7 @@ function logEvent(event, info={}){
   for (let f of eventCallbacks) {
     f(info)
   }
-  if (!event.includes('mousemove')) {
+  if (!event.includes('mousemove') && !QUIET) {
     console.log('logEvent', info.event, info);
   }
   psiturk.recordTrialData(info);

@@ -1,3 +1,4 @@
+
 function make_promise() {
   let {promise, resolve, reject} = Promise.withResolvers();
   promise.resolve = resolve
