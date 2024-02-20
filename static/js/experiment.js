@@ -7,17 +7,72 @@ psiturk.recordUnstructuredData('params', PARAMS);
 
 const PROLIFIC_CODE = 'TODO'
 var BONUS = 0
+var N_TRIAL = _(TRIALS.main).map(block => block.length).sum()
 
 const display = $('#display')
 
+function buildTrials(names) {
+  return names.map(name => _.find(PUZZLES, {name}))
+}
+
 async function instructions(start=1) {
-  await new BlockInstructions(TRIALS.practice).attach(display).run(start)
+  logEvent('experiment.instructions')
+  await new BlockInstructions(buildTrials(TRIALS.practice)).attach(display).run(start)
 }
 
 async function main() {
-  
-  for (let trial of TRIALS.main) {
-    await new BlockPuzzle(trial).attach(display).run()
+  logEvent('experiment.main')
+
+  let top = $('<div>')
+  .css({
+    // 'border': 'thin red solid',
+    'margin-bottom': '10px'
+  })
+  .appendTo(display)
+
+  let counter = $('<div>')
+  .addClass('left')
+  .appendTo(top)
+  .css({
+    'font-weight': 'bold',
+    'font-size': '16pt'
+  })
+
+  let help = $('<button>')
+  .appendTo(top)
+  .addClass('btn-help right')
+  .text('?')
+  .click(async () => {
+    await Swal.fire({
+        title: 'Instructions',
+        html: `
+          Drag the blocks from the bottom of the screen to fill in all the white squares.
+          You can rotate the block you're currently holding by pressing space.
+          You can remove blocks by dragging them into the gray area.
+        `,
+        icon: 'info',
+        confirmButtonText: 'Got it!',
+      })
+  })
+
+  let content = $('<div>')
+  .appendTo(display)
+
+  let trial_number = 1
+
+  for (let block of TRIALS.main) {
+    block = _.shuffle(block)
+    let hatIdx = _.indexOf(block, 'hat')
+    if (hatIdx != -1) {
+      block[hatIdx] = block[3]
+      block[3] = 'hat'
+    }
+    for (let trial of buildTrials(block)) {
+      counter.text(`Round ${trial_number++} / ${N_TRIAL}`)
+      console.log('trial', trial)
+      await new BlockPuzzle(trial).attach(content).run()
+    }
+
   }
 }
 

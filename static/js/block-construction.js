@@ -198,7 +198,8 @@ class BlockPuzzle {
       tray_height: 5,
       library: TETRIS_BLOCKS,
       target: BLANK,
-      prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
+      prompt: ``,
+      // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
       dev: false,
     })
     logEvent('blocks.construct', options)
@@ -512,6 +513,7 @@ class BlockPuzzle {
   }
 
   async run() {
+    logEvent('blocks.run')
     this.drawCanvas();
     this.startListeners()
     await this.solved

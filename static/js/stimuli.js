@@ -332,6 +332,10 @@ var PUZZLES = [
 
 var TRIALS = {
   practice: ['smallshroom', 'hat'],
-  easy: ['spaceship', 'ingot', 'bigshroom', 'hat', 'slope', 'wheel', 'tree', 'hat-ingot', 'wheel-tree', 'slope-bigshroom'],
-  hard: ['rect36', 'igloo', 'squares', 'nubbin', 'arrow', 'slug', 'wideshroom', 'wideshroom-arrow', 'squares-rect36', 'igloo-slug'],
+  main: [
+    ['spaceship', 'ingot', 'bigshroom', 'hat', 'slope', 'wheel', 'tree'],
+    ['hat-ingot', 'wheel-tree', 'slope-bigshroom'],
+    ['rect36', 'igloo', 'squares', 'nubbin', 'arrow', 'slug', 'wideshroom'],
+    ['wideshroom-arrow', 'squares-rect36', 'igloo-slug'],
+  ]
 }

@@ -2,6 +2,21 @@ canvas {
   border: thick black solid;
 }
 
+.btn-help {
+  background-color: #A9A9A9;
+  border: none; /* No border */
+  color: white; /* White text */
+  text-align: center; /* Centered text */
+  display: inline-block; /* Inline-block element */
+  font-size: 20px; /* Large text size */
+  margin: 4px 2px; /* Some margin */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 50%; /* Rounded shape */
+  width: 50px; /* Fixed width */
+  height: 50px; /* Fixed height */
+  font-weight: bold; /* Bold text */
+}
+
 .swal2-html-container {
   font-size: 10pt !important;
 }

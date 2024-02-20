@@ -196,7 +196,7 @@ class BlockInstructions extends Instructions {
 
   async stage_final() {
     this.instruct(`
-      In the rest of the experiment, you'll solve TODO more puzzles.
+      In the rest of the experiment, you'll solve ${N_TRIAL} more puzzles.
       There's no better or worse way to solve them. Just try to do them
       as quickly as you can, so that you can get on with your day!
     `)
