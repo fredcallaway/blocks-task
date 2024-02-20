@@ -117,10 +117,12 @@ class Instructions {
   }
 
   runNext() {
+    saveData()
     logEvent('instructions.runNext')
     this.btnNext.removeClass('btn-pulse')
     if (this.stage == this.stages.length) {
       logEvent('instructions.completed')
+      psiturk.finishInstructions();
       this.completed.resolve()
       this.div.remove()
     } else {

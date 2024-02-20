@@ -71,6 +71,7 @@ async function main() {
       counter.text(`Round ${trial_number++} / ${N_TRIAL}`)
       console.log('trial', trial)
       await new BlockPuzzle(trial).attach(content).run()
+      saveData()
     }
 
   }
@@ -78,6 +79,7 @@ async function main() {
 
 async function debrief() {
   logEvent('experiment.debrief')
+  display.empty()
   $('<p>').appendTo(display).html(markdown(`
     # You're done!
 
@@ -122,6 +124,7 @@ async function runTimeline(...blocks) {
 }
 
 async function runExperiment() {
+  logEvent('experiment.run')
   if (urlParams.dev) {
     await new BlockPuzzle({
       target: 'blank',

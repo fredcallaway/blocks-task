@@ -32,6 +32,7 @@ $(window).on('load', async () => {
     $('#display').empty()
     try {
       await runExperiment()
+      await completeExperiment()
     } catch (err) {
       handleError(err)
     }
@@ -111,11 +112,11 @@ function saveData() {
 
 
 function completeExperiment() {
+  logEvent('experiment.complete');
   $.ajax("complete_exp", {
     type: "POST",
     data: { uniqueId }
   });
-  logEvent('experiment.complete');
   $('#display').html(`
     <h1>Saving data</h1>
     <p>Please do <b>NOT</b> refresh or leave the page!</p>
@@ -159,6 +160,7 @@ function completeExperiment() {
 
 
 async function showCompletionScreen() {
+  logEvent('experiment.completion')
   $('#display').empty();
   if (prolific) {
     $("#load-icon").remove();
