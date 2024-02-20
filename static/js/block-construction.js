@@ -208,11 +208,21 @@ class BlockPuzzle {
       tray_height: 5,
       library: TETRIS_BLOCKS,
       target: BLANK,
-      prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`
+      prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
+      dev: false,
     })
     logEvent('blocks.construct', options)
     Object.assign(this, options)
     window.puzzle = this
+
+    if (this.dev) {
+      this.prompt = `
+      <b>Developer Mode</b>&nbsp;&nbsp;
+      Use this interface to design problems. Construct a shape with the blocks, then
+      press the "copy" button to copy a plain text definition of that shape. You can
+      also use "set target" to input a shape in the same format (useful for testing yourself).
+      `
+    }
 
     this.library = this.buildLibrary(this.library);
     this.target = this.buildTarget(this.target)
@@ -286,26 +296,55 @@ class BlockPuzzle {
       'display': 'inline-block'
     }).appendTo(this.div)
 
-    $('<button>').addClass('btn').css('margin', '10px').text('clear').appendTo(buttons).click(() => {
+    let quickDisable = async (event) => {
+      $(event.target).prop('disabled', true)
+      await sleep(300)
+      $(event.target).prop('disabled', false)
+    }
+
+    $('<button>').addClass('btn').css('margin', '10px').text('clear').appendTo(buttons)
+    .click((e) => {
+      quickDisable(e)
       logEvent('blocks.clear')
       this.activeBlocks.clear()
       this.drawCanvas()
     })
 
-    $('<button>').addClass('btn').css('margin', '10px').text('copy').appendTo(buttons).click(() => {
-      navigator.clipboard.writeText(this.captureState())
-      this.drawCanvas()
-    })
+    if (this.dev) {
+      $('<button>').addClass('btn').css('margin', '10px').text('copy').appendTo(buttons)
+      .click((e) => {
+        quickDisable(e)
+        navigator.clipboard.writeText(this.captureState())
+        // toast
+        this.drawCanvas()
+      })
 
-    $('<button>').addClass('btn').css('margin', '10px').text('set target').appendTo(buttons).click(() => {
-      navigator.clipboard.writeText(this.captureState())
-      let prev = this.target
-      this.target = string2block(this.captureState(), 0, 0, 'white', this.grid)
-      this.activeBlocks.clear()
-      this.target.x = prev.x
-      this.target.y = prev.y
-      this.drawCanvas()
-    })
+      $('<button>').addClass('btn').css('margin', '10px').text('set target').appendTo(buttons)
+      .click(async (e) => {
+        quickDisable(e)
+        // navigator.clipboard.writeText()
+        let swal = Swal.fire({
+            title: "Input Problem",
+            text: "The current shape is used by default.",
+            input: 'textarea',
+            customClass: {input: 'mono-text'},
+            width: 400,
+            height: "10em",
+            // heightAuto: false,
+            inputValue: this.captureState(),
+            showCancelButton: true
+        })
+        let res = await swal
+        if (res.value) {
+          let prev = this.target
+          this.target = string2block(this.captureState(), 0, 0, 'white', this.grid)
+          this.activeBlocks.clear()
+          this.target.x = prev.x
+          this.target.y = prev.y
+          this.drawCanvas()
+        }
+      })
+    }
   }
 
   drawCanvas() {

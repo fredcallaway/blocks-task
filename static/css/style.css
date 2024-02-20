@@ -2,10 +2,16 @@ canvas {
   border: thick black solid;
 }
 
-/*button.btn:disabled {
-    opacity: .3;
+button.btn:disabled {
+    opacity: .5;
 }
-*/
+
+.mono-text {
+  font-family: monospace;
+  font-size: 8pt;
+/*  color: red;*/
+}
+
 @keyframes pulse {
   0% {
     transform: scale(1);
