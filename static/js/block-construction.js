@@ -455,9 +455,9 @@ class BlockPuzzle {
     });
 
     this.canvas.addEventListener('mousedown', (e) => {
-      logEvent('blocks.mousedown', e)
       this.mouseX = e.offsetX / this.grid;
       this.mouseY = e.offsetY / this.grid;
+      // logEvent('blocks.mousedown', {x: this.mouseX, y: this.mouseY})
       for (let block of this.activeBlocks) {
         if (block.contains(this.mouseX, this.mouseY)) {
           logEvent('blocks.pickup.active', {block})
@@ -481,7 +481,7 @@ class BlockPuzzle {
     });
 
     this.canvas.addEventListener('mousemove', (e) => {
-      logEvent('blocks.mousemove', e)
+      // logEvent('blocks.mousemove', e)
       if (this.isDragging && this.currentBlock) {
         this.mouseX = e.offsetX / this.grid
         this.mouseY = e.offsetY / this.grid
@@ -498,7 +498,7 @@ class BlockPuzzle {
     });
 
     blockListeners.on('mouseup', async (e) => {
-      logEvent('blocks.mouseup', e)
+      // logEvent('blocks.mouseup', {this.mouseX, this.mouseY})
       if (this.isDragging) {
         logEvent(this.currentBlock.colliding ? 'blocks.drop.erase' : 'blocks.drop.place',
                  {block: this.currentBlock, state: this.captureState()})
