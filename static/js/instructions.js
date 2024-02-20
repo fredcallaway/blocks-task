@@ -8,7 +8,8 @@ class Instructions {
       // border: 'thick black solid',
       position: 'relative',
       margin: 'auto',
-      padding: '30px'
+      padding: '30px',
+      'user-select': 'none',
     })
 
     this.btnPrev = $('<button>')
@@ -59,8 +60,8 @@ class Instructions {
     return this
   }
 
-  async run() {
-    this.runStage(1)
+  async run(start=1) {
+    this.runStage(start)
     await this.completed
     console.log("END RUN")
   }
@@ -115,6 +116,13 @@ class Instructions {
     this.maxStage = this.stage + 1
     this.btnNext.prop('disabled', false)
   }
+}
+
+class BlockInstructions extends Instructions {
+  constructor(trials) {
+    super()
+    this.trials = trials
+  }
 
   async stage_welcome() {
     // this.instruct(`
@@ -131,7 +139,7 @@ class Instructions {
   }
 
   async stage_basics() {
-    let blank = new BlockPuzzle({...trials[0], target: 'blank', prompt: false, practice: true}).attach(this.content)
+    let blank = new BlockPuzzle({...this.trials[0], target: 'blank', prompt: false, practice: true}).attach(this.content)
     blank.run()
 
     this.instruct(` Click and drag a block to pick it up... `)
@@ -170,14 +178,14 @@ class Instructions {
     await this.button()
     this.instruct(`Try to fill in the white area.`)
 
-    let puzzle = new BlockPuzzle({...trials[0], prompt: false, practice: true}).attach(this.content)
+    let puzzle = new BlockPuzzle({...this.trials[0], prompt: false, practice: true}).attach(this.content)
     this.content.animate({opacity: 1}, 200)
     await puzzle.run()
   }
 
   async stage_practice2() {
     this.instruct(`Well done! Let's try a harder one.`)
-    await new BlockPuzzle({...trials[1], prompt: false, practice: true}).attach(this.content).run()
+    await new BlockPuzzle({...this.trials[1], prompt: false, practice: true}).attach(this.content).run()
 
     await this.content.animate({opacity: 0}, 500).promise()
     this.content.empty()
@@ -199,8 +207,7 @@ class Instructions {
       button when you're ready to continue.
     `)
 
-    new BlockPuzzle({...trials[0], target: 'blank', prompt: false, practice: true}).attach(this.content).run()
+    new BlockPuzzle({...this.trials[0], target: 'blank', prompt: false, practice: true}).attach(this.content).run()
     this.content.animate({opacity: 1}, 200)
   }
 }
-

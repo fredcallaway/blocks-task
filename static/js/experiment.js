@@ -10,13 +10,13 @@ var BONUS = 0
 
 const display = $('#display')
 
-async function instructions() {
-  await new Instructions().attach(display).run()
+async function instructions(start=1) {
+  await new BlockInstructions(TRIALS.practice).attach(display).run(start)
 }
 
 async function main() {
   console.log('running main')
-  for (let trial of trials) {
+  for (let trial of TRIALS.main) {
     await new BlockPuzzle(trial).attach(display).run()
   }
 }
@@ -34,10 +34,10 @@ async function runTimeline(...blocks) {
 }
 
 async function runExperiment() {
-  if (urlParams.blank || urlParams.dev) {
+  if (urlParams.dev) {
     await new BlockPuzzle({
       target: 'blank',
-      blocks: urlParams.blank == 'hard' ? hard_blocks : easy_blocks,
+      library: LIBRARIES[urlParams.dev] ?? LIBRARIES.easy,
       dev: true
     }).attach(display).run()
     return
@@ -48,8 +48,7 @@ async function runExperiment() {
     return
   }
   if (urlParams.instruct) {
-    let inst = new Instructions().attach(display)
-    await inst.runStage(parseInt(urlParams.instruct))
+    await instructions(parseInt(urlParams.instruct))
     await main()
   }
 

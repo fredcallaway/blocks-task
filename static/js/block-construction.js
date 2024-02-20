@@ -322,22 +322,18 @@ class BlockPuzzle {
       $('<button>').addClass('btn').css('margin', '10px').text('set target').appendTo(buttons)
       .click(async (e) => {
         quickDisable(e)
-        // navigator.clipboard.writeText()
-        let swal = Swal.fire({
+        let res = await Swal.fire({
             title: "Input Problem",
             text: "The current shape is used by default.",
             input: 'textarea',
             customClass: {input: 'mono-text'},
             width: 400,
-            height: "10em",
-            // heightAuto: false,
             inputValue: this.captureState(),
             showCancelButton: true
         })
-        let res = await swal
         if (res.value) {
           let prev = this.target
-          this.target = string2block(this.captureState(), 0, 0, 'white', this.grid)
+          this.target = string2block(res.value, 0, 0, 'white', this.grid)
           this.activeBlocks.clear()
           this.target.x = prev.x
           this.target.y = prev.y

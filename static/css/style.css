@@ -2,6 +2,10 @@ canvas {
   border: thick black solid;
 }
 
+.swal2-html-container {
+  font-size: 10pt !important;
+}
+
 button.btn:disabled {
     opacity: .5;
 }
@@ -62,39 +66,6 @@ button.btn:disabled {
    outline: none;
  }
 
-
-
-.image-container {
-  position: relative;
-  text-align: center;
-  /*color: white;*/
-  font-size: 32pt;
-  font-weight: bold;
-  color: white;
-  -webkit-text-stroke: 2px black;
-}
-
-.math-message {
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  font-size: 30px;
-}
-
-.word-stim {
-  text-align: center;
-  font-weight: bold;
-  font-size: 32pt;
-}
-
-#timer {
-  font-size: 20pt;
-  font-weight: bold;
-  text-align: center;
-}
-
 .center {
   text-align: center;
 }
@@ -109,9 +80,6 @@ button.btn:disabled {
 .lower {
   clear: both;
   padding-top: 20px;
-}
-.message {
-  /*font-size: 16pt;*/
 }
 
 .centered-text {
@@ -134,15 +102,6 @@ img.display {
   margin-right: auto
 }
 
-.body-text {
-  max-width: 800px;
-}
-
-.alert {
-  max-width: 800px;
-  margin: auto;
-  margin-top: 50px;
-}
 
 #load-icon {
   z-index: 1;
@@ -181,6 +140,9 @@ img.display {
   display: none;
   text-align: center;
 }
+
+
+/* psiturk style below here */
 
 
 /********************************************************************/
