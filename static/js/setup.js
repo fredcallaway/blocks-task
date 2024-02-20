@@ -19,6 +19,7 @@ $(window).on('load', async () => {
   if (local) {
     $('#display').empty()
     await runExperiment()
+    $('#display').empty()
   } else {
     await saveData()
     await sleep(1000)
@@ -26,8 +27,7 @@ $(window).on('load', async () => {
     let btn = button($('#display'), 'begin')
     btn.button.addClass('animate-bottom').css('margin-top', '40px')
     await btn.clicked
-    logEvent('begin experiment')
-
+    logEvent('experiment.begin')
     $('#display').empty()
     try {
       await runExperiment()
@@ -83,25 +83,25 @@ function eventPromise(predicate) {
 }
 
 function saveData() {
-  logEvent('saveData attempt')
+  logEvent('data.attempt')
   return new Promise((resolve, reject) => {
     if (local || mode === 'demo') {
       resolve('local');
       return;
     }
     const timeout = delay(10000, () => {
-      logEvent('saveData timeout')
+      logEvent('data.timeout')
       reject('timeout');
     });
     psiturk.saveData({
       error: () => {
         clearTimeout(timeout);
-        logEvent('saveData error')
+        logEvent('data.error')
         reject('error');
       },
       success: () => {
         clearTimeout(timeout);
-        logEvent('saveData success')
+        logEvent('data.success')
         resolve();
       }
     });
@@ -114,7 +114,7 @@ function completeExperiment() {
     type: "POST",
     data: { uniqueId }
   });
-  logEvent('completeExperiment');
+  logEvent('experiment.complete');
   $('#display').html(`
     <h1>Saving data</h1>
     <p>Please do <b>NOT</b> refresh or leave the page!</p>
@@ -176,7 +176,7 @@ async function showCompletionScreen() {
 
 
 function handleError(e) {
-  logEvent('handleError', e)
+  logEvent('experiment.error', e)
   let msg = e.stack?.length > 10 ? e.stack : `${e}`;
   const workerIdMessage = typeof workerId !== "undefined" && workerId !== null ? workerId : 'N/A';
   const message = `Prolific Id: ${workerIdMessage}\n${msg}`;

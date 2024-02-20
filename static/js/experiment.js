@@ -76,6 +76,39 @@ async function main() {
   }
 }
 
+async function debrief() {
+  logEvent('experiment.debrief')
+  $('<p>').appendTo(display).html(markdown(`
+    # You're done!
+
+    Thanks for participating! We have a few quick questions before you go.
+  `))
+
+  let noticed = radio_buttons(display, `
+    Did you notice that some shapes showed up multiple times?
+  `, ['yes', 'no'])
+
+  let square = radio_buttons(display, `
+    Did you try to avoid using the small red square?
+  `, ['yes', 'no'])
+
+  let difficulty = radio_buttons(display, `
+    How difficult were the problems, overall?
+  `, ['too easy', 'just right', 'too hard'])
+
+  let feedback = text_box(display, `
+    Do you have any other feedback? (optional)
+  `)
+
+  await button(display, 'submit').clicked
+  logEvent('debrief.submitted', {
+    noticed: noticed.val(),
+    square: square.val(),
+    difficulty: difficulty.val(),
+    feedback: feedback.val(),
+  })
+}
+
 async function runTimeline(...blocks) {
   let blockLookup = Object.fromEntries(blocks.map(b => [b.name, b]))
   let block = blockLookup[urlParams.block]
@@ -110,7 +143,8 @@ async function runExperiment() {
   // const stimuli = await $.getJSON('static/stimuli/stimuli.json')
   await runTimeline(
     instructions,
-    main
+    main,
+    debrief
   )
 
 };

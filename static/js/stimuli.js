@@ -333,9 +333,9 @@ var PUZZLES = [
 var TRIALS = {
   practice: ['smallshroom', 'hat'],
   main: [
-    ['spaceship', 'ingot', 'bigshroom', 'hat', 'slope', 'wheel', 'tree'],
+    ['ingot', 'bigshroom', 'hat', 'slope', 'wheel', 'tree'],
     ['hat-ingot', 'wheel-tree', 'slope-bigshroom'],
-    ['rect36', 'igloo', 'squares', 'nubbin', 'arrow', 'slug', 'wideshroom'],
+    ['rect36', 'igloo', 'squares', 'arrow', 'slug', 'wideshroom'],
     ['wideshroom-arrow', 'squares-rect36', 'igloo-slug'],
   ]
 }

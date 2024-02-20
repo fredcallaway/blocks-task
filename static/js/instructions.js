@@ -12,6 +12,28 @@ class Instructions {
       'user-select': 'none',
     })
 
+    let help = $('<button>')
+    .appendTo(this.div)
+    .css({
+      'position': 'absolute',
+      'right': '-50px',
+      'top': '10px'
+    })
+    .addClass('btn-help')
+    .text('?')
+    .click(async () => {
+      await Swal.fire({
+          title: 'Help',
+          html: `
+            Use the << and >> buttons to flip through the sections. You have
+            to follow all the instructions on a page before you can advance to the next one.
+            If you get stuck, try clicking << and then >> to start the section over.
+          `,
+          icon: 'info',
+          confirmButtonText: 'Got it!',
+        })
+    })
+
     this.btnPrev = $('<button>')
     .addClass('btn')
     .text('<<')

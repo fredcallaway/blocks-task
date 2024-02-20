@@ -35,7 +35,7 @@ class Button extends Input {
 
 
 class TextBox extends Input {
-  constructor({height=50, width='80%', prompt=''} = {}) {
+  constructor({height=100, width='500px', prompt=''} = {}) {
     super()
     this.prompt = $("<p>")
     .css('margin-top', 20)
