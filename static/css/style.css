@@ -2,6 +2,35 @@ canvas {
   border: thick black solid;
 }
 
+/*button.btn:disabled {
+    opacity: .3;
+}
+*/
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+  }
+  50% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+  }
+}
+
+.btn-pulse {
+  animation: pulse 1.5s infinite;
+  /* Additional styling for the button */
+  transition: transform 0.5s;
+  border: 3px solid rgba(0, 123, 255);
+  font-weight: bold;
+  background-color: white; /* Customize button background color */
+  color: rgba(0, 123, 255);
+}
+
 #welcome-message {
    max-width: 95%; /* this is mainly an IE 10-11 fix */
    /*text-align: center;*/

@@ -11,17 +11,11 @@ var BONUS = 0
 const display = $('#display')
 
 async function instructions() {
-  let instructions = $('<div>').css({'max-width': 800, 'margin': 'auto'}).appendTo(display)
-  text_box(instructions, "What's up doc?")
-  radio_buttons(instructions, "Is it good?")
-  await button(instructions, 'continue', {delay: 1000}).clicked
+  await new Instructions().attach(display).run()
 }
 
 async function main() {
-  if (urlParams.trial) {
-    trials = trials.slice(parseInt(urlParams.trial) - 1)
-  }
-
+  console.log('running main')
   for (let trial of trials) {
     await new BlockPuzzle(trial).attach(display).run()
   }
@@ -40,16 +34,28 @@ async function runTimeline(...blocks) {
 }
 
 async function runExperiment() {
-  if (urlParams.blank) {
-    await runBlockTrial(display, {target: 'blank', blocks: urlParams.blank == 'hard' ? hard_blocks : easy_blocks})
+  if (urlParams.blank || urlParams.dev) {
+    await new BlockPuzzle({
+      target: 'blank',
+      blocks: urlParams.blank == 'hard' ? hard_blocks : easy_blocks,
+      dev: true
+    }).attach(display).run()
     return
+  }
+  if (urlParams.trial) {
+    trials = trials.slice(parseInt(urlParams.trial) - 1)
+    await main()
+    return
+  }
+  if (urlParams.instruct) {
+    let inst = new Instructions().attach(display)
+    await inst.runStage(parseInt(urlParams.instruct))
+    await main()
   }
 
   // const stimuli = await $.getJSON('static/stimuli/stimuli.json')
-  // await instructions()
-  // await main()
   await runTimeline(
-    // instructions,
+    instructions,
     main
   )
 

@@ -207,7 +207,8 @@ class BlockPuzzle {
       height: 15,
       tray_height: 5,
       library: TETRIS_BLOCKS,
-      target: BLANK
+      target: BLANK,
+      prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`
     })
     logEvent('blocks.construct', options)
     Object.assign(this, options)
@@ -225,6 +226,8 @@ class BlockPuzzle {
     this.dragOffsetY = null;
     this.mouseX = null;
     this.mouseY = null;
+
+    this.drawCanvas()
   }
 
   attach(display) {
@@ -254,15 +257,15 @@ class BlockPuzzle {
     this.div = $("<div>")
     .css('text-align', 'center')
 
-    this.instruction = $('<div>')
-    .css({
-      'width': '100%',
-      'text-align': 'center',
-      'margin-bottom': '10px'
-    })
-    .html(`
-      Fill in all the white squares. Press <b>space</b> to rotate a piece
-    `).appendTo(this.div)
+    if (this.prompt) {
+      this.prompt = $('<div>')
+      .css({
+        'width': '100%',
+        'text-align': 'center',
+        'margin-bottom': '10px'
+      })
+      .html(this.prompt).appendTo(this.div)
+    }
 
     this.canvas = $('<canvas>')
     .prop({
@@ -284,23 +287,24 @@ class BlockPuzzle {
     }).appendTo(this.div)
 
     $('<button>').addClass('btn').css('margin', '10px').text('clear').appendTo(buttons).click(() => {
-        this.activeBlocks.clear()
-        this.drawCanvas()
+      logEvent('blocks.clear')
+      this.activeBlocks.clear()
+      this.drawCanvas()
     })
 
     $('<button>').addClass('btn').css('margin', '10px').text('copy').appendTo(buttons).click(() => {
-        navigator.clipboard.writeText(this.captureState())
-        this.drawCanvas()
+      navigator.clipboard.writeText(this.captureState())
+      this.drawCanvas()
     })
 
     $('<button>').addClass('btn').css('margin', '10px').text('set target').appendTo(buttons).click(() => {
-        navigator.clipboard.writeText(this.captureState())
-        let prev = this.target
-        this.target = string2block(this.captureState(), 0, 0, 'white', this.grid)
-        this.activeBlocks.clear()
-        this.target.x = prev.x
-        this.target.y = prev.y
-        this.drawCanvas()
+      navigator.clipboard.writeText(this.captureState())
+      let prev = this.target
+      this.target = string2block(this.captureState(), 0, 0, 'white', this.grid)
+      this.activeBlocks.clear()
+      this.target.x = prev.x
+      this.target.y = prev.y
+      this.drawCanvas()
     })
   }
 
@@ -459,6 +463,7 @@ class BlockPuzzle {
     window.addEventListener('mouseup', async (e) => {
       logEvent('blocks.mouseup', e)
       if (this.isDragging) {
+        console.log('isDragging mouseup')
 
         logEvent(this.currentBlock.colliding ? 'blocks.drop.erase' : 'blocks.drop.place',
                  {block: this.currentBlock, state: this.captureState()})

@@ -6,6 +6,9 @@ class Input {
     this.div.appendTo(div)
     return this
   }
+  remove() {
+    this.div.remove()
+  }
 }
 
 class Button extends Input {
@@ -127,7 +130,7 @@ function radio_buttons(div, prompt, choices, opts) {
 function alert_success(opts = {}) {
   let flavor = _.sample([
     "you're on fire", "top-notch stuff", "absolutely brilliant",
-    "out of this world", "phenomenal", "you've outdone yourself", "a+ work",
+    "out of this world", "phenomenal", "you've outdone yourself", "A+ work",
     "nailed it", "rock star status", "most excellent", "impressive stuff",
     "smashed it", "genius", "spot on", "gold, pure gold",
     "bang-up job", "exceptional", "superb", "you're a natural", "knocked it out of the park"

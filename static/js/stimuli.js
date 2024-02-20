@@ -56,7 +56,7 @@ var hard_blocks = [
 var trials = [
 
   {
-    blocks: easy_blocks,
+    library: easy_blocks,
     target: `
       XXX
       XXX
@@ -65,7 +65,7 @@ var trials = [
     `,
   },
   {
-    blocks: easy_blocks,
+    library: easy_blocks,
     target: `
       .XX.
       XXXX
@@ -79,7 +79,7 @@ var trials = [
     `,
   },
   {
-    blocks: easy_blocks,
+    library: easy_blocks,
     target: `
       ..XX..
       .XXXX.
@@ -94,7 +94,7 @@ var trials = [
     `,
   },
   {
-    blocks: hard_blocks,
+    library: hard_blocks,
     target: `
 .........XXXXXX...............
 .........XXXXXX...............
@@ -102,7 +102,7 @@ var trials = [
     `,
   },
   {
-    blocks: hard_blocks,
+    library: hard_blocks,
     target: `
       XXXXX...
       XXXXX...
@@ -111,7 +111,7 @@ var trials = [
     `,
   },
   {
-    blocks: hard_blocks,
+    library: hard_blocks,
     target: `
 ..............................
 ..............................
@@ -131,7 +131,7 @@ var trials = [
     `,
   },
   {
-    blocks: hard_blocks,
+    library: hard_blocks,
     target: `
       ........XXXXXX................
       ........XXXXXX................
@@ -143,7 +143,7 @@ var trials = [
     `,
   },
   {
-    blocks: hard_blocks,
+    library: hard_blocks,
     target: `
       ............X............
       ...........XXX...........

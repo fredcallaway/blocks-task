@@ -38,6 +38,8 @@ $(window).on('load', async () => {
 });
 
 
+const eventCallbacks = []
+
 function logEvent(event, info={}){
   if (typeof(event) == 'object') {
     info = event;
@@ -45,12 +47,40 @@ function logEvent(event, info={}){
     info.event = event;
   }
   info.time = Date.now();
+  for (let f of eventCallbacks) {
+    f(info)
+  }
   if (!event.includes('mousemove')) {
-    console.log('logEvent', info);
+    console.log('logEvent', info.event, info);
   }
   psiturk.recordTrialData(info);
 }
 
+function registerEventCallback(f) {
+  eventCallbacks.push(f)
+}
+
+function removeEventCallback(f) {
+  _.pull(eventCallbacks, f)
+}
+
+function eventPromise(predicate) {
+  let match = ''
+  if (typeof(predicate) == 'string') {
+    match = predicate
+    predicate = (info) => info.event.startsWith(match)
+  }
+  let promise = make_promise()
+  let func = (info) => {
+    if (predicate(info)) {
+      logEvent('eventPromise.resolve', {match})
+      promise.resolve()
+    }
+  }
+  promise.finally(() => removeEventCallback(func))
+  registerEventCallback(func)
+  return promise
+}
 
 function saveData() {
   logEvent('saveData attempt')
