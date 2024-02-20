@@ -199,6 +199,11 @@ ol.insructions > li {
     margin: 30px;
 }
 
+#container-consent {
+  max-width: 1000px;
+  margin: auto;
+}
+
 /* ad.html  - the ad that people view first */
 #adlogo {
     width: 200px;
