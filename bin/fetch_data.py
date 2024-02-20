@@ -22,35 +22,44 @@ def get_database():
             f.write(url)
             return url
 
-env = os.environ
-env["PORT"] = ""
-env["ON_CLOUD"] = "1"
-env["DATABASE_URL"] = get_database()
-
-from psiturk.models import Participant  # must be imported after setting params
 
 class Anonymizer(object):
     def __init__(self):
         self.mapping = {}
 
-    def __call__(self, uniqueid):
-        if ':' in uniqueid:
-            worker_id, assignment_id = uniqueid.split(':')
-        else:
-            worker_id = uniqueid
+    def __call__(self, worker_id):
+        if 'debug' in worker_id:
+            return worker_id
         if worker_id not in self.mapping:
             self.mapping[worker_id] = 'w' + hashlib.md5(worker_id.encode()).hexdigest()[:7]
         return self.mapping[worker_id]
 
 def pick(obj, keys):
-    return {k: obj[k] for k in keys}
+    return {k: obj.get(k, None) for k in keys}
 
+import csv
+def write_csv(file, records):
+    with open(file, mode='w', newline='') as file:
+        fieldnames = records[0].keys()
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        for record in records:
+            writer.writerow(record)
 
-def write_data(version, debug):
+def write_data(version, mode):
     anonymize = Anonymizer()
 
+    if mode != 'local':
+        env = os.environ
+        env["PORT"] = ""
+        env["ON_CLOUD"] = "1"
+        env["DATABASE_URL"] = get_database()
+        # what should go here??
+
+    from psiturk.models import Participant  # must be imported after setting env params
     ps = Participant.query.filter(Participant.codeversion == version).all()
-    if not debug:
+
+    if mode == 'live':
         ps = [p for p in ps
             if 'debug' not in p.uniqueid
             and not p.workerid.startswith('601055')  # the "preview" participant
@@ -86,18 +95,13 @@ def write_data(version, debug):
         with open(f'data/raw/{version}/events/{wid}.json', 'w') as f:
             json.dump(trialdata, f)
 
-    with open(f'data/raw/{version}/participants.json', 'w') as f:
-        json.dump(participants, f)
+    write_csv(f'data/raw/{version}/participants.csv', participants)
 
-    with open(f'data/raw/{version}/identifiers.json', 'w') as f:
+    with open(f'data/raw/{version}/idenutifiers.json', 'w') as f:
         json.dump(anonymize.mapping, f)
 
     print(len(participants), 'participants')
-
-
-def main(version, debug):
-    write_data(version, debug)
-    # reformat(version)
+    print(f'data/raw/{version}/participants.csv')
 
 if __name__ == "__main__":
     parser = ArgumentParser(
@@ -109,8 +113,11 @@ if __name__ == "__main__":
               "parameter in the psiTurk config.txt file that was used when the "
               "data was collected."))
     parser.add_argument("--debug", help="Keep debug participants", action="store_true")
+    parser.add_argument("--local", help="Use local database (implies --debug)", action="store_true")
 
     args = parser.parse_args()
+    mode = 'local' if args.local else 'debug' if args.debug else 'live'
+
     version = args.version
     if version == None:
         import configparser
@@ -119,4 +126,4 @@ if __name__ == "__main__":
         version = c["Task Parameters"]["experiment_code_version"]
         print("Fetching data for current version: ", version)
 
-    main(version, args.debug)
+    write_data(version, mode)
