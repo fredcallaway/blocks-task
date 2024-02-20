@@ -20,14 +20,8 @@ class Block {
     this.color = color;
     this.colliding = false;
     this.grid = grid
-  }
-
-  width() {
-    return _(this.parts).map((part) => part.x).max() + 1
-  }
-
-  height() {
-    return _(this.parts).map((part) => part.y).max() + 1
+    this.width = _(this.parts).map((part) => part.x).max() + 1
+    this.height = _(this.parts).map((part) => part.y).max() + 1
   }
 
   draw(ctx, grid) {
@@ -246,16 +240,16 @@ class BlockPuzzle {
     let xPos = 1;
     return blocks.map((s, i) => {
       let block = string2block(s, xPos, 0, i);
-      block.y = (this.height + this.tray_height - block.height() - 1);
-      xPos += block.width() + 1;
+      block.y = (this.height + this.tray_height - block.height - 1);
+      xPos += block.width + 1;
       return block;
     });
   }
 
   buildTarget(block) {
     let target = string2block(block, 0, 0, 'white')
-    target.x = Math.floor((this.width - target.width()) / 2)
-    target.y = Math.ceil(1+(this.height - target.height()) / 2)
+    target.x = Math.floor((this.width - target.width) / 2)
+    target.y = Math.ceil(1+(this.height - target.height) / 2)
     return target
   }
 
@@ -375,9 +369,10 @@ class BlockPuzzle {
   }
 
   captureState() {
-    return _.range(this.height).map(y => {
-      return _.range(this.width).map(x => {
-        return this.isCovered(this.target.x + x, this.target.y + y) ? 'X' : '.'
+    let t = this.target
+    return _.range(t.y, t.y + t.height + 1).map(y => {
+      return _.range(t.x, t.x + t.width + 1).map(x => {
+        return this.isCovered(x, y) ? 'X' : '.'
       }).join('')
     }).join('\n')
   }
