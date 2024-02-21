@@ -21,7 +21,6 @@ class Prolific(object):
                 raise ValueError('You must provide a token, create a .prolific_token file, or set a PROLIFIC_TOKEN environment variable.')
 
         self.token = token
-        print(self.token)
 
     def request(self, method, url, **kws):
         if url.startswith('/'):
@@ -110,7 +109,6 @@ class Prolific(object):
         studies = self.studies(project_id)
         return [s for s in studies
             if s['status'] != 'UNPUBLISHED'
-            and s['internal_name'].startswith('graph-nav')
         ][-1]['id']
 
     @cache
@@ -280,6 +278,11 @@ class CLI(object):
     def link(self):
         """Print the link to the submissions page for the most recently posted study"""
         return f"https://app.prolific.co/researcher/workspaces/studies/{self._study_id}/submissions"
+
+    def total_cost(self):
+        """Print the total cost accumulated by studies in this project"""
+        return self._prolific.total_cost(self._project_id)
+
 
 
     @cached_property
