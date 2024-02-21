@@ -18,7 +18,7 @@ table_name = participants
 [Prolific]
 name = Block Puzzles
 reward = 5
-total_available_places = 5
+total_available_places = 3
 estimated_completion_time = 30
 description =
     In this study, you will solve a series of puzzles that involve
@@ -38,7 +38,7 @@ secret_key = 'this is my secret key which is hard to guess, i should change this
 adserver_revproxy_host = memorygame29.herokuapp.com
 
 [Task Parameters]
-experiment_code_version = v1.0
+experiment_code_version = v1.1
 num_conds = 1
 num_counters = 1
 
