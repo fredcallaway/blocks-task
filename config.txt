@@ -17,9 +17,9 @@ table_name = participants
 
 [Prolific]
 name = Block Puzzles
-reward = 5
+reward = 4
 total_available_places = 3
-estimated_completion_time = 30
+estimated_completion_time = 20
 description =
     In this study, you will solve a series of puzzles that involve
     building shapes out of blocks.
