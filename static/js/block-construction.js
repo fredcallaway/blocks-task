@@ -416,9 +416,13 @@ class BlockPuzzle {
     return false; // No collision detected
   }
 
-  clearColliding() {
+  clearColliding(check) {
     for (let block of this.activeBlocks) {
-      if (block != this.currentBlock && block.colliding) {
+      if (block == this.currentBlock) continue
+      if (check) {
+        block.colliding = this.checkCollision(block)
+      }
+      if (block.colliding) {
         this.activeBlocks.delete(block)
       }
     }
@@ -507,7 +511,7 @@ class BlockPuzzle {
                  {block: this.currentBlock, state: this.captureState()})
         this.isDragging = false;
         this.currentBlock = null;
-        this.clearColliding()
+        this.clearColliding(true)
         this.drawCanvas()
         if (this.checkVictory()) {
           // need Array.from b/c Set does not get converted to json properly
