@@ -68,8 +68,10 @@ async function main() {
       block[3] = 'hat'
     }
     for (let trial of buildTrials(block)) {
+      console.log('main puzzle', trial.name)
+    }
+    for (let trial of buildTrials(block)) {
       counter.text(`Round ${trial_number++} / ${N_TRIAL}`)
-      console.log('trial', trial)
       await new BlockPuzzle(trial).attach(content).run()
       saveData()
     }
@@ -123,8 +125,24 @@ async function runTimeline(...blocks) {
   }
 }
 
+
 async function runExperiment() {
-  logEvent('experiment.run')
+
+  if (urlParams.stimuli) {
+    let sols = await $.getJSON('static/json/solutions.json')
+    for (let block of TRIALS.main) {
+      let row = $('<div>').appendTo(display)
+      for (let name of block) {
+        let div = $('<div>').css('display', 'inline-block').appendTo(row)
+        let trial = _.find(PUZZLES, {name})
+        trial.grid = 12
+        trial.configuration = sols[name]
+        new BlockDisplayOnly(trial).attach(div)
+      }
+    }
+    await make_promise()
+  }
+
   if (urlParams.dev) {
     await new BlockPuzzle({
       target: 'blank',
@@ -144,6 +162,8 @@ async function runExperiment() {
     await main()
   }
 
+  throw new Error("FIX DROP COLLISION")
+  // the actual experiment
   // const stimuli = await $.getJSON('static/stimuli/stimuli.json')
   await runTimeline(
     instructions,

@@ -1,5 +1,3 @@
-const BACKGROUND = "#ADADAD"
-
 const COLORS = [
   "#e41a1c",
   "#377eb8",
@@ -14,7 +12,7 @@ const COLORS = [
 const blockListeners = new EventListeners()
 
 class Block {
-  constructor(x, y, parts, color, id) {
+  constructor({x, y, parts, color, id} = {}) {
     this.x = x;
     this.y = y;
     this.parts = parts; // Array of {x, y} parts relative to the block's position
@@ -34,13 +32,13 @@ class Block {
       const partY = (this.y + part.y) * grid;
       ctx.fillRect(partX, partY, grid, grid);
       ctx.strokeStyle = 'rgba(0,0,0,0.2)';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1 + (grid / 30);
       ctx.strokeRect(partX, partY, grid, grid);
     });
 
     // Now, draw the thick border around the shape
     ctx.strokeStyle = this.colliding ? 'rgba(0,0,0,0.2)' : 'black';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1 + (grid / 30);
     // Helper function to check if there is an adjacent part
     const hasAdjacentPart = (dx, dy) => {
       return this.parts.some(part => part.x === dx && part.y === dy);
@@ -187,19 +185,137 @@ function string2block(s, x, y, color, id='block') {
         }
       })
     })
-    return new Block(x, y, parts, color, id)
+    return new Block({x, y, parts, color, id})
 }
 
 
-
-
-class BlockPuzzle {
+class BlockDisplay {
   constructor(options = {}) {
     _.defaults(options, {
       grid: 30,
       width: 30,
       height: 15,
       tray_height: 5,
+      background: "#ADADAD",
+      borderStyle: 'thick black solid',
+      configuration: [],
+    })
+    window.bd = this
+    Object.assign(this, options)
+    this.activeBlocks = new Set(this.configuration.map(x => new Block(x)));
+    if (this.target) {
+      this.target = this.buildTarget(this.target)
+    }
+
+    this.div = $("<div>").css('text-align', 'center')
+    this.buildCanvas()
+  }
+
+  attach(display) {
+    display.empty()
+    this.div.appendTo(display)
+    return this
+  }
+
+
+  buildTarget(block) {
+    let target = string2block(block, 0, 0, 'white', 'target')
+    target.x = Math.floor((this.width - target.width) / 2)
+    target.y = Math.ceil(1+(this.height - target.height) / 2)
+    return target
+  }
+
+  buildCanvas() {
+    this.canvas = $('<canvas>')
+    .prop({
+      width: this.width * this.grid,
+      height: (this.height + this.tray_height) * this.grid
+    }).css({
+      'margin-left': 'auto',
+      'margin-right': 'auto',
+      'display': 'block',
+      'border': this.borderStyle,
+    })
+    .appendTo(this.div)[0]
+    this.ctx = this.canvas.getContext('2d');
+  }
+
+  drawCanvas() {
+    this.ctx.fillStyle = this.background;
+    this.ctx.fillRect(0, 0, this.width * this.grid, (this.height + this.tray_height) * this.grid);
+    this.target?.draw(this.ctx, this.grid);
+    this.activeBlocks.forEach(block => {
+      if (block !== this.currentBlock) {
+        block.draw(this.ctx, this.grid);
+      }
+    });
+    this.currentBlock?.draw(this.ctx, this.grid);
+  }
+
+  checkCollision(block) {
+    if (!block.isWithinBoundary(this.width, this.height)) return true;
+
+    for (let part of block.parts) {
+      const partX = block.x + part.x;
+      const partY = block.y + part.y;
+
+      // Check if within target
+      if (this.target && !this.target.contains(partX + .5, partY + .5)) return true;
+
+      // Check if within another active block
+      for (let otherBlock of this.activeBlocks) {
+        if (otherBlock === block) continue;
+
+        if (otherBlock.contains(partX + .5, partY + .5)) {
+          return true; // Collision detected
+        }
+      }
+    }
+    return false; // No collision detected
+  }
+
+  clearColliding(check) {
+    for (let block of this.activeBlocks) {
+      if (block == this.currentBlock) continue
+      if (check) {
+        block.colliding = this.checkCollision(block)
+      }
+      if (block.colliding) {
+        this.activeBlocks.delete(block)
+      }
+    }
+  }
+}
+
+class BlockDisplayOnly extends BlockDisplay {
+  constructor(options = {}) {
+    _.defaults(options, {
+      background: 'white',
+      width: 30,
+      height: 15,
+      borderStyle: 'none',
+    })
+    let target = string2block(options.target, 0, 0, 'white', 'target')
+    let offsetX = Math.floor((options.width - target.width) / 2) - 1
+    let offsetY = Math.ceil(1 + (options.height - target.height) / 2) - 1
+
+    options.width = target.width + 2
+    options.height = target.height
+    options.tray_height = 2
+    super(options)
+    for (let block of this.activeBlocks) {
+      block.x -= offsetX
+      block.y -= offsetY
+    }
+    this.clearColliding(true)
+    this.drawCanvas()
+  }
+}
+
+
+class BlockPuzzle extends BlockDisplay {
+  constructor(options = {}) {
+    _.defaults(options, {
       library: TETRIS_BLOCKS,
       target: BLANK,
       prompt: ``,
@@ -207,6 +323,7 @@ class BlockPuzzle {
       dev: false,
     })
     logEvent('blocks.construct', options)
+    super()
     Object.assign(this, options)
     window.puzzle = this
 
@@ -225,7 +342,6 @@ class BlockPuzzle {
     this.buildDisplay()
     this.solved = make_promise()
 
-    this.activeBlocks = new Set();
     this.isDragging = false;
     this.currentBlock = null; // The block currently being dragged
     this.dragOffsetX = null;
@@ -234,12 +350,6 @@ class BlockPuzzle {
     this.mouseY = null;
 
     this.drawCanvas()
-  }
-
-  attach(display) {
-    display.empty()
-    this.div.appendTo(display)
-    return this
   }
 
   buildLibrary(blocks) {
@@ -252,17 +362,7 @@ class BlockPuzzle {
     });
   }
 
-  buildTarget(block) {
-    let target = string2block(block, 0, 0, 'white', 'target')
-    target.x = Math.floor((this.width - target.width) / 2)
-    target.y = Math.ceil(1+(this.height - target.height) / 2)
-    return target
-  }
-
   buildDisplay() {
-    this.div = $("<div>")
-    .css('text-align', 'center')
-
     if (this.prompt) {
       this.prompt = $('<div>')
       .css({
@@ -270,20 +370,8 @@ class BlockPuzzle {
         'text-align': 'center',
         'margin-bottom': '10px'
       })
-      .html(this.prompt).appendTo(this.div)
+      .html(this.prompt).prependTo(this.div)
     }
-
-    this.canvas = $('<canvas>')
-    .prop({
-      width: this.width * this.grid,
-      height: (this.height + this.tray_height) * this.grid
-    }).css({
-      'margin-left': 'auto',
-      'margin-right': 'auto',
-      'display': 'block',
-    })
-    .appendTo(this.div)[0]
-    this.ctx = this.canvas.getContext('2d');
 
     let buttons = $("<div>")
     .css({
@@ -338,20 +426,11 @@ class BlockPuzzle {
   }
 
   drawCanvas() {
-    this.ctx.fillStyle = BACKGROUND;
-    this.ctx.fillRect(0, 0, this.width * this.grid, (this.height + this.tray_height) * this.grid);
-    this.target.draw(this.ctx, this.grid);
+    super.drawCanvas()
+    console.log('this.library', this.library)
     this.library.forEach(block => {
       block.draw(this.ctx, this.grid);
     });
-    this.activeBlocks.forEach(block => {
-      if (block !== this.currentBlock) {
-        block.draw(this.ctx, this.grid);
-      }
-    });
-    if (this.currentBlock) {
-      this.currentBlock.draw(this.ctx, this.grid);
-    }
   }
 
   checkVictory() {
@@ -392,40 +471,6 @@ class BlockPuzzle {
     let x1 = _(rows).map(row => row.indexOf(true)).min()
     let x2 = _(rows).map(row => row.lastIndexOf(true)).max()
     return rows.map(row => row.slice(x1, x2+1).map(x => x ? 'X' : '.').join('')).join('\n')
-  }
-
-  checkCollision(movingBlock) {
-    if (!movingBlock.isWithinBoundary(this.width, this.height)) return true;
-
-    for (let part of movingBlock.parts) {
-      const partX = movingBlock.x + part.x;
-      const partY = movingBlock.y + part.y;
-
-      // Check if within target
-      if (!this.target.contains(partX + .5, partY + .5)) return true;
-
-      // Check if within another active block
-      for (let block of this.activeBlocks) {
-        if (block === movingBlock) continue;
-
-        if (block.contains(partX + .5, partY + .5)) {
-          return true; // Collision detected
-        }
-      }
-    }
-    return false; // No collision detected
-  }
-
-  clearColliding(check) {
-    for (let block of this.activeBlocks) {
-      if (block == this.currentBlock) continue
-      if (check) {
-        block.colliding = this.checkCollision(block)
-      }
-      if (block.colliding) {
-        this.activeBlocks.delete(block)
-      }
-    }
   }
 
   tryUpdatePosition(block, x, y) {
