@@ -1,6 +1,6 @@
 # this file imports custom routes into the experiment server
 
-from flask import Blueprint, render_template, request, jsonify, Response, abort, current_app
+from flask import Blueprint, render_template, request, jsonify, Response, abort, current_app, redirect, url_for
 from jinja2 import TemplateNotFound
 from functools import wraps
 from sqlalchemy import or_
@@ -42,6 +42,20 @@ def demo():
     }
     data['mode'] = 'demo'
     return render_template('exp.html', **data)
+
+
+@custom_code.route('/test')
+def test():
+    import random
+    # uid = str(random.randint(0, 100000))
+    # uid = uid + ":" + uid
+    args = {
+        'hitId': 'debug',
+        'assignmentId': 'debug',
+        'workerId': 'debug' + str(random.randint(0, 100000)),
+        'mode': 'debug',
+    }
+    return redirect(url_for('start_exp', **args))
 
 
 def get_participants(codeversion):
