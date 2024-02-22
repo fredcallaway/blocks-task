@@ -321,6 +321,7 @@ class BlockPuzzle extends BlockDisplay {
       library: TETRIS_BLOCKS,
       target: BLANK,
       prompt: ``,
+      allowQuit: false,
       // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
       dev: false,
     })
@@ -395,6 +396,16 @@ class BlockPuzzle extends BlockDisplay {
       this.activeBlocks.clear()
       this.drawCanvas()
     })
+
+
+    if (this.allowQuit) {
+      $('<button>').addClass('btn').css('margin', '10px').text('give up').appendTo(buttons)
+      .click((e) => {
+        quickDisable(e)
+        logEvent('blocks.quit')
+        this.solved.resolve();
+      })
+    }
 
     if (this.dev) {
       $('<button>').addClass('btn').css('margin', '10px').text('copy').appendTo(buttons)

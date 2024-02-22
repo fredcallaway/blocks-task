@@ -125,6 +125,38 @@ async function runTimeline(...blocks) {
   }
 }
 
+async function problemViewer() {
+  let wrapper = $('<div>').css({
+    'position': 'relative',
+    'margin': 'auto',
+    'width': '1200px',
+    'text-align': 'center',
+    // 'border': 'thin red solid'
+  }).appendTo(display)
+
+  function showSelector() {
+    wrapper.empty()
+    for (let block of TRIALS.main) {
+      let row = $('<div>').appendTo(wrapper)
+      for (let name of block) {
+        let div = $('<div>').css({
+          display: 'inline-block',
+          cursor: 'pointer'
+        }).appendTo(row)
+        let trial = _.find(PUZZLES, {name})
+        // trial.configuration = data.solutions[name]
+        new BlockDisplayOnly({...trial, grid: 15}).attach(div)
+        div.click(async () => {
+          await new BlockPuzzle({...trial, allowQuit: true, prompt: trial.name}).attach(wrapper).run()
+          showSelector()
+        })
+      }
+    }
+  }
+  showSelector()
+  await make_promise()
+}
+
 async function dataViewer(uid='fred') {
   let wrapper = $('<div>').css({
     'position': 'relative',
@@ -202,6 +234,11 @@ async function dataViewer(uid='fred') {
 
 
 async function runExperiment() {
+  if (urlParams.try) {
+    await problemViewer(urlParams.try)
+    return
+  }
+
   if (urlParams.show) {
     await dataViewer(urlParams.show)
     return
