@@ -226,7 +226,7 @@ async function runExperiment() {
     await main()
   }
 
-  throw new Error("FIX DROP COLLISION")
+  // throw new Error("FIX DROP COLLISION")
   // the actual experiment
   // const stimuli = await $.getJSON('static/stimuli/stimuli.json')
   await runTimeline(

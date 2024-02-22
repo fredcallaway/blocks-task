@@ -265,6 +265,7 @@ class BlockDisplay {
       // Check if within another active block
       for (let otherBlock of this.activeBlocks) {
         if (otherBlock === block) continue;
+        if (otherBlock.colliding) continue; // only remove one (the dragged block)
 
         if (otherBlock.contains(partX + .5, partY + .5)) {
           return true; // Collision detected
