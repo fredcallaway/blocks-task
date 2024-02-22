@@ -163,24 +163,26 @@ async function dataViewer(uid='fred') {
   })
   .appendTo(wrapper)
 
-  async function show(uid) {
+  async function show(uid, data) {
     var queryParams = new URLSearchParams(window.location.search);
     queryParams.set("show", uid);
     history.replaceState(null, null, "?"+queryParams.toString());
 
-    content.empty()
-    title.text(uid)
-    let data = (await $.getJSON(`static/json/solutions/${uid}.json`))
+    data = data ?? await $.getJSON(`static/json/solutions/${uid}.json`)
 
+    let dataPrev = $.getJSON(`static/json/solutions/${data.prev}.json`)
+    let dataNext = $.getJSON(`static/json/solutions/${data.next}.json`)
     btnPrev.unbind('click')
     btnPrev.click(() => {
-      show(data.prev)
+      dataPrev.then(d => show(data.prev, d))
     })
     btnNext.unbind('click')
     btnNext.click(() => {
-      show(data.next)
+      dataNext.then(d => show(data.next, d))
     })
 
+    content.empty()
+    title.text(uid)
     for (let block of TRIALS.main) {
       let row = $('<div>').appendTo(content)
       for (let name of block) {
