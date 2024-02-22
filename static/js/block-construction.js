@@ -299,9 +299,10 @@ class BlockDisplayOnly extends BlockDisplay {
     let offsetX = Math.floor((options.width - target.width) / 2) - 1
     let offsetY = Math.ceil(1 + (options.height - target.height) / 2) - 1
 
-    options.width = target.width + 2
-    options.height = target.height
-    options.tray_height = 2
+    options = {...options,
+               width: target.width + 2,
+               height: target.height,
+               tray_height: 2}
     super(options)
     for (let block of this.activeBlocks) {
       block.x -= offsetX

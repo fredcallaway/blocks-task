@@ -125,22 +125,84 @@ async function runTimeline(...blocks) {
   }
 }
 
+async function dataViewer(uid='fred') {
+  let wrapper = $('<div>').css({
+    'position': 'relative',
+    'margin': 'auto',
+    'width': '1200px',
+    'text-align': 'center',
+    // 'border': 'thin red solid'
+  }).appendTo(display)
 
-async function runExperiment() {
+  let title = $('<h1>').appendTo(wrapper)
 
-  if (urlParams.stimuli) {
-    let sols = await $.getJSON('static/json/solutions.json')
+  let content = $('<div>').css({
+    'margin-left': '100px',
+    'width': '1000px',
+    // border: 'thick black solid'
+  }).appendTo(wrapper)
+
+
+  let btnPrev = $('<button>')
+  .addClass('btn')
+  .text('<<')
+  .css({
+    position: 'absolute',
+    top: '10px',
+    left: '370px',
+  })
+  .appendTo(wrapper)
+
+  let btnNext = $('<button>')
+  .addClass('btn')
+  .text('>>')
+  .css({
+    position: 'absolute',
+    top: '10px',
+    right: '370px',
+  })
+  .appendTo(wrapper)
+
+  async function show(uid) {
+    var queryParams = new URLSearchParams(window.location.search);
+    queryParams.set("show", uid);
+    history.replaceState(null, null, "?"+queryParams.toString());
+
+    content.empty()
+    title.text(uid)
+    let data = (await $.getJSON(`static/json/solutions/${uid}.json`))
+
+    btnPrev.unbind('click')
+    btnPrev.click(() => {
+      show(data.prev)
+    })
+    btnNext.unbind('click')
+    btnNext.click(() => {
+      show(data.next)
+    })
+
     for (let block of TRIALS.main) {
-      let row = $('<div>').appendTo(display)
+      let row = $('<div>').appendTo(content)
       for (let name of block) {
         let div = $('<div>').css('display', 'inline-block').appendTo(row)
         let trial = _.find(PUZZLES, {name})
-        trial.grid = 12
-        trial.configuration = sols[name]
+        trial.grid = 15
+        trial.configuration = data.solutions[name]
         new BlockDisplayOnly(trial).attach(div)
       }
     }
-    await make_promise()
+  }
+
+  await show(uid)
+
+  await make_promise()
+}
+
+
+async function runExperiment() {
+  if (urlParams.show) {
+    await dataViewer(urlParams.show)
+    return
   }
 
   if (urlParams.dev) {
