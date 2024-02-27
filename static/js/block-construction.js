@@ -329,12 +329,13 @@ class BlockPuzzle extends BlockDisplay {
       library: LIBRARIES.hard,
       target: BLANK,
       prompt: ``,
-      allowQuit: false,
+      allowQuitSeconds: 90,
       // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
       dev: false,
     })
     logEvent('blocks.construct', options)
     super()
+    this.startTime = Date.now()
     Object.assign(this, options)
     window.puzzle = this
 
@@ -396,8 +397,15 @@ class BlockPuzzle extends BlockDisplay {
       await sleep(300)
       $(event.target).prop('disabled', false)
     }
+    let makeBtn = (text) => {
+      let id = 'blocks-btn-' + text.replace(' ', '_')
+      return $('<button>', {id}).addClass('btn').text(text).appendTo(buttons).css({
+        margin: '15px',
+        width: '80px'
+      })
+    }
 
-    $('<button>').addClass('btn').css('margin', '10px').text('clear').appendTo(buttons)
+    makeBtn('clear')
     .click((e) => {
       quickDisable(e)
       logEvent('blocks.clear')
@@ -405,18 +413,22 @@ class BlockPuzzle extends BlockDisplay {
       this.drawCanvas()
     })
 
-
-    if (this.allowQuit) {
-      $('<button>').addClass('btn').css('margin', '10px').text('give up').appendTo(buttons)
+    if (this.allowQuitSeconds) {
+      let btn = makeBtn('give up')
       .click((e) => {
         quickDisable(e)
         logEvent('blocks.quit')
         this.solved.resolve();
       })
+      btn.prop('disabled', true)
+      sleep(this.allowQuitSeconds * 1000).then(() => {
+        btn.prop('disabled', false)
+        btn.addClass('btn-pulse')
+      })
     }
 
     if (this.dev) {
-      $('<button>').addClass('btn').css('margin', '10px').text('copy').appendTo(buttons)
+      makeBtn('copy')
       .click((e) => {
         quickDisable(e)
         navigator.clipboard.writeText(this.captureStateCompact())
@@ -424,7 +436,7 @@ class BlockPuzzle extends BlockDisplay {
         this.drawCanvas()
       })
 
-      $('<button>').addClass('btn').css('margin', '10px').text('set target').appendTo(buttons)
+      makeBtn('set target')
       .click(async (e) => {
         quickDisable(e)
         let res = await Swal.fire({

@@ -163,7 +163,9 @@ class BlockInstructions extends Instructions {
   }
 
   async stage_basics() {
-    let blank = new BlockPuzzle({...this.trials[0], target: 'blank', prompt: false, practice: true}).attach(this.content)
+    let blank = new BlockPuzzle({
+      ...this.trials[0], target: 'blank', practice: true, allowQuitSeconds: null,
+    }).attach(this.content)
     blank.run()
 
     this.instruct(` Click and drag a block to pick it up... `)
@@ -191,8 +193,9 @@ class BlockInstructions extends Instructions {
     await eventPromise('blocks.drop.erase')
 
     this.instruct(`You can also click the button at the bottom to clear the screen.`)
+    $('#blocks-btn-clear').addClass('btn-pulse')
     await eventPromise('blocks.clear')
-
+    $('#blocks-btn-clear').removeClass('btn-pulse')
     this.instruct(`Yup, just like that.`)
   }
 
@@ -202,20 +205,47 @@ class BlockInstructions extends Instructions {
     await this.button()
     this.instruct(`Try to fill in the white area.`)
 
-    let puzzle = new BlockPuzzle({...this.trials[0], prompt: false, practice: true}).attach(this.content)
+    let puzzle = new BlockPuzzle({
+      ...this.trials[0], practice: true, allowQuitSeconds: null}
+    ).attach(this.content)
     this.content.animate({opacity: 1}, 200)
     await puzzle.run()
   }
 
   async stage_practice2() {
-    this.instruct(`Well done! Let's try another one.`)
-    await new BlockPuzzle({...this.trials[1], prompt: false, practice: true}).attach(this.content).run()
+    this.instruct(`Well done! Let's try a harder one.`)
+    await new BlockPuzzle({...this.trials[1], practice: true}).attach(this.content).run()
 
     await this.content.animate({opacity: 0}, 500).promise()
     this.content.empty()
     await sleep(500)
 
     this.instruct(`That's it! Simple stuff right?`)
+  }
+
+  async stage_giveup() {
+    this.instruct(`How about this one?`)
+
+    let target = `
+      XXX
+      XXX
+      XXX
+    `
+    new BlockPuzzle({name: 'impossible', target, practice: true, allowQuitSeconds: 3}).attach(this.content).run()
+
+    await sleep(3000)
+
+    this.instruct('If you get stuck, you can use the "give up" button at the bottom.')
+    $('#blocks-btn-give_up').addClass('btn-pulse')
+    await eventPromise('blocks.quit')
+    $('#blocks-btn-give_up').removeClass('btn-pulse')
+
+    await this.content.animate({opacity: 0}, 500).promise()
+    this.content.empty()
+    await sleep(500)
+    await this.content.css({opacity: 1}).promise()
+
+    this.instruct('This one was impossible of course. But all the remaining puzzles can be solved.')
   }
 
   async stage_final() {
@@ -231,7 +261,7 @@ class BlockInstructions extends Instructions {
       button when you're ready to continue.
     `)
 
-    new BlockPuzzle({...this.trials[0], target: 'blank', prompt: false, practice: true}).attach(this.content).run()
+    new BlockPuzzle({...this.trials[0], target: 'blank', practice: true}).attach(this.content).run()
     this.content.animate({opacity: 1}, 200)
   }
 }

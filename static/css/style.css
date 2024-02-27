@@ -45,11 +45,10 @@ button.btn:disabled {
 
 .btn-pulse {
   animation: pulse 1.5s infinite;
-  /* Additional styling for the button */
   transition: transform 0.5s;
-  border: 3px solid rgba(0, 123, 255);
+/*  border: 3px solid rgba(0, 123, 255);*/
   font-weight: bold;
-  background-color: white; /* Customize button background color */
+  background-color: rgba(0, 123, 255, 0.2); /* Customize button background color */
   color: rgba(0, 123, 255);
 }
 

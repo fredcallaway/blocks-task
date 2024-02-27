@@ -21,7 +21,11 @@ function findTrial(name) {
 
 async function instructions(start=1) {
   logEvent('experiment.instructions')
-  await new BlockInstructions(_.shuffle(stimuli.basic)).attach(display).run(start)
+  let trials = [
+    {'name': 'easyrect', 'target': 'XXXXX\nXXXXX\nXXXXX'},
+    _.sample(stimuli.basic)
+  ]
+  await new BlockInstructions(trials).attach(display).run(start)
 }
 
 async function main() {
@@ -277,5 +281,3 @@ async function runExperiment() {
     )
   }
 };
-
-
