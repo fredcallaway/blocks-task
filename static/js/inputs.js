@@ -142,6 +142,23 @@ function alert_success(opts = {}) {
     confirmButtonText: 'Continue',
     ...opts
   })
+}
+
+function alert_failure(opts = {}) {
+  let flavor = _.sample([
+    "better luck next time!",
+    "shake it off and try again!",
+    "failure is the spice that gives success its flavor!",
+    "just a little detour on the road to greatness!",
+    "everyone likes an underdog, get back in there!"
+  ])
+  return Swal.fire({
+    title: "Let's try the next one",
+    html: `<em>${flavor}!</em>`,
+    icon: 'error',
+    confirmButtonText: 'Continue',
+    ...opts
+  })
 
 }
 

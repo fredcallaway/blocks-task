@@ -9,13 +9,6 @@ const COLORS = [
   "#a65628",
 ]
 
-
-
-
-
-
-
-
 const blockListeners = new EventListeners()
 
 class Block {
@@ -340,6 +333,7 @@ class BlockPuzzle extends BlockDisplay {
     window.puzzle = this
 
     if (this.dev) {
+      this.allowQuitSeconds = 0
       this.prompt = `
       <b>Developer Mode</b>&nbsp;&nbsp;
       Use this interface to design problems. Construct a shape with the blocks, then
@@ -413,18 +407,20 @@ class BlockPuzzle extends BlockDisplay {
       this.drawCanvas()
     })
 
-    if (this.allowQuitSeconds) {
+    if (this.allowQuitSeconds != undefined) {
       let btn = makeBtn('give up')
       .click((e) => {
         quickDisable(e)
         logEvent('blocks.quit')
-        this.solved.resolve();
+        this.done(false)
       })
-      btn.prop('disabled', true)
-      sleep(this.allowQuitSeconds * 1000).then(() => {
-        btn.prop('disabled', false)
-        btn.addClass('btn-pulse')
-      })
+      if (this.allowQuitSeconds > 0) {
+        btn.prop('disabled', true)
+        sleep(this.allowQuitSeconds * 1000).then(() => {
+          btn.prop('disabled', false)
+          btn.addClass('btn-pulse')
+        })
+      }
     }
 
     if (this.dev) {
@@ -593,17 +589,28 @@ class BlockPuzzle extends BlockDisplay {
         if (this.checkVictory()) {
           // need Array.from b/c Set does not get converted to json properly
           logEvent('blocks.victory', {configuration: Array.from(this.activeBlocks)})
-          await alert_success()
-          if (this.dev) {
-            // this.target = this.buildTarget('blank')
-            this.activeBlocks.clear()
-            this.drawCanvas()
-          } else {
-            this.solved.resolve();
-          }
+          this.done(true)
         }
       }
     });
+  }
+
+  async done(win) {
+    if (this.dev) {
+      if (!this.win) {
+        this.target = this.buildTarget('blank')
+      }
+      this.activeBlocks.clear()
+      this.drawCanvas()
+    } else {
+      if (win) {
+        await alert_success()
+      } else {
+        await alert_failure()
+      }
+      this.solved.resolve(win);
+    }
+
   }
 
   async run() {
