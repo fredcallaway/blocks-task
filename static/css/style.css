@@ -63,7 +63,7 @@ button.btn:disabled {
  #display {
   max-width: 1200px;
   margin: auto;
-  margin-top: 20px;
+  margin-top: 10px;
  }
 
  #display:focus {

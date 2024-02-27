@@ -194,7 +194,7 @@ class BlockDisplay {
     _.defaults(options, {
       grid: 30,
       width: 30,
-      height: 15,
+      height: 12,
       tray_height: 5,
       background: "#ADADAD",
       borderStyle: 'thick black solid',
@@ -229,7 +229,7 @@ class BlockDisplay {
     this.canvas = $('<canvas>')
     .prop({
       width: this.width * this.grid,
-      height: (this.height + this.tray_height) * this.grid
+      height: (2 + this.height + this.tray_height) * this.grid
     }).css({
       'margin-left': 'auto',
       'margin-right': 'auto',
@@ -242,7 +242,7 @@ class BlockDisplay {
 
   drawCanvas() {
     this.ctx.fillStyle = this.background;
-    this.ctx.fillRect(0, 0, this.width * this.grid, (this.height + this.tray_height) * this.grid);
+    this.ctx.fillRect(0, 0, this.width * this.grid, (2 + this.height + this.tray_height) * this.grid);
     this.target?.draw(this.ctx, this.grid);
     this.activeBlocks.forEach(block => {
       if (block !== this.currentBlock) {
@@ -362,7 +362,7 @@ class BlockPuzzle extends BlockDisplay {
     let xPos = 1;
     return blocks.map((s, i) => {
       let block = string2block(s, xPos, 0, i, i);
-      block.y = (this.height + this.tray_height - block.height - 1);
+      block.y = (2 + this.height + this.tray_height - block.height - 1);
       xPos += block.width + 1;
       return block;
     });
@@ -508,7 +508,7 @@ class BlockPuzzle extends BlockDisplay {
     block.x = x;
     block.y = y;
 
-    if (!block.isWithinBoundary(this.width, this.height)) {
+    if (!block.isWithinBoundary(this.width-1, 1 + this.tray_height + this.height)) {
       block.x = oldX;
       block.y = oldY;
       return false

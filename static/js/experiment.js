@@ -258,6 +258,7 @@ async function handleSpecialMode() {
 
 
 async function runExperiment() {
+  enforceScreenSize(1200, 750)
   stimuli = await $.getJSON(`static/json/stimuli.json`)
 
   let seen = new Set()

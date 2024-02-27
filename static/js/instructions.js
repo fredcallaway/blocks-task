@@ -8,7 +8,7 @@ class Instructions {
       // border: 'thick black solid',
       position: 'relative',
       margin: 'auto',
-      padding: '30px',
+      padding: '10px',
       'user-select': 'none',
     })
 
@@ -60,7 +60,7 @@ class Instructions {
 
     this.prompt = $('<div>').css({
       'max-width': 700,
-      'height': 120,
+      'height': 100,
       'margin': 'auto',
     }).appendTo(this.div)
 

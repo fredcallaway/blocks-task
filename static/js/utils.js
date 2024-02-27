@@ -1,3 +1,45 @@
+function enforceScreenSize(width, height, display='#display') {
+  display = $(display)
+
+  warning = $('<div>')
+  .addClass('alert alert-warning center')
+  .css({
+    'width': 400,
+    // 'position': 'absolute',
+    // 'top': '30%',
+    'margin': 'auto',
+    'margin-top': '100px'
+  })
+  .html(`
+    <h4>Screen too small</h4>
+
+    <p>Your window isn't big enough to run the experiment. Please try expanding the window.
+    It might help to use full screen mode.
+  `).hide()
+  .appendTo(document.body)
+
+  $('<button>').addClass('btn btn-primary').css('margin-top', '20px').text('enter fullscreen').appendTo(warning)
+  .click(() => {
+    document.documentElement.requestFullscreen()
+  })
+
+
+
+  function enforcer() {
+    if (window.innerWidth < width || window.innerHeight < height) {
+      warning.show()
+      display.hide()
+    } else {
+      warning.hide()
+      display.show()
+      console.log("OK");
+    }
+  }
+  window.addEventListener('resize', enforcer);
+  enforcer()
+  return enforcer
+}
+
 
 function make_promise() {
   let {promise, resolve, reject} = Promise.withResolvers();
