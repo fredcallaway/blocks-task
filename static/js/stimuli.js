@@ -20,15 +20,11 @@ var LIBRARIES = {
     `
   ],
   hard: [
-    `
-      X
-    `, `
+
+    `,
       .X
-      XX
-    `, `
-      X
-      XX
-      X
+      XXX
+      .X
     `,
      `
       X
@@ -47,7 +43,7 @@ var LIBRARIES = {
       X
       XX
     `, `
-      XXXX
+      XXX
       X
       X
     `

@@ -9,6 +9,13 @@ const COLORS = [
   "#a65628",
 ]
 
+
+
+
+
+
+
+
 const blockListeners = new EventListeners()
 
 class Block {
@@ -318,7 +325,8 @@ class BlockDisplayOnly extends BlockDisplay {
 class BlockPuzzle extends BlockDisplay {
   constructor(options = {}) {
     _.defaults(options, {
-      library: TETRIS_BLOCKS,
+      // library: TETRIS_BLOCKS,
+      library: LIBRARIES.hard,
       target: BLANK,
       prompt: ``,
       allowQuit: false,
@@ -440,7 +448,6 @@ class BlockPuzzle extends BlockDisplay {
 
   drawCanvas() {
     super.drawCanvas()
-    console.log('this.library', this.library)
     this.library.forEach(block => {
       block.draw(this.ctx, this.grid);
     });
@@ -575,7 +582,13 @@ class BlockPuzzle extends BlockDisplay {
           // need Array.from b/c Set does not get converted to json properly
           logEvent('blocks.victory', {configuration: Array.from(this.activeBlocks)})
           await alert_success()
-          this.solved.resolve();
+          if (this.dev) {
+            // this.target = this.buildTarget('blank')
+            this.activeBlocks.clear()
+            this.drawCanvas()
+          } else {
+            this.solved.resolve();
+          }
         }
       }
     });

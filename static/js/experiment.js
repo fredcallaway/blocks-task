@@ -7,17 +7,21 @@ psiturk.recordUnstructuredData('params', PARAMS);
 
 const PROLIFIC_CODE = 'CHDRYEDZ'
 var BONUS = 0
-var N_TRIAL = _(TRIALS.main).map(block => block.length).sum()
+
+// var N_TRIAL = _(TRIALS.main).map(block => block.length).sum()
+var stimuli
+var main_trials
+var N_TRIAL
 
 const display = $('#display')
 
-function buildTrials(names) {
-  return names.map(name => _.find(PUZZLES, {name}))
+function findTrial(name) {
+  return _.find(stimuli.basic.concat(stimuli.compositions), {name})
 }
 
 async function instructions(start=1) {
   logEvent('experiment.instructions')
-  await new BlockInstructions(buildTrials(TRIALS.practice)).attach(display).run(start)
+  await new BlockInstructions(_.shuffle(stimuli.basic)).attach(display).run(start)
 }
 
 async function main() {
@@ -60,22 +64,10 @@ async function main() {
 
   let trial_number = 1
 
-  for (let block of TRIALS.main) {
-    block = _.shuffle(block)
-    let hatIdx = _.indexOf(block, 'hat')
-    if (hatIdx != -1) {
-      block[hatIdx] = block[3]
-      block[3] = 'hat'
-    }
-    for (let trial of buildTrials(block)) {
-      console.log('main puzzle', trial.name)
-    }
-    for (let trial of buildTrials(block)) {
-      counter.text(`Round ${trial_number++} / ${N_TRIAL}`)
-      await new BlockPuzzle(trial).attach(content).run()
-      saveData()
-    }
-
+  for (let trial of _.shuffle(main_trials)) {
+    counter.text(`Round ${trial_number++} / ${N_TRIAL}`)
+    await new BlockPuzzle(trial).attach(content).run()
+    saveData()
   }
 }
 
@@ -215,13 +207,13 @@ async function dataViewer(uid='fred') {
 
     content.empty()
     title.text(uid)
-    for (let block of TRIALS.main) {
+    console.log('data.solutions', data.solutions)
+    for (let block of [stimuli.basic, stimuli.compositions]) {
       let row = $('<div>').appendTo(content)
-      for (let name of block) {
+      for (let trial of block) {
         let div = $('<div>').css('display', 'inline-block').appendTo(row)
-        let trial = _.find(PUZZLES, {name})
         trial.grid = 15
-        trial.configuration = data.solutions[name]
+        trial.configuration = data.solutions[trial.name]
         new BlockDisplayOnly(trial).attach(div)
       }
     }
@@ -243,14 +235,14 @@ async function handleSpecialMode() {
 
   else if (urlParams.dev) {
     await new BlockPuzzle({
-      target: 'blank',
       library: LIBRARIES[urlParams.dev] ?? LIBRARIES.easy,
       dev: true
     }).attach(display).run()
   }
 
   else if (urlParams.puzzle) {
-    for (let trial of buildTrials(urlParams.puzzle.split("_"))) {
+    for (let name of urlParams.puzzle.split("_")) {
+      let trial = findTrial(name)
       await new BlockPuzzle(trial).attach(display).run()
     }
   }
@@ -267,6 +259,21 @@ async function handleSpecialMode() {
 
 
 async function runExperiment() {
+  stimuli = await $.getJSON(`static/json/stimuli.json`)
+
+  let seen = new Set()
+  main_trials = _.shuffle(stimuli.compositions).filter(stim => {
+    let alt = stim.name.split("-").reverse().join("-")
+    if (seen.has(alt)) {
+      return false
+    } else {
+      seen.add(stim.name)
+      return true
+    }
+  })
+  console.log('main_trials', main_trials)
+
+  N_TRIAL = main_trials.length
   if (await handleSpecialMode() == 'normal') {
     await runTimeline(
       instructions,

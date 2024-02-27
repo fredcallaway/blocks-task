@@ -1,3 +1,4 @@
+
 DIAMOND
 ...XX...
 ..XXXX..
@@ -104,3 +105,11 @@ XXX......
 .XXXXXXXX
 .XXXXXXXX
 ........X
+
+YELLOW
+....X.
+..XXX.
+XXXXX.
+.XXXX.
+.XXXXX
+...XX.

@@ -208,7 +208,7 @@ class BlockInstructions extends Instructions {
   }
 
   async stage_practice2() {
-    this.instruct(`Well done! Let's try a harder one.`)
+    this.instruct(`Well done! Let's try another one.`)
     await new BlockPuzzle({...this.trials[1], prompt: false, practice: true}).attach(this.content).run()
 
     await this.content.animate({opacity: 0}, 500).promise()

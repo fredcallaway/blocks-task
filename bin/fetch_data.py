@@ -24,11 +24,12 @@ def get_database():
 
 
 class Anonymizer(object):
-    def __init__(self):
+    def __init__(self, enabled=True):
         self.mapping = {}
+        self.enabled = enabled
 
     def __call__(self, worker_id):
-        if 'debug' in worker_id:
+        if not self.enabled or 'debug' in worker_id:
             return worker_id
         if worker_id not in self.mapping:
             self.mapping[worker_id] = 'w' + hashlib.md5(worker_id.encode()).hexdigest()[:7]
@@ -47,7 +48,7 @@ def write_csv(file, records):
             writer.writerow(record)
 
 def write_data(version, mode):
-    anonymize = Anonymizer()
+    anonymize = Anonymizer(enabled = mode == 'live')
 
     if mode != 'local':
         env = os.environ
@@ -78,7 +79,8 @@ def write_data(version, mode):
         except:
             import IPython, time; IPython.embed(); time.sleep(0.5)
         meta = pick(datastring, metakeys)
-        meta['wid'] = anonymize(datastring['workerId'])
+        meta['wid'] = anonymize(p.workerid)
+
         participants.append(meta)
 
         # datastring['eventdata']
@@ -97,7 +99,7 @@ def write_data(version, mode):
 
     write_csv(f'data/raw/{version}/participants.csv', participants)
 
-    with open(f'data/raw/{version}/idenutifiers.json', 'w') as f:
+    with open(f'data/raw/{version}/identifiers.json', 'w') as f:
         json.dump(anonymize.mapping, f)
 
     print(len(participants), 'participants')
