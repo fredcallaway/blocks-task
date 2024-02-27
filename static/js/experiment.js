@@ -232,46 +232,48 @@ async function dataViewer(uid='fred') {
   await make_promise()
 }
 
-
-async function runExperiment() {
+async function handleSpecialMode() {
   if (urlParams.try) {
     await problemViewer(urlParams.try)
-    return
   }
 
-  if (urlParams.show) {
+  else if (urlParams.show) {
     await dataViewer(urlParams.show)
-    return
   }
 
-  if (urlParams.dev) {
+  else if (urlParams.dev) {
     await new BlockPuzzle({
       target: 'blank',
       library: LIBRARIES[urlParams.dev] ?? LIBRARIES.easy,
       dev: true
     }).attach(display).run()
-    return
   }
-  if (urlParams.puzzle) {
+
+  else if (urlParams.puzzle) {
     for (let trial of buildTrials(urlParams.puzzle.split("_"))) {
       await new BlockPuzzle(trial).attach(display).run()
     }
-    return
   }
-  if (urlParams.instruct) {
+
+  else if (urlParams.instruct) {
     await instructions(parseInt(urlParams.instruct))
     await main()
   }
 
-  // throw new Error("FIX DROP COLLISION")
-  // the actual experiment
-  // const stimuli = await $.getJSON('static/stimuli/stimuli.json')
-  await runTimeline(
-    instructions,
-    main,
-    debrief
-  )
+  else {
+    return 'normal'
+  }
+}
 
+
+async function runExperiment() {
+  if (await handleSpecialMode() == 'normal') {
+    await runTimeline(
+      instructions,
+      main,
+      debrief
+    )
+  }
 };
 
 
