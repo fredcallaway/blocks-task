@@ -229,7 +229,10 @@ def generate_internal_name():
     c = configparser.ConfigParser()
     c.read('config.txt')
     version = c["Task Parameters"]["experiment_code_version"]
-    project_name = c["Server Parameters"]["adserver_revproxy_host"].split('.')[0]
+    try:
+        project_name = c["Prolific"]["project_name"]
+    except:
+        project_name = c["Prolific"]["name"]
     sha = subprocess.getoutput('git rev-parse HEAD')[:8]
     return ' '.join([project_name, version, sha])
 

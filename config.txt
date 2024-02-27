@@ -17,8 +17,9 @@ table_name = participants
 
 [Prolific]
 name = Block Puzzles
+project_name = blocks
 reward = 400
-total_available_places = 2
+total_available_places = 3
 estimated_completion_time = 20
 description =
     In this study, you will solve a series of puzzles that involve
