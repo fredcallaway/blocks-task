@@ -84,10 +84,6 @@ async function debrief() {
     Did you notice that some shapes showed up multiple times?
   `, ['yes', 'no'])
 
-  let square = radio_buttons(display, `
-    Did you try to avoid using the small red square?
-  `, ['yes', 'no'])
-
   let difficulty = radio_buttons(display, `
     How difficult were the problems, overall?
   `, ['too easy', 'just right', 'too hard'])
@@ -99,7 +95,6 @@ async function debrief() {
   await button(display, 'submit').clicked
   logEvent('debrief.submitted', {
     noticed: noticed.val(),
-    square: square.val(),
     difficulty: difficulty.val(),
     feedback: feedback.val(),
   })
