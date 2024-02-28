@@ -74,7 +74,7 @@ class Prolific(object):
                 v = markdown(v)
             kws[k] = v
 
-        if kws['reward'] > 1000:
+        if int(kws['reward']) > 1000:
             reward = f"${kws['reward'] / 100:.2f}"
             confirm = input(f'High reward detected: {reward} per person. Is that right? [y/N] ')
             if confirm != 'y':

@@ -194,7 +194,7 @@ async function runExperiment() {
   }
 
   await runTimeline(
-    // instructions,
+    instructions,
     social,
     main,
     debrief
