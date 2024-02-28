@@ -88,6 +88,13 @@ class Instructions {
     console.log("END RUN")
   }
 
+  sleep(ms) {
+    // this allows us to cancel sleeps when the user flips to a new page
+    this._sleep = make_promise()
+    sleep(ms).then(() => this._sleep.resolve())
+    return this._sleep
+  }
+
   message(md) {
     this.prompt.html(markdown(md))
   }
@@ -105,6 +112,7 @@ class Instructions {
   }
 
   async runStage(n) {
+    this._sleep?.reject()
     this.prompt.empty()
     this.content.empty()
     logEvent(`instructions.runStage.${n}`)
@@ -182,7 +190,6 @@ class BlockInstructions extends Instructions {
 
     await eventPromise('blocks.drop.place')
     erase.reject()
-    // await sleep()
 
     this.instruct(`
       Nice! You can also rotate blocks. Pick up a block and press <code>space</code>.
@@ -196,31 +203,22 @@ class BlockInstructions extends Instructions {
     $('#blocks-btn-clear').addClass('btn-pulse')
     await eventPromise('blocks.clear')
     $('#blocks-btn-clear').removeClass('btn-pulse')
-    this.instruct(`Yup, just like that.`)
+    this.instruct(`You seem to have gotten the hang of this. Let's make things more interesting...`)
   }
 
   async stage_practice1() {
-
-    this.instruct(`You seem to have gotten the hang of this. Let's make things more interesting.`)
-    await this.button()
     this.instruct(`Try to fill in the white area.`)
 
     let puzzle = new BlockPuzzle({
       ...this.trials[0], practice: true, allowQuitSeconds: null}
     ).attach(this.content)
-    this.content.animate({opacity: 1}, 200)
+    // this.content.animate({opacity: 1}, 200)
     await puzzle.run()
   }
 
   async stage_practice2() {
     this.instruct(`Well done! Let's try a harder one.`)
     await new BlockPuzzle({...this.trials[1], practice: true}).attach(this.content).run()
-
-    await this.content.animate({opacity: 0}, 500).promise()
-    this.content.empty()
-    await sleep(500)
-
-    this.instruct(`That's it! Simple stuff right?`)
   }
 
   async stage_giveup() {
@@ -231,21 +229,26 @@ class BlockInstructions extends Instructions {
       XXX
       XXX
     `
-    new BlockPuzzle({name: 'impossible', target, practice: true, allowQuitSeconds: 3}).attach(this.content).run()
+    let resolved = new BlockPuzzle(
+      {name: 'impossible', target, practice: true, allowQuitSeconds: 3}
+    ).attach(this.content).run()
 
-    await sleep(3000)
+    await this.sleep(5000)
 
     this.instruct('If you get stuck, you can use the "give up" button at the bottom.')
     $('#blocks-btn-give_up').addClass('btn-pulse')
-    await eventPromise('blocks.quit')
+    await resolved
     $('#blocks-btn-give_up').removeClass('btn-pulse')
 
     await this.content.animate({opacity: 0}, 500).promise()
     this.content.empty()
-    await sleep(500)
-    await this.content.css({opacity: 1}).promise()
+    await this.sleep(500)
+    this.content.css({opacity: 1})
 
-    this.instruct('This one was impossible of course. But all the remaining puzzles can be solved.')
+    this.instruct(`
+      That one was impossible, but all the remaining puzzles can be solved
+      (pinky promise). Still, if you get really stuck, you can skip.
+    `)
   }
 
   async stage_final() {
@@ -253,15 +256,32 @@ class BlockInstructions extends Instructions {
       In the rest of the experiment, you'll solve ${N_TRIAL} more puzzles.
       There's no better or worse way to solve them. Just try to do them
       as quickly as you can, so that you can get on with your day!
+      Feel free to review the instructions with the arrows before you move on.
+      <br><br>
+      <div class="alert alert-danger">
+        <b>Warning!</b><br>
+        Once you complete the instructions, <strong>you cannot refresh the page</strong>.
+        If you do, you will get an error message and you won't be able to complete the
+        study.
+      </div>
     `)
-    await this.button()
-
-    this.instruct(`
-      Feel free to play around with the board as long as you like. Click the next
-      button when you're ready to continue.
-    `)
-
-    new BlockPuzzle({...this.trials[0], target: 'blank', practice: true}).attach(this.content).run()
-    this.content.animate({opacity: 1}, 200)
+    let question = 'Are you going to refresh the page after completing the instructions?'
+    let radio = radio_buttons(this.prompt, question, ['yes', 'no'])
+    let post = $('<div>').appendTo(this.prompt)
+    let no = make_promise()
+    let done = false
+    radio.click((val) => {
+      if (val == 'yes') {
+        post.html("Haha... But seriously.")
+      } else {
+        no.resolve()
+      }
+    })
+    await no
+    radio.buttons().off()
+    radio.buttons().prop('disabled', true)
+    post.html('Good. No refreshing!')
+    await this.button('finish instructions')
+    this.runNext()
   }
 }

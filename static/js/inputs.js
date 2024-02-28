@@ -75,8 +75,16 @@ class RadioButtons extends Input {
     .appendTo(this.div)
 
   }
+  buttons() {
+    return $(`input[name=${this._name}]`)
+  }
   val() {
     return $(`input[name=${this._name}]:checked`).val()
+  }
+  click(f) {
+    this.buttons().click(() => {
+      f(this.val())
+    })
   }
 }
 
