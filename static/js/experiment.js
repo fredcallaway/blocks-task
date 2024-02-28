@@ -157,7 +157,11 @@ async function runExperiment() {
     `))
 
     let noticed = radio_buttons(DISPLAY, `
-      Did you notice that some shapes showed up multiple times?
+      Did you notice that some parts of the puzzles showed up multiple times?
+    `, ['yes', 'no'])
+
+    let used = radio_buttons(DISPLAY, `
+      Did you try to copy from the examples?
     `, ['yes', 'no'])
 
     let difficulty = radio_buttons(DISPLAY, `
@@ -171,6 +175,7 @@ async function runExperiment() {
     await button(DISPLAY, 'submit').clicked
     logEvent('debrief.submitted', {
       noticed: noticed.val(),
+      used: used.val(),
       difficulty: difficulty.val(),
       feedback: feedback.val(),
     })
