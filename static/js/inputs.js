@@ -194,6 +194,7 @@ class TopBar {
       this.counter = $('<div>')
       .addClass('left')
       .css({
+        'margin-top': '20px',
         'font-weight': 'bold',
         'font-size': '16pt'
       })

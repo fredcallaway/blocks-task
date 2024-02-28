@@ -291,6 +291,8 @@ class BlockDisplay {
 class BlockDisplayOnly extends BlockDisplay {
   constructor(options = {}) {
     _.defaults(options, {
+      width: 23,
+      height: 10,
       background: 'white',
       borderStyle: 'none',
     })
@@ -356,7 +358,7 @@ class BlockPuzzle extends BlockDisplay {
   }
 
   logEvent(event, info={}) {
-    info.name = this.name
+    info.name = this.name ?? info.name
     logEvent(event, info)
   }
 

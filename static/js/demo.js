@@ -112,12 +112,25 @@ async function dataViewer(uid='fred') {
   await show(uid)
 }
 
-function findTrial(name) {
-  return _.find(STIMULI.basic.concat(STIMULI.compositions), {name})
+
+
+async function solveBasic() {
+  let solutions = {}
+  for (let trial of STIMULI.basic) {
+    let puzzle = new BlockPuzzle(trial)
+    await puzzle.run(DISPLAY)
+    solutions[trial.name] = Array.from(puzzle.activeBlocks)
+  }
+  navigator.clipboard.writeText(JSON.stringify(solutions))
+  alert("Coppied solutions to clipboard")
 }
 
 async function handleSpecialMode() {
   let busy = make_promise()
+
+  if (urlParams.basic) {
+    await solveBasic()
+  }
 
   if (urlParams.puzzle) {
     await puzzleViewer(urlParams.puzzle)
