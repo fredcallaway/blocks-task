@@ -219,8 +219,18 @@ class BlockDisplay {
   }
 
   buildTarget(block) {
-    let target = string2block(block, 0, 0, 'white', 'target')
-    return target
+    if (block == 'blank') {
+      let parts = []
+      _.range(0, this.height).forEach(y => {
+        _.range(0, this.width-2).forEach(x => {
+            parts.push({x, y})
+        })
+      })
+      return new Block({x: 0, y: 0, parts, color: 'white', id: 'target'})
+
+    } else {
+      return string2block(block, 0, 0, 'white', 'target')
+    }
   }
 
   centerTarget() {
@@ -241,7 +251,7 @@ class BlockDisplay {
     this.canvas = $('<canvas>')
     .prop({
       width: this.width * this.grid,
-      height: (2 + this.height + this.tray_height) * this.grid
+      height: (1 + this.height + this.tray_height) * this.grid
     }).css({
       'margin-left': 'auto',
       'margin-right': 'auto',
@@ -254,7 +264,7 @@ class BlockDisplay {
 
   drawCanvas() {
     this.ctx.fillStyle = this.background;
-    this.ctx.fillRect(0, 0, this.width * this.grid, (2 + this.height + this.tray_height) * this.grid);
+    this.ctx.fillRect(0, 0, this.width * this.grid, (1 + this.height + this.tray_height) * this.grid);
     this.target?.draw(this.ctx, this.grid);
     this.activeBlocks.forEach(block => {
       if (block !== this.currentBlock) {
@@ -325,7 +335,7 @@ class BlockPuzzle extends BlockDisplay {
     _.defaults(options, {
       // library: TETRIS_BLOCKS,
       library: LIBRARIES.hard,
-      target: BLANK,
+      target: 'blank',
       prompt: ``,
       allowQuitSeconds: 90,
       // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
@@ -370,7 +380,7 @@ class BlockPuzzle extends BlockDisplay {
     let xPos = 1;
     return blocks.map((s, i) => {
       let block = string2block(s, xPos, 0, i, i);
-      block.y = (2 + this.height + this.tray_height - block.height - 1);
+      block.y = (1 + this.height + this.tray_height - block.height - 1);
       xPos += block.width + 1;
       return block;
     });
