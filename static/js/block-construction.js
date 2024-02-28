@@ -204,11 +204,10 @@ class BlockDisplay {
     Object.assign(this, options)
     this.activeBlocks = new Set(this.configuration.map(x => new Block(x)));
     if (this.target) {
-      this.target = this.buildTarget(this.target)
+      this.buildTarget(this.target)
     }
 
     this.div = $("<div>").css('text-align', 'center')
-    this.centerTarget()
     this.buildCanvas()
   }
 
@@ -219,6 +218,7 @@ class BlockDisplay {
   }
 
   buildTarget(block) {
+    let target;
     if (block == 'blank') {
       let parts = []
       _.range(0, this.height).forEach(y => {
@@ -226,15 +226,11 @@ class BlockDisplay {
             parts.push({x, y})
         })
       })
-      return new Block({x: 0, y: 0, parts, color: 'white', id: 'target'})
-
+      target = new Block({x: 0, y: 0, parts, color: 'white', id: 'target'})
     } else {
-      return string2block(block, 0, 0, 'white', 'target')
+      target = string2block(block, 0, 0, 'white', 'target')
     }
-  }
-
-  centerTarget() {
-    let target = this.target
+    // center it
     assert(target.x == 0)
     assert(target.y == 0)
 
@@ -244,8 +240,10 @@ class BlockDisplay {
       block.x += target.x
       block.y += target.y
     }
-
+    this.target = target
+    return target
   }
+
 
   buildCanvas() {
     this.canvas = $('<canvas>')
@@ -355,8 +353,7 @@ class BlockPuzzle extends BlockDisplay {
       `
     }
 
-    this.library = this.buildLibrary(this.library);
-    // this.target = this.buildTarget(this.target)
+    this.buildLibrary(this.library);
     this.logEvent('blocks.target', this.target)
     this.buildDisplay()
     this.solved = make_promise()
@@ -378,7 +375,7 @@ class BlockPuzzle extends BlockDisplay {
 
   buildLibrary(blocks) {
     let xPos = 1;
-    return blocks.map((s, i) => {
+    this.library = blocks.map((s, i) => {
       let block = string2block(s, xPos, 0, i, i);
       block.y = (1 + this.height + this.tray_height - block.height - 1);
       xPos += block.width + 1;
@@ -463,7 +460,7 @@ class BlockPuzzle extends BlockDisplay {
         })
         if (res.value) {
           let prev = this.target
-          this.target = this.buildTarget(res.value)
+          this.buildTarget(res.value)
           this.activeBlocks.clear()
           this.drawCanvas()
         }
@@ -614,7 +611,7 @@ class BlockPuzzle extends BlockDisplay {
   async done(win) {
     if (this.dev) {
       if (!this.win) {
-        this.target = this.buildTarget('blank')
+        this.buildTarget('blank')
       }
       this.activeBlocks.clear()
       this.drawCanvas()
