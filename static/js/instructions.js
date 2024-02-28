@@ -84,9 +84,11 @@ class Instructions {
 
   async run(display, stage) {
     if (display) this.attach(display)
+    if (stage == undefined && urlParams.instruct) {
+      stage = parseInt(urlParams.instruct)
+    }
     this.runStage(stage)
     await this.completed
-    console.log("END RUN")
   }
 
   sleep(ms) {

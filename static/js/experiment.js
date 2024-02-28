@@ -49,13 +49,13 @@ async function runExperiment() {
   enforceScreenSize(1200, 750)
   let stimuli = buildStimuli()
 
-  async function instructions(stage=1) {
+  async function instructions() {
     logEvent('experiment.instructions')
     let trials = [
       {'name': 'easyrect', 'target': 'XXXXX\nXXXXX\nXXXXX'},
       _.sample(STIMULI.basic)
     ]
-    await new BlockInstructions(trials).run(DISPLAY, stage)
+    await new BlockInstructions(trials).run(DISPLAY)
   }
 
   async function main() {
