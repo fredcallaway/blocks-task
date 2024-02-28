@@ -74,9 +74,17 @@ class Prolific(object):
                 v = markdown(v)
             kws[k] = v
 
+        if kws['reward'] > 1000:
+            reward = f"${kws['reward'] / 100:.2f}"
+            confirm = input(f'High reward detected: {reward} per person. Is that right? [y/N] ')
+            if confirm != 'y':
+                print('NOT posting')
+                return
+
         new = self.patch(f'/studies/{new_id}/', kws)
 
         new['cost'] = f"${new['total_cost'] / 100:.2f}"
+
         for k in ['name', 'internal_name', 'description', 'reward', 'total_available_places', 'cost']:
             print(k + ': ' + str(new[k]))
         preview_link = new['external_study_url'].replace(
@@ -84,16 +92,19 @@ class Prolific(object):
         ).replace('{{%SESSION_ID%}}', 'debug').replace('{{%STUDY_ID%}}', 'debug')
         print(preview_link)
 
-        y = input(f'Go ahead? [y/N] ')
-        if y.lower() == 'y':
+        confirm = input(f'Go ahead? [y/N] ')
+        if confirm.lower() == 'y' and new['total_cost'] > 20000:
+            confirm = input("EXPENSIVE! Just to be sure, you want to spend", new['total_cost'], 'correct? [y/N] ')
+        if confirm.lower() == 'y':
+
             self.post(f'/studies/{new_id}/transition/', {
                 "action": "PUBLISH"
             })
             print('Posted! See submssisions at:')
             print(f'https://app.prolific.co/researcher/workspaces/studies/{new_id}/submissions')
         else:
-            y = input('NOT posting. Keep draft? [Y/n] ')
-            if y.lower() == 'n':
+            confirm = input('NOT posting. Keep draft? [Y/n] ')
+            if confirm.lower() == 'n':
                 self.delete('/studies/' + new['id'])
             else:
                 print(f'https://app.prolific.co/researcher/workspaces/studies/{new_id}')
