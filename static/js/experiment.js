@@ -34,7 +34,8 @@ async function main() {
   let top = $('<div>')
   .css({
     // 'border': 'thin red solid',
-    'margin-bottom': '10px'
+    'margin-bottom': '10px',
+    'margin-top': '70px'
   })
   .appendTo(display)
 

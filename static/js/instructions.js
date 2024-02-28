@@ -115,6 +115,7 @@ class Instructions {
     this._sleep?.reject()
     this.prompt.empty()
     this.content.empty()
+    this.content.css({opacity: 1}) // just to be safe
     logEvent(`instructions.runStage.${n}`)
     this.maxStage = Math.max(this.maxStage, n)
     this.stage = n
@@ -243,7 +244,6 @@ class BlockInstructions extends Instructions {
     await this.content.animate({opacity: 0}, 500).promise()
     this.content.empty()
     await this.sleep(500)
-    this.content.css({opacity: 1})
 
     this.instruct(`
       That one was impossible, but all the remaining puzzles can be solved
