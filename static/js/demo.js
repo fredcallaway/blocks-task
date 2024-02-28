@@ -1,13 +1,19 @@
 // code for demonstration widgets, not part of the actual experiment
 
-async function problemViewer() {
+async function puzzleViewer(name) {
   let wrapper = $('<div>').css({
     'position': 'relative',
     'margin': 'auto',
-    'width': '1200px',
+    'width': '1100px',
     'text-align': 'center',
     // 'border': 'thin red solid'
-  }).appendTo(display)
+  }).appendTo(DISPLAY)
+
+  async function showPuzzle(trial) {
+    console.log('trial', trial)
+    await new BlockPuzzle({...trial, allowQuitSeconds: 0, prompt: trial.name}).run(wrapper)
+    showSelector()
+  }
 
   function showSelector() {
     wrapper.empty()
@@ -21,15 +27,17 @@ async function problemViewer() {
         let trial = _.find(PUZZLES, {name})
         // trial.configuration = data.solutions[name]
         new BlockDisplayOnly({...trial, grid: 15}).attach(div)
-        div.click(async () => {
-          await new BlockPuzzle({...trial, allowQuit: true, prompt: trial.name}).attach(wrapper).run()
-          showSelector()
-        })
+        div.click(() => showPuzzle(trial))
       }
     }
   }
-  showSelector()
-  await make_promise()
+
+  if (name && _.find(PUZZLES, {name})) {
+    showPuzzle(_.find(PUZZLES, {name}))
+  } else {
+    console.log('selector')
+    showSelector()
+  }
 }
 
 async function dataViewer(uid='fred') {
@@ -39,7 +47,7 @@ async function dataViewer(uid='fred') {
     'width': '1200px',
     'text-align': 'center',
     // 'border': 'thin red solid'
-  }).appendTo(display)
+  }).appendTo(DISPLAY)
 
   let title = $('<h1>').appendTo(wrapper)
 
@@ -91,7 +99,7 @@ async function dataViewer(uid='fred') {
     content.empty()
     title.text(uid)
     console.log('data.solutions', data.solutions)
-    for (let block of [stimuli.basic, stimuli.compositions]) {
+    for (let block of [STIMULI.basic, STIMULI.compositions]) {
       let row = $('<div>').appendTo(content)
       for (let trial of block) {
         let div = $('<div>').css('display', 'inline-block').appendTo(row)
@@ -101,41 +109,31 @@ async function dataViewer(uid='fred') {
       }
     }
   }
-
   await show(uid)
+}
 
-  await make_promise()
+function findTrial(name) {
+  return _.find(STIMULI.basic.concat(STIMULI.compositions), {name})
 }
 
 async function handleSpecialMode() {
-  if (urlParams.try) {
-    await problemViewer(urlParams.try)
-  }
+  let busy = make_promise()
 
-  else if (urlParams.show) {
-    await dataViewer(urlParams.show)
+  if (urlParams.puzzle) {
+    await puzzleViewer(urlParams.puzzle)
   }
-
+  else if (urlParams.data) {
+    await dataViewer(urlParams.data)
+  }
   else if (urlParams.dev) {
     await new BlockPuzzle({
       library: LIBRARIES[urlParams.dev] ?? LIBRARIES.easy,
       dev: true
-    }).attach(display).run()
+    }).attach(DISPLAY).run()
   }
-
-  else if (urlParams.puzzle) {
-    for (let name of urlParams.puzzle.split("_")) {
-      let trial = findTrial(name)
-      await new BlockPuzzle(trial).attach(display).run()
-    }
-  }
-
-  else if (urlParams.instruct) {
-    await instructions(parseInt(urlParams.instruct))
-    await main()
-  }
-
   else {
-    return 'normal'
+    busy.resolve()
   }
+
+  await busy
 }

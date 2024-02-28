@@ -82,8 +82,9 @@ class Instructions {
     return this
   }
 
-  async run(start=1) {
-    this.runStage(start)
+  async run(display, stage) {
+    if (display) this.attach(display)
+    this.runStage(stage)
     await this.completed
     console.log("END RUN")
   }
@@ -155,6 +156,7 @@ class BlockInstructions extends Instructions {
   constructor(trials) {
     super()
     this.trials = trials
+    window.instruct = this
   }
 
   async stage_welcome() {
@@ -212,10 +214,12 @@ class BlockInstructions extends Instructions {
     await new BlockPuzzle({
       ...this.trials[0], practice: true, allowQuitSeconds: null}
     ).run(this.content)
+    
+    this.instruct(`Well done!`)
   }
 
   async stage_practice2() {
-    this.instruct(`Well done! Let's try a harder one.`)
+    this.instruct(`Let's try a harder one.`)
     await new BlockPuzzle({...this.trials[1], practice: true}).run(this.content)
   }
 
