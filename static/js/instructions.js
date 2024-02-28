@@ -66,7 +66,7 @@ class Instructions {
 
     this.content = $('<div>').appendTo(this.div)
 
-    this.stage = null
+    this.stage = 0
     this.maxStage = 0
     this.stages = Object.getOwnPropertyNames(Object.getPrototypeOf(this))
     .filter(f => f.startsWith('stage_'))
@@ -87,7 +87,7 @@ class Instructions {
     if (stage == undefined && urlParams.instruct) {
       stage = parseInt(urlParams.instruct)
     }
-    this.runStage(stage)
+    this.runStage(stage ?? 1)
     await this.completed
   }
 

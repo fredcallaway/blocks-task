@@ -31,6 +31,9 @@ class Button extends Input {
       sleep(delay).then(this.clicked.resolve)
     })
   }
+  css(...args) {
+    this.button.css(...args)
+  }
 }
 
 

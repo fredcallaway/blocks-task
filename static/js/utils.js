@@ -32,7 +32,6 @@ function enforceScreenSize(width, height, display='#display') {
     } else {
       warning.hide()
       display.show()
-      console.log("OK");
     }
   }
   window.addEventListener('resize', enforcer);

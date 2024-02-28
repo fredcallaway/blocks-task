@@ -1,3 +1,7 @@
+.text {
+  margin: auto;
+  max-width: 700px;
+}
 
 .btn-help {
   background-color: #3fc3ee;

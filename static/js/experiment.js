@@ -25,19 +25,20 @@ function buildStimuli() {
   let basic = _.map(_.shuffle(STIMULI.basic), 'name')
   let compositions = _.map(_.shuffle(STIMULI.compositions), 'name')
 
-  let examples = basic.map((name, i) => name + "-" + basic[(i+1) % basic.length])
+  let examples = _.shuffle(basic.map((name, i) => name + "-" + basic[(i+1) % basic.length]))
 
   let used = new Set(examples)
-  console.log('used', used)
   let main = _.shuffle(compositions).filter(name => {
     if (!used.has(name) && !used.has(name.split("-").reverse().join("-"))) {
       used.add(name)
       return true
     }
   })
+  main.splice(3, 0, examples[3])
+
   N_TRIAL = main.length
   return {
-    examples: _.shuffle(examples).map(findTrial),
+    examples: examples.map(findTrial),
     main: main.map(findTrial)
   }
 }
@@ -59,12 +60,47 @@ async function runExperiment() {
     await new BlockInstructions(trials).run(DISPLAY)
   }
 
+  async function social() {
+    DISPLAY.empty()
+    $('<div>').html(markdown(`
+      # Examples
+
+      The remaining puzzles are a lot harder than ones you've seen so far. To help
+      out, here are some examples of solutions that other people came up with. They
+      will be on the screen the whole time, so no need to try to memorize them.
+    `)).addClass('text').appendTo(DISPLAY)
+
+    let exampleDiv = $('<div>').css({
+      width: 1000,
+      'text-align': 'center',
+      'margin': 'auto',
+      'margin-top': '10px',
+      'margin-bottom': '30px'
+    }).appendTo(DISPLAY)
+
+    for (let trial of stimuli.examples) {
+      let eDiv = $('<div>').css({
+        'display': 'inline-block',
+        'margin': '10px'
+
+      }).appendTo(exampleDiv)
+      let eTrial = {
+        ...trial,
+        configuration: trial.solution,
+        grid: 20,
+      }
+      new BlockDisplayOnly(eTrial).attach(eDiv)
+    }
+    await button(DISPLAY, 'continue').clicked
+  }
+
   async function main() {
     logEvent('experiment.main')
+    DISPLAY.empty()
     let top = new TopBar({
       nTrial: stimuli.main.length,
       height: 70,
-      width: 1000,
+      width: 1150,
       help: `
         Drag the blocks from the bottom of the screen to fill in all the white squares.
         You can rotate the block you're currently holding by pressing space.
@@ -153,7 +189,8 @@ async function runExperiment() {
   }
 
   await runTimeline(
-    instructions,
+    // instructions,
+    social,
     main,
     debrief
   )
