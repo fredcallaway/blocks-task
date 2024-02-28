@@ -53,7 +53,8 @@ async function runExperiment() {
     logEvent('experiment.instructions')
     let trials = [
       {'name': 'easyrect', 'target': 'XXXXX\nXXXXX\nXXXXX'},
-      _.sample(STIMULI.basic)
+      {'name': 'easycross', 'target': '..XX..\n..XX..\nXXXXXX\nXXXXXX\n..XX..\n..XX..'},
+      // _.sample(STIMULI.basic)
     ]
     await new BlockInstructions(trials).run(DISPLAY)
   }

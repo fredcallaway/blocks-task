@@ -125,7 +125,10 @@ class Instructions {
     this.btnNext.prop('disabled', this.stage >= this.maxStage)
     this.btnPrev.prop('disabled', this.stage <= 1)
     await this.stages[n-1].bind(this)()
-    this.enableNext()
+    if (this.stage == n) {
+      // check to make sure we didn't already move forward
+      this.enableNext()
+    }
   }
 
   runNext() {
@@ -170,20 +173,18 @@ class BlockInstructions extends Instructions {
       In this experiment, you will be asked to solve challenging puzzles
       that push the limits of the human mind.
     `)
-    await this.button()
-
-    this.instruct(` Specifically, you're going to be playing with blocks. `)
   }
 
   async stage_basics() {
     new BlockPuzzle({
       ...this.trials[0], target: 'blank', practice: true, allowQuitSeconds: null,
     }).run(this.content)
+    this.instruct(`Specifically, you're going to be playing with blocks. Try picking one up...`)
 
-    this.instruct(` Click and drag a block to pick it up... `)
+    // this.instruct(` Click and drag a block to pick it up... `)
     await eventPromise('blocks.pickup.library')
 
-    this.instruct(` Click and drag a block to pick it up... Then let go to place it! `)
+    this.instruct(`...then let go to place it! `)
     let erase = eventPromise('blocks.drop.erase')
     erase.then(() => {
       this.instruct(`
@@ -200,13 +201,13 @@ class BlockInstructions extends Instructions {
     `)
     await eventPromise('blocks.rotate')
 
-    this.instruct(` You can erase blocks by dragging them on top of another block or into the gray area. `)
+    this.instruct(`You can erase blocks by dragging them on top of another block or into the gray area. `)
     await eventPromise('blocks.drop.erase')
 
-    this.instruct(`You can also click the button at the bottom to clear the screen.`)
-    $('#blocks-btn-clear').addClass('btn-pulse')
-    await eventPromise('blocks.clear')
-    $('#blocks-btn-clear').removeClass('btn-pulse')
+    // this.instruct(`You can also click the button at the bottom to clear the screen.`)
+    // $('#blocks-btn-clear').addClass('btn-pulse')
+    // await eventPromise('blocks.clear')
+    // $('#blocks-btn-clear').removeClass('btn-pulse')
     this.instruct(`You seem to have gotten the hang of this. Let's make things more interesting...`)
   }
 
@@ -216,13 +217,13 @@ class BlockInstructions extends Instructions {
     await new BlockPuzzle({
       ...this.trials[0], practice: true, allowQuitSeconds: null}
     ).run(this.content)
-    
-    this.instruct(`Well done!`)
+    this.runNext()
   }
 
   async stage_practice2() {
-    this.instruct(`Let's try a harder one.`)
+    this.instruct(`Let's try another one.`)
     await new BlockPuzzle({...this.trials[1], practice: true}).run(this.content)
+    this.runNext()
   }
 
   async stage_giveup() {
