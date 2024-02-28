@@ -170,3 +170,70 @@ function alert_failure(opts = {}) {
 
 }
 
+class TopBar {
+    constructor(options = {}) {
+    _.defaults(options, {
+      nTrial: undefined,
+      width: 1100,
+      height: 100,
+      help: '',
+    })
+    Object.assign(this, options)
+
+    this.div = $('<div>')
+    .css({
+      height: this.height,
+      width: this.width,
+      margin: 'auto',
+      'user-select': 'none',
+      // 'margin-bottom': '20px',
+      // 'margin-top': '20px'
+    })
+
+    if (this.nTrial) {
+      this.counter = $('<div>')
+      .addClass('left')
+      .css({
+        'font-weight': 'bold',
+        'font-size': '16pt'
+      })
+      .appendTo(this.div)
+      this.count = 1
+      this.setCounter(this.count)
+    }
+
+    if (this.help) {
+      this.helpButton = $('<button>')
+      .appendTo(this.div)
+      .addClass('btn-help right')
+      .text('?')
+      .click(async () => {
+        await Swal.fire({
+            title: 'Instructions',
+            html: this.help,
+            icon: 'info',
+            confirmButtonText: 'Got it!',
+          })
+      })
+    }
+    // this.prompt = $('<div>').css({
+    //   'max-width': 700,
+    //   'height': 120,
+    //   'margin': 'auto',
+    // }).appendTo(this.div)
+  }
+
+  prependTo(display) {
+    this.div.prependTo(display)
+    return this
+  }
+
+  setCounter(count) {
+    this.count = count
+    this.counter.text(`Round ${this.count} / ${this.nTrial}`)
+  }
+
+  incrementCounter() {
+    this.setCounter(this.count + 1)
+  }
+}

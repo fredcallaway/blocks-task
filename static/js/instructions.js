@@ -172,10 +172,9 @@ class BlockInstructions extends Instructions {
   }
 
   async stage_basics() {
-    let blank = new BlockPuzzle({
+    new BlockPuzzle({
       ...this.trials[0], target: 'blank', practice: true, allowQuitSeconds: null,
-    }).attach(this.content)
-    blank.run()
+    }).run(this.content)
 
     this.instruct(` Click and drag a block to pick it up... `)
     await eventPromise('blocks.pickup.library')
@@ -210,16 +209,14 @@ class BlockInstructions extends Instructions {
   async stage_practice1() {
     this.instruct(`Try to fill in the white area.`)
 
-    let puzzle = new BlockPuzzle({
+    await new BlockPuzzle({
       ...this.trials[0], practice: true, allowQuitSeconds: null}
-    ).attach(this.content)
-    // this.content.animate({opacity: 1}, 200)
-    await puzzle.run()
+    ).run(this.content)
   }
 
   async stage_practice2() {
     this.instruct(`Well done! Let's try a harder one.`)
-    await new BlockPuzzle({...this.trials[1], practice: true}).attach(this.content).run()
+    await new BlockPuzzle({...this.trials[1], practice: true}).run(this.content)
   }
 
   async stage_giveup() {
@@ -232,7 +229,7 @@ class BlockInstructions extends Instructions {
     `
     let resolved = new BlockPuzzle(
       {name: 'impossible', target, practice: true, allowQuitSeconds: 3}
-    ).attach(this.content).run()
+    ).run(this.content)
 
     await this.sleep(5000)
 

@@ -31,47 +31,22 @@ async function instructions(start=1) {
 async function main() {
   logEvent('experiment.main')
 
-  let top = $('<div>')
-  .css({
-    // 'border': 'thin red solid',
-    'margin-bottom': '10px',
-    'margin-top': '70px'
-  })
-  .appendTo(display)
-
-  let counter = $('<div>')
-  .addClass('left')
-  .appendTo(top)
-  .css({
-    'font-weight': 'bold',
-    'font-size': '16pt'
-  })
-
-  let help = $('<button>')
-  .appendTo(top)
-  .addClass('btn-help right')
-  .text('?')
-  .click(async () => {
-    await Swal.fire({
-        title: 'Instructions',
-        html: `
-          Drag the blocks from the bottom of the screen to fill in all the white squares.
-          You can rotate the block you're currently holding by pressing space.
-          You can remove blocks by dragging them into the gray area.
-        `,
-        icon: 'info',
-        confirmButtonText: 'Got it!',
-      })
-  })
+  let top = new TopBar({
+    nTrial: 10,
+    help: `
+      Drag the blocks from the bottom of the screen to fill in all the white squares.
+      You can rotate the block you're currently holding by pressing space.
+      You can remove blocks by dragging them into the gray area.
+    `
+  }).prependTo(display)
+  window._top = top
 
   let content = $('<div>')
   .appendTo(display)
 
-  let trial_number = 1
-
   for (let trial of _.shuffle(main_trials)) {
-    counter.text(`Round ${trial_number++} / ${N_TRIAL}`)
-    await new BlockPuzzle(trial).attach(content).run()
+    top.incrementCounter()
+    await new BlockPuzzle(trial).run(content)
     saveData()
   }
 }
@@ -272,9 +247,8 @@ async function runExperiment() {
       return true
     }
   })
-  console.log('main_trials', main_trials)
-
   N_TRIAL = main_trials.length
+  
   if (await handleSpecialMode() == 'normal') {
     await runTimeline(
       instructions,

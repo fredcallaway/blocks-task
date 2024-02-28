@@ -328,7 +328,6 @@ class BlockPuzzle extends BlockDisplay {
     })
     logEvent('blocks.construct', options)
     super()
-    this.startTime = Date.now()
     Object.assign(this, options)
     window.puzzle = this
 
@@ -613,7 +612,8 @@ class BlockPuzzle extends BlockDisplay {
 
   }
 
-  async run() {
+  async run(display) {
+    if (display) this.attach(display)
     logEvent('blocks.run')
     this.drawCanvas();
     this.startListeners()
