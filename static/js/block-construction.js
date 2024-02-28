@@ -193,8 +193,8 @@ class BlockDisplay {
   constructor(options = {}) {
     _.defaults(options, {
       grid: 30,
-      width: 30,
-      height: 12,
+      width: 23,
+      height: 10,
       tray_height: 5,
       background: "#ADADAD",
       borderStyle: 'thick black solid',
@@ -292,8 +292,6 @@ class BlockDisplayOnly extends BlockDisplay {
   constructor(options = {}) {
     _.defaults(options, {
       background: 'white',
-      width: 30,
-      height: 15,
       borderStyle: 'none',
     })
     let target = string2block(options.target, 0, 0, 'white', 'target')
@@ -326,8 +324,8 @@ class BlockPuzzle extends BlockDisplay {
       // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
       dev: false,
     })
-    logEvent('blocks.construct', options)
     super()
+    this.logEvent('blocks.construct', options)
     Object.assign(this, options)
     window.puzzle = this
 
@@ -343,7 +341,7 @@ class BlockPuzzle extends BlockDisplay {
 
     this.library = this.buildLibrary(this.library);
     this.target = this.buildTarget(this.target)
-    logEvent('blocks.target', this.target)
+    this.logEvent('blocks.target', this.target)
     this.buildDisplay()
     this.solved = make_promise()
 
@@ -355,6 +353,11 @@ class BlockPuzzle extends BlockDisplay {
     this.mouseY = null;
 
     this.drawCanvas()
+  }
+
+  logEvent(event, info={}) {
+    info.name = this.name
+    logEvent(event, info)
   }
 
   buildLibrary(blocks) {
@@ -401,7 +404,7 @@ class BlockPuzzle extends BlockDisplay {
     makeBtn('clear')
     .click((e) => {
       quickDisable(e)
-      logEvent('blocks.clear')
+      this.logEvent('blocks.clear')
       this.activeBlocks.clear()
       this.drawCanvas()
     })
@@ -410,7 +413,6 @@ class BlockPuzzle extends BlockDisplay {
       let btn = makeBtn('give up')
       .click((e) => {
         quickDisable(e)
-        logEvent('blocks.quit')
         this.done(false)
       })
       if (this.allowQuitSeconds > 0) {
@@ -520,10 +522,10 @@ class BlockPuzzle extends BlockDisplay {
 
     // Event listener for keydown to detect if the spacebar is pressed
     blockListeners.on('keydown', (e) => {
-      // logEvent('blocks.keydown', e)
+      // this.logEvent('blocks.keydown', e)
       if ((e.code === 'Space' || e.code == 'KeyR') && this.isDragging) {
         e.preventDefault(); // Prevent default to avoid scrolling the page
-        logEvent('blocks.rotate')
+        this.logEvent('blocks.rotate')
         if (this.currentBlock) {
           this.currentBlock.rotate(this.mouseX, this.mouseY);
           this.currentBlock.colliding = this.checkCollision(this.currentBlock);
@@ -535,10 +537,10 @@ class BlockPuzzle extends BlockDisplay {
     this.canvas.addEventListener('mousedown', (e) => {
       this.mouseX = e.offsetX / this.grid;
       this.mouseY = e.offsetY / this.grid;
-      // logEvent('blocks.mousedown', {x: this.mouseX, y: this.mouseY})
+      // this.logEvent('blocks.mousedown', {x: this.mouseX, y: this.mouseY})
       for (let block of this.activeBlocks) {
         if (block.contains(this.mouseX, this.mouseY)) {
-          logEvent('blocks.pickup.active', {block})
+          this.logEvent('blocks.pickup.active', {block})
           this.isDragging = true;
           this.currentBlock = block;
           this.dragOffsetX = this.mouseX - block.x;
@@ -549,7 +551,7 @@ class BlockPuzzle extends BlockDisplay {
         if (liBlock.contains(this.mouseX, this.mouseY)) {
           let block = _.cloneDeep(liBlock)
           block.id = liBlock.id + '-' + Date.now()
-          logEvent('blocks.pickup.library', {block})
+          this.logEvent('blocks.pickup.library', {block})
           this.activeBlocks.add(block)
           this.isDragging = true;
           this.currentBlock = block;
@@ -560,7 +562,7 @@ class BlockPuzzle extends BlockDisplay {
     });
 
     this.canvas.addEventListener('mousemove', (e) => {
-      // logEvent('blocks.mousemove', e)
+      // this.logEvent('blocks.mousemove', e)
       if (this.isDragging && this.currentBlock) {
         this.mouseX = e.offsetX / this.grid
         this.mouseY = e.offsetY / this.grid
@@ -577,9 +579,9 @@ class BlockPuzzle extends BlockDisplay {
     });
 
     blockListeners.on('mouseup', async (e) => {
-      // logEvent('blocks.mouseup', {this.mouseX, this.mouseY})
+      // this.logEvent('blocks.mouseup', {this.mouseX, this.mouseY})
       if (this.isDragging) {
-        logEvent(this.currentBlock.colliding ? 'blocks.drop.erase' : 'blocks.drop.place',
+        this.logEvent(this.currentBlock.colliding ? 'blocks.drop.erase' : 'blocks.drop.place',
                  {block: this.currentBlock, state: this.captureState()})
         this.isDragging = false;
         this.currentBlock = null;
@@ -587,7 +589,6 @@ class BlockPuzzle extends BlockDisplay {
         this.drawCanvas()
         if (this.checkVictory()) {
           // need Array.from b/c Set does not get converted to json properly
-          logEvent('blocks.victory', {configuration: Array.from(this.activeBlocks)})
           this.done(true)
         }
       }
@@ -603,8 +604,10 @@ class BlockPuzzle extends BlockDisplay {
       this.drawCanvas()
     } else {
       if (win) {
+        this.logEvent('blocks.done.success', {configuration: Array.from(this.activeBlocks)})
         await alert_success()
       } else {
+        this.logEvent('blocks.done.failure', {configuration: Array.from(this.activeBlocks)})
         await alert_failure()
       }
       this.solved.resolve(win);
@@ -614,7 +617,7 @@ class BlockPuzzle extends BlockDisplay {
 
   async run(display) {
     if (display) this.attach(display)
-    logEvent('blocks.run')
+    this.logEvent('blocks.run')
     this.drawCanvas();
     this.startListeners()
     await this.solved
