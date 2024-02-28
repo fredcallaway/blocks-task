@@ -208,6 +208,7 @@ class BlockDisplay {
     }
 
     this.div = $("<div>").css('text-align', 'center')
+    this.centerTarget()
     this.buildCanvas()
   }
 
@@ -217,12 +218,23 @@ class BlockDisplay {
     return this
   }
 
-
   buildTarget(block) {
     let target = string2block(block, 0, 0, 'white', 'target')
+    return target
+  }
+
+  centerTarget() {
+    let target = this.target
+    assert(target.x == 0)
+    assert(target.y == 0)
+
     target.x = Math.floor((this.width - target.width) / 2)
     target.y = Math.ceil(1+(this.height - target.height) / 2)
-    return target
+    for (let block of this.activeBlocks) {
+      block.x += target.x
+      block.y += target.y
+    }
+
   }
 
   buildCanvas() {
@@ -297,18 +309,11 @@ class BlockDisplayOnly extends BlockDisplay {
       borderStyle: 'none',
     })
     let target = string2block(options.target, 0, 0, 'white', 'target')
-    let offsetX = Math.floor((options.width - target.width) / 2) - 1
-    let offsetY = Math.ceil(1 + (options.height - target.height) / 2) - 1
-
     options = {...options,
                width: target.width + 2,
                height: target.height,
-               tray_height: 2}
+               tray_height: 0}
     super(options)
-    for (let block of this.activeBlocks) {
-      block.x -= offsetX
-      block.y -= offsetY
-    }
     this.clearColliding(true)
     this.drawCanvas()
   }
@@ -326,9 +331,8 @@ class BlockPuzzle extends BlockDisplay {
       // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
       dev: false,
     })
-    super()
+    super(options)
     this.logEvent('blocks.construct', options)
-    Object.assign(this, options)
     window.puzzle = this
 
     if (this.dev) {
@@ -342,7 +346,7 @@ class BlockPuzzle extends BlockDisplay {
     }
 
     this.library = this.buildLibrary(this.library);
-    this.target = this.buildTarget(this.target)
+    // this.target = this.buildTarget(this.target)
     this.logEvent('blocks.target', this.target)
     this.buildDisplay()
     this.solved = make_promise()

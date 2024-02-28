@@ -15,23 +15,39 @@ function findTrial(name) {
   return _.find(STIMULI.basic.concat(STIMULI.compositions), {name})
 }
 
+
+function makeGlobal(obj) {
+  Object.assign(window, obj)
+
+}
+
+function buildStimuli() {
+  let basic = _.map(_.shuffle(STIMULI.basic), 'name')
+  let compositions = _.map(_.shuffle(STIMULI.compositions), 'name')
+
+  let examples = basic.map((name, i) => name + "-" + basic[(i+1) % basic.length])
+
+  let used = new Set(examples)
+  console.log('used', used)
+  let main = _.shuffle(compositions).filter(name => {
+    if (!used.has(name) && !used.has(name.split("-").reverse().join("-"))) {
+      used.add(name)
+      return true
+    }
+  })
+  N_TRIAL = main.length
+  return {
+    examples: _.shuffle(examples).map(findTrial),
+    main: main.map(findTrial)
+  }
+}
+
 async function runExperiment() {
   STIMULI = await $.getJSON(`static/json/stimuli.json`)
   await handleSpecialMode() // never returns if in special mode
 
   enforceScreenSize(1200, 750)
-
-  let seen = new Set()
-  let main_trials = _.shuffle(STIMULI.compositions).filter(stim => {
-    let alt = stim.name.split("-").reverse().join("-")
-    if (seen.has(alt)) {
-      return false
-    } else {
-      seen.add(stim.name)
-      return true
-    }
-  })
-  N_TRIAL = main_trials.length
+  let stimuli = buildStimuli()
 
   async function instructions(stage=1) {
     logEvent('experiment.instructions')
@@ -39,16 +55,15 @@ async function runExperiment() {
       {'name': 'easyrect', 'target': 'XXXXX\nXXXXX\nXXXXX'},
       _.sample(STIMULI.basic)
     ]
-    console.log('DISPLAY', DISPLAY)
     await new BlockInstructions(trials).run(DISPLAY, stage)
   }
 
   async function main() {
     logEvent('experiment.main')
     let top = new TopBar({
-      nTrial: 10,
+      nTrial: stimuli.main.length,
       height: 70,
-      width: 1100,
+      width: 1000,
       help: `
         Drag the blocks from the bottom of the screen to fill in all the white squares.
         You can rotate the block you're currently holding by pressing space.
@@ -69,29 +84,26 @@ async function runExperiment() {
       // 'border': 'thick red solid',
       'user-select': 'none',
       'float': 'left',
-      'width': '400px'
+      'width': '300px'
     })
     .appendTo(DISPLAY)
     $('<h2>').text("Examples").appendTo(sidebar).css('margin-top', '-40px')
-    let examples = $('<div>').appendTo(sidebar)
+    let exampleDiv = $('<div>').appendTo(sidebar)
 
 
     // let solutions = (await $.getJSON(`static/json/solutions/fred-v2.json`)).solutions
-    let solutions = (await $.getJSON(`static/json/examples.json`))
-    window.solutions = solutions
-    for (let [name, configuration] of _.toPairs(solutions)) {
-      console.log('name', name)
-      let eDiv = $('<div>').css('display', 'inline-block').appendTo(examples)
+    for (let trial of stimuli.examples) {
+      let eDiv = $('<div>').css('display', 'inline-block').appendTo(exampleDiv)
       let eTrial = {
-        ...findTrial(name),
-        configuration,
+        ...trial,
+        configuration: trial.solution,
         grid: 15,
       }
-      console.log('eTrial', name, findTrial(name))
       new BlockDisplayOnly(eTrial).attach(eDiv)
     }
 
-    for (let trial of _.shuffle(main_trials)) {
+    for (let trial of stimuli.main) {
+      // trial.configuration = trial.solution
       await new BlockPuzzle(trial).run(workspace)
       top.incrementCounter()
       saveData()
