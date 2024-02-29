@@ -340,6 +340,7 @@ class BlockPuzzle extends BlockDisplay {
       dev: false,
     })
     super(options)
+    this.tridId = crypto.randomUUID()
     this.logEvent('blocks.construct', options)
     window.puzzle = this
 
@@ -369,7 +370,7 @@ class BlockPuzzle extends BlockDisplay {
   }
 
   logEvent(event, info={}) {
-    info.name = this.name ?? info.name
+    info.trialId = this.trialId
     logEvent(event, info)
   }
 
