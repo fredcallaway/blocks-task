@@ -1,5 +1,5 @@
 const PARAMS = {
-
+  social: false
 }
 
 updateExisting(PARAMS, urlParams)
@@ -62,6 +62,7 @@ async function runExperiment() {
   }
 
   async function social() {
+    if (!PARAMS.social) return
     logEvent('experiment.social')
     DISPLAY.empty()
     $('<div>').html(markdown(`
@@ -110,35 +111,36 @@ async function runExperiment() {
       `
     }).prependTo(DISPLAY)
 
-    let workspace = $('<div>')
-    .css({
-      // 'border': 'thick black solid',
-      'float': 'left',
-      'width': '750px'
-    })
-    .appendTo(DISPLAY)
+    let workspace = $('<div>').appendTo(DISPLAY)
 
-    let sidebar = $('<div>')
-    .css({
-      // 'border': 'thick red solid',
-      'user-select': 'none',
-      'float': 'left',
-      'width': '300px'
-    })
-    .appendTo(DISPLAY)
-    $('<h2>').text("Examples").appendTo(sidebar).css('margin-top', '-40px')
-    let exampleDiv = $('<div>').appendTo(sidebar)
+    if (PARAMS.social) {
+      workspace.css({
+        // 'border': 'thick black solid',
+        'float': 'left',
+        'width': '750px'
+      })
 
+      let sidebar = $('<div>')
+      .css({
+        // 'border': 'thick red solid',
+        'user-select': 'none',
+        'float': 'left',
+        'width': '300px'
+      })
+      .appendTo(DISPLAY)
+      $('<h2>').text("Examples").appendTo(sidebar).css('margin-top', '-40px')
+      let exampleDiv = $('<div>').appendTo(sidebar)
 
-    // let solutions = (await $.getJSON(`static/json/solutions/fred-v2.json`)).solutions
-    for (let trial of stimuli.examples) {
-      let eDiv = $('<div>').css('display', 'inline-block').appendTo(exampleDiv)
-      let eTrial = {
-        ...trial,
-        configuration: trial.solution,
-        grid: 15,
+      // let solutions = (await $.getJSON(`static/json/solutions/fred-v2.json`)).solutions
+      for (let trial of stimuli.examples) {
+        let eDiv = $('<div>').css('display', 'inline-block').appendTo(exampleDiv)
+        let eTrial = {
+          ...trial,
+          configuration: trial.solution,
+          grid: 15,
+        }
+        new BlockDisplayOnly(eTrial).attach(eDiv)
       }
-      new BlockDisplayOnly(eTrial).attach(eDiv)
     }
 
     for (let trial of stimuli.main) {
@@ -162,9 +164,11 @@ async function runExperiment() {
       Did you notice that some parts of the puzzles showed up multiple times?
     `, ['yes', 'no'])
 
-    let used = radio_buttons(DISPLAY, `
-      Did you try to copy from the examples?
-    `, ['yes', 'no'])
+    let reuse = radio_buttons(DISPLAY,
+      PARAMS.social ?
+        `Did you try to copy from the examples?` :
+        `Did you try to reuse parts from your previous solutions?`,
+      ['yes', 'no'])
 
     let difficulty = radio_buttons(DISPLAY, `
       How difficult were the problems, overall?
@@ -177,7 +181,7 @@ async function runExperiment() {
     await button(DISPLAY, 'submit').clicked
     logEvent('debrief.submitted', {
       noticed: noticed.val(),
-      used: used.val(),
+      reuse: reuse?.val(),
       difficulty: difficulty.val(),
       feedback: feedback.val(),
     })
