@@ -10,18 +10,38 @@ import random
 from fire import Fire
 from functools import cache, cached_property
 
+def find_token():
+    if os.path.isfile(".prolific_token"):
+        with open('.prolific_token') as f:
+            token = f.read().strip()
+            if token:
+                return token
+    token = os.getenv('PROLIFIC_TOKEN')
+    if token:
+        return token
+    token = input('PROLIFIC_TOKEN environment variable not found. Please enter it here: ')
+    if not token.strip():
+        print("Exiting.")
+        exit(1)
+    if input("Would you like to save it for future use? [y/N]") == "y":
+        with open('.prolific_token', 'w') as f:
+            f.write(token)
+        with open(".gitignore", "a") as f:
+            f.write('\n.prolific_token')
+        print("Saved to .prolific_token — we added this file to your .gitignore as well.")
+        return token
+
 
 class Prolific(object):
     """Prolific API wrapper"""
     def __init__(self, token=None):
         super(Prolific, self).__init__()
         if token is None:
-            token = os.getenv('PROLIFIC_TOKEN')
-            if not token:
-                raise ValueError('You must provide a token, create a .prolific_token file, or set a PROLIFIC_TOKEN environment variable.')
+            token = find_token()
+        if not token:
+            raise ValueError('You must provide a token, create a .prolific_token file, or set a PROLIFIC_TOKEN environment variable.')
 
         self.token = token
-
     def request(self, method, url, **kws):
         if url.startswith('/'):
             url = 'https://api.prolific.co/api/v1' + url
@@ -133,12 +153,15 @@ class Prolific(object):
     def approve_all(self, study_id, ignore_code=False):
         to_approve = []
         bad_code = []
-        completion_code = self.get(f'/studies/{study_id}/')['completion_code']
+        completion_codes = [x['code']
+            for x in self.get(f'/studies/{study_id}/')['completion_codes']
+            if x['code_type'] == "COMPLETED"
+        ]
 
         for sub in self.submissions(study_id):
             if sub['status'] != 'AWAITING REVIEW':
                 continue
-            if ignore_code or sub['study_code'] == completion_code:
+            if ignore_code or sub['study_code'] in completion_codes:
                 to_approve.append(sub["participant_id"])
             else:
                 bad_code.append(sub["participant_id"])
@@ -154,7 +177,7 @@ class Prolific(object):
             })
             print(f'Approved {len(to_approve)} submissions')
         else:
-            print('All submissions have already been approved')
+            print('No submissions to approve')
 
 
     def assign_bonuses(self, study_id, bonuses):
@@ -261,6 +284,13 @@ class CLI(object):
         bonuses = dict(pd.read_csv('bonus.csv', header=None).set_index(0)[1])
         self._prolific.assign_bonuses(self._study_id, bonuses)
 
+    def approve(self):
+        """Approve all submissions of the last study.
+
+        The "last" study refers to the most recently posted study within your project
+        """
+        self._prolific.approve_all(self._study_id)
+
     def post_duplicate(self):
         """Post a duplicate of the last study using current fields in config.txt"""
         self._prolific.post_duplicate(self._study_id, internal_name=generate_internal_name())
@@ -297,33 +327,9 @@ class CLI(object):
         """Print the total cost accumulated by studies in this project"""
         return self._prolific.total_cost(self._project_id)
 
-
-
-    @cached_property
-    def _token(self):
-        if os.path.isfile(".token"):
-            with open('.token') as f:
-                token = f.read().strip()
-                if token:
-                    return token
-        token = os.getenv('PROLIFIC_TOKEN')
-        if token:
-            return token
-        token = input('PROLIFIC_TOKEN environment variable not found. Please enter it here: ')
-        if not token.strip():
-            print("Exiting.")
-            exit(1)
-        if input("Would you like to save it for future use? [y/N]") == "y":
-            with open('.token', 'w') as f:
-                f.write(token)
-            with open(".gitignore", "a") as f:
-                f.write('\n.token')
-            print("Saved to .token — we added this file to your .gitignore as well.")
-            return token
-
     @cached_property
     def _prolific(self):
-        return Prolific(self._token)
+        return Prolific()
 
     @cached_property
     def _project_id(self):
