@@ -202,7 +202,7 @@ class BlockDisplay {
     })
     window.bd = this
     Object.assign(this, options)
-    this.activeBlocks = new Set(this.configuration.map(x => new Block(x)));
+    this.activeBlocks = new Set((this.configuration ?? []).map(x => new Block(x)));
     if (this.target) {
       this.buildTarget(this.target)
     }

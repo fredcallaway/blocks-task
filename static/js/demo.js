@@ -40,7 +40,11 @@ async function puzzleViewer(name) {
   }
 }
 
-async function dataViewer(uid='fred') {
+async function dataViewer(which) {
+  if (!which) {
+    which = 'v3.1'
+  }
+  console.log('which is', which)
   let wrapper = $('<div>').css({
     'position': 'relative',
     'margin': 'auto',
@@ -78,40 +82,56 @@ async function dataViewer(uid='fred') {
   })
   .appendTo(wrapper)
 
-  async function show(uid, data) {
-    var queryParams = new URLSearchParams(window.location.search);
-    queryParams.set("data", uid);
+  let [version, uid] = which.split('-');
+  let allData = await $.getJSON(`static/json/solutions/${version}.json`)
+  let listen = new EventListeners()
+  var queryParams = new URLSearchParams(window.location.search);
+
+  async function show(i) {
+    let data = allData[i]
+    queryParams.set("data", `${data.uid}`);
     history.replaceState(null, null, "?"+queryParams.toString());
 
-    data = data ?? await $.getJSON(`static/json/solutions/${uid}.json`)
-
-    let dataPrev = $.getJSON(`static/json/solutions/${data.prev}.json`)
-    let dataNext = $.getJSON(`static/json/solutions/${data.next}.json`)
     btnPrev.unbind('click')
     btnPrev.click(() => {
-      dataPrev.then(d => show(data.prev, d))
+      show(mod(i - 1, allData.length))
     })
     btnNext.unbind('click')
     btnNext.click(() => {
-      dataNext.then(d => show(data.next, d))
+      show(mod(i + 1, allData.length))
+    })
+    listen.on('keydown', event => {
+      if (event.key === "ArrowRight") {
+        listen.clear()
+        show(mod(i + 1, allData.length))
+      }
+      else if (event.key === "ArrowLeft") {
+        listen.clear()
+        show(mod(i - 1, allData.length))
+      }
     })
 
     content.empty()
-    title.text(uid)
-    console.log('data.solutions', data.solutions)
-    for (let block of [STIMULI.basic, STIMULI.compositions]) {
-      let row = $('<div>').appendTo(content)
-      for (let trial of block) {
-        let div = $('<div>').css('display', 'inline-block').appendTo(row)
-        trial.grid = 15
-        trial.configuration = data.solutions[trial.name]
-        new BlockDisplayOnly(trial).attach(div)
-      }
+    title.text(data.uid)
+    let row1 = $('<div>').appendTo(content)
+    $('<h1>').text("Examples").css('margin-top', '40px').appendTo(row1)
+    for (let name of data.examples) {
+      let div = $('<div>').css('display', 'inline-block').appendTo(row1)
+      let trial = findTrial(name)
+      trial = {...trial, grid: 20, configuration: trial.solution}
+      new BlockDisplayOnly(trial).attach(div)
+    }
+
+    let row2 = $('<div>').appendTo(content)
+    $('<h1>').text("Solutions").css('margin-top', '40px').appendTo(row2)
+    for (let trial of data.solutions) {
+      let div = $('<div>').css('display', 'inline-block').appendTo(row2)
+      trial = {...findTrial(trial.name), ...trial, grid: 20}
+      new BlockDisplayOnly(trial).attach(div)
     }
   }
-  await show(uid)
+  await show(Math.max(0,_.findIndex(allData, {uid})))
 }
-
 
 
 async function solveBasic() {
@@ -132,13 +152,13 @@ async function handleSpecialMode() {
     await solveBasic()
   }
 
-  if (urlParams.puzzle) {
+  if (urlParams.puzzle != undefined) {
     await puzzleViewer(urlParams.puzzle)
   }
-  else if (urlParams.data) {
+  else if (urlParams.data != undefined) {
     await dataViewer(urlParams.data)
   }
-  else if (urlParams.dev) {
+  else if (urlParams.dev != undefined) {
     await new BlockPuzzle({
       library: LIBRARIES[urlParams.dev] ?? LIBRARIES.easy,
       dev: true
