@@ -49,6 +49,7 @@ async function runExperiment() {
 
   enforceScreenSize(1200, 750)
   let stimuli = buildStimuli()
+  logEvent('experiment.stimuli', stimuli)
 
   async function instructions() {
     logEvent('experiment.instructions')
@@ -61,6 +62,7 @@ async function runExperiment() {
   }
 
   async function social() {
+    logEvent('experiment.social')
     DISPLAY.empty()
     $('<div>').html(markdown(`
       # Examples
