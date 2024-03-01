@@ -188,14 +188,12 @@ async function runExperiment() {
   }
 
   async function runTimeline(...blocks) {
-    let blockLookup = Object.fromEntries(blocks.map(b => [b.name, b]))
-    let block = blockLookup[urlParams.block]
-    if (block) {
+    let start = _.map(blocks, 'name').indexOf(urlParams.block)
+    if (start != -1) {
+      blocks = blocks.slice(start)
+    }
+    for (const block of blocks) {
       await block()
-    } else {
-      for (const block of blocks) {
-        await block()
-      }
     }
   }
 
