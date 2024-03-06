@@ -12,7 +12,8 @@ var STIMULI = null
 var N_TRIAL = null
 
 function findTrial(name) {
-  return _.find(STIMULI.basic.concat(STIMULI.compositions), {name})
+  return STIMULI.compositions[name] ?? STIMULI.basic[name]
+  // return _.find(STIMULI.basic.concat(STIMULI.compositions), {name})
 }
 
 
@@ -22,10 +23,18 @@ function makeGlobal(obj) {
 }
 
 function buildStimuli() {
-  let basic = _.map(_.shuffle(STIMULI.basic), 'name')
-  let compositions = _.map(_.shuffle(STIMULI.compositions), 'name')
+  // let allBasic = Object.keys(STIMULI.basic)
 
-  let examples = _.shuffle(basic.map((name, i) => name + "-" + basic[(i+1) % basic.length]))
+  let allBasic = ["flipper", "moth", "knot", "spinner", "skull", "plane", "hospital", "arch", "longrect", "purple"]
+  let primitives = _.chunk(allBasic, 5)[condition]
+
+  let compositions = cartesian(primitives, primitives)
+  .filter(([x, y]) => x != y)
+  .map(x => x.join('-'))
+
+  let examples = _.shuffle(primitives.map(
+    (name, i) => name + "-" + primitives[(i+1) % primitives.length]
+  ))
 
   let used = new Set(examples)
   let main = _.shuffle(compositions).filter(name => {
@@ -35,6 +44,7 @@ function buildStimuli() {
     }
   })
   main.splice(3, 0, examples[3])
+  console.log('main', main)
 
   N_TRIAL = main.length
   return {

@@ -1,36 +1,58 @@
 // code for demonstration widgets, not part of the actual experiment
 
 async function puzzleViewer(name) {
+  if (name == 'alt') return altPuzzleViewer()
+  let width = 240
+  let stimuli = _.mapValues(STIMULI, Object.values)
+
   let wrapper = $('<div>').css({
     'position': 'relative',
     'margin': 'auto',
-    'width': '1100px',
+    'width': stimuli.basic.length * width,
     'text-align': 'center',
     // 'border': 'thin red solid'
   }).appendTo(DISPLAY)
 
   async function showPuzzle(trial) {
-    console.log('trial', trial)
     await new BlockPuzzle({...trial, allowQuitSeconds: 0, prompt: trial.name}).run(wrapper)
     showSelector()
   }
 
   function showSelector() {
     wrapper.empty()
-    for (let block of TRIALS.main) {
-      let row = $('<div>').appendTo(wrapper)
-      for (let name of block) {
+
+    // let basic = _.map(_.shuffle(), 'name')
+    // let compositions = _.map(_.shuffle(stimuli.compositions), 'name')
+
+    let basicDiv = $('<div>').appendTo(wrapper)
+    for (let stim of stimuli.basic) {
+      let div = $('<div>').css({
+        display: 'inline-block',
+        cursor: 'pointer',
+        width: width,
+      }).appendTo(basicDiv)
+      new BlockDisplayOnly({...stim, grid: 15}).attach(div)
+      div.click(() => showPuzzle(stim))
+    }
+
+    let compDiv = $('<div>').css('margin-top', 30).appendTo(wrapper)
+    let rows = _.zip(..._.chunk(stimuli.compositions, stimuli.basic.length-1))
+    for (let row of rows) {
+      let rowDiv = $('<div>').css('margin-top', 10).appendTo(compDiv).css('border', 'thin black')
+      for (let stim of row) {
         let div = $('<div>').css({
           display: 'inline-block',
-          cursor: 'pointer'
-        }).appendTo(row)
-        let trial = _.find(PUZZLES, {name})
-        // trial.configuration = data.solutions[name]
-        new BlockDisplayOnly({...trial, grid: 15}).attach(div)
-        div.click(() => showPuzzle(trial))
+          cursor: 'pointer',
+          width: '240px',
+        }).appendTo(rowDiv)
+        console.log('stim', stim)
+        new BlockDisplayOnly({...stim, grid: 15}).attach(div)
+        div.click(() => showPuzzle(stim))
       }
     }
-  }
+
+    }
+
 
   if (name && _.find(PUZZLES, {name})) {
     showPuzzle(_.find(PUZZLES, {name}))
@@ -38,6 +60,53 @@ async function puzzleViewer(name) {
     console.log('selector')
     showSelector()
   }
+}
+
+async function altPuzzleViewer() {
+  let stimData = await $.getJSON(`static/json/stimuli-alt.json`)
+  let cv = new CycleViewer(DISPLAY, stimData, function(stims) {
+    let div = this.content
+    this.setTitle(`border = ${stims.target_border}`)
+
+    async function showPuzzle(trial) {
+      console.log('trial', trial)
+      await new BlockPuzzle({...trial, allowQuitSeconds: 0, prompt: trial.name}).run(div)
+      showSelector()
+    }
+
+    function showSelector() {
+      div.empty()
+      // let basic = _.map(_.shuffle(), 'name')
+      // let compositions = _.map(_.shuffle(STIMULI.compositions), 'name')
+      let basicDiv = $('<div>').appendTo(div)
+      for (let stim of stims.basic) {
+        let div = $('<div>').css({
+          display: 'inline-block',
+          cursor: 'pointer',
+          width: '240px',
+        }).appendTo(basicDiv)
+        new BlockDisplayOnly({...stim, grid: 15}).attach(div)
+        div.click(() => showPuzzle(stim))
+      }
+
+      let compDiv = $('<div>').css('margin-top', 30).appendTo(div)
+      let rows = _.zip(..._.chunk(stims.compositions, stims.basic.length-1))
+      for (let row of rows) {
+        let rowDiv = $('<div>').css('margin-top', 10).appendTo(compDiv).css('border', 'thin black')
+        for (let stim of row) {
+          let div = $('<div>').css({
+            display: 'inline-block',
+            cursor: 'pointer',
+            width: '240px',
+          }).appendTo(rowDiv)
+          new BlockDisplayOnly({...stim, grid: 15}).attach(div)
+          div.click(() => showPuzzle(stim))
+        }
+      }
+    }
+    showSelector()
+  })
+  cv.showItem(0)
 }
 
 async function dataViewer(which) {

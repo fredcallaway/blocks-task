@@ -440,9 +440,21 @@ class BlockPuzzle extends BlockDisplay {
 
     if (this.dev) {
       makeBtn('copy')
-      .click((e) => {
+      .click(async (e) => {
         quickDisable(e)
-        navigator.clipboard.writeText(this.captureStateCompact())
+        let res = await Swal.fire({
+          icon: 'qusetion',
+          title: "Name your creation?",
+          input: 'text',
+          width: 200,
+          showCancelButton: true
+        })
+        if (res.value) {
+          let target = this.captureStateCompact()
+          let solution = Array.from(puzzle.activeBlocks)
+          navigator.clipboard.writeText(JSON.stringify({name: res.value, target, solution}))
+        }
+
         // toast
         this.drawCanvas()
       })

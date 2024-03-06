@@ -12,6 +12,8 @@ if (mode === "demo" || mode === "{{ mode }}") {
   condition = parseInt(condition, 10);
 }
 
+condition = urlParams.condition ?? condition
+
 // Test connection to server, then initialize the experiment.
 
 var QUIET = false
