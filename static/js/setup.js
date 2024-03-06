@@ -3,16 +3,18 @@ const psiturk = new PsiTurk(uniqueId, adServerLoc, mode);
 const urlParams = mapObject(Object.fromEntries(new URLSearchParams(window.location.search)), maybeJson)
 const prolific = true;
 
-var condition = 0
 let local = false;
 
+console.log('condition1', condition)
 if (mode === "demo" || mode === "{{ mode }}") {
   local = true;
 } else {
   condition = parseInt(condition, 10);
+  console.log('condition2', condition)
 }
 
-condition = urlParams.condition ?? condition
+condition = urlParams.condition ?? parseInt(condition, 10) ?? 0
+console.log('condition3', condition)
 
 // Test connection to server, then initialize the experiment.
 

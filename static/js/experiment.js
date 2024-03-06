@@ -1,6 +1,8 @@
-const PARAMS = {
-  social: false
-}
+
+const PARAMS = conditionParameters(condition, {
+  social: [false, true],
+  stimSet: [0, 1]
+})
 
 updateExisting(PARAMS, urlParams)
 psiturk.recordUnstructuredData('params', PARAMS);
@@ -26,7 +28,7 @@ function buildStimuli() {
   // let allBasic = Object.keys(STIMULI.basic)
 
   let allBasic = ["flipper", "moth", "knot", "spinner", "skull", "plane", "hospital", "arch", "longrect", "purple"]
-  let primitives = _.chunk(allBasic, 5)[condition]
+  let primitives = _.chunk(allBasic, 5)[PARAMS.stimSet]
 
   let compositions = cartesian(primitives, primitives)
   .filter(([x, y]) => x != y)

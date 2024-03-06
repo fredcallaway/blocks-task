@@ -1,3 +1,40 @@
+
+class ConditionBuilder {
+  constructor(condition) {
+    this.state = condition;
+  }
+
+  choose(choices, {rand=false, pop=false} = {}) {
+    let indices = (arr) => [...arr.keys()];
+    let range = (n) => indices(Array(n));
+    let randInt = (n) => Math.floor(Math.random() * n);
+
+    if (typeof choices == 'number') {
+      choices = range(choices);
+    }
+    let i;
+    if (rand) {
+      i = randInt(choices.length);
+    } else {
+      i = this.state % choices.length;
+      this.state = Math.floor(this.state / choices.length);
+    }
+    return pop ? choices.splice(i, 1)[0] : choices[i];
+  }
+
+  chooseMulti(choicesObj) {
+    let result = {};
+    for (let [key, choices] of Object.entries(choicesObj)) {
+      result[key] = this.choose(choices);
+    }
+    return result;
+  }
+}
+
+function conditionParameters(condition, choicesObj) {
+  return new ConditionBuilder(condition).chooseMulti(choicesObj)
+}
+
 function enforceScreenSize(width, height, display='#display') {
   display = $(display)
 
