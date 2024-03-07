@@ -12,7 +12,7 @@ const DISPLAY = $('#display')
 const PROLIFIC_CODE = 'CHDRYEDZ'
 var BONUS = 0
 var STIMULI = null
-var N_TRIAL = null
+var N_TRIAL = 5
 
 function findTrial(name) {
   return STIMULI.compositions[name] ?? STIMULI.basic[name]
@@ -25,39 +25,14 @@ function makeGlobal(obj) {
 
 }
 
-function buildStimuli() {
-  let primitives = Object.keys(STIMULI.basic)
-  let compositions = cartesian(primitives, primitives)
-  .filter(([x, y]) => x != y)
-  .map(x => x.join('-'))
-
-  let examples = _.shuffle(primitives.map(
-    (name, i) => name + "-" + primitives[(i+1) % primitives.length]
-  ))
-
-  let used = new Set(examples)
-  let main = _.shuffle(compositions).filter(name => {
-    if (!used.has(name) && !used.has(name.split("-").reverse().join("-"))) {
-      used.add(name)
-      return true
-    }
-  })
-  main.splice(3, 0, examples[3])
-
-  let stimuli = {primitives, examples, main}
-  logEvent('experiment.buildStimuli', {stimuli})
-  N_TRIAL = stimuli.main.length
-  makeGlobal({stimuli})
-  return _.mapValues(stimuli, names => names.map(findTrial))
-}
 
 async function runExperiment() {
-  STIMULI = await $.getJSON(`static/json/stimuli.json`)
-  logEvent('experiment.initialize', {CONDITION, STIMULI, PARAMS})
+  stimuli = await $.getJSON(`static/json/gen${PARAMS.generation}/${CONDITION}.json`)
+
+  logEvent('experiment.initialize', {CONDITION, PARAMS, stimuli})
   await handleSpecialMode() // never returns if in special mode
 
   enforceScreenSize(1200, 750)
-  let stimuli = buildStimuli()
 
   async function instructions() {
     logEvent('experiment.instructions')
@@ -70,7 +45,7 @@ async function runExperiment() {
   }
 
   async function social() {
-    if (!PARAMS.social) return
+    if (!stimuli.examples.length) return
     logEvent('experiment.social')
     DISPLAY.empty()
     $('<div>').html(markdown(`

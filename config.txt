@@ -39,8 +39,8 @@ secret_key = 'this is my secret key which is hard to guess, i should change this
 adserver_revproxy_host = memorygame29.herokuapp.com
 
 [Task Parameters]
-experiment_code_version = v4.1
-num_conds = 2
+experiment_code_version = v5.0-g1
+num_conds = 20
 num_counters = 1
 
 [Shell Parameters]

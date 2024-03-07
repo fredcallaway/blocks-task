@@ -339,10 +339,14 @@ class BlockPuzzle extends BlockDisplay {
       // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
       dev: false,
     })
+    console.log("TEST", options)
     super(options)
     this.trialId = crypto.randomUUID()
     this.logEvent('blocks.construct', options)
     window.puzzle = this
+
+    this.target
+
 
     if (this.dev) {
       this.allowQuitSeconds = 0

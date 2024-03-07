@@ -1,5 +1,8 @@
-include("utils.jl")
-include("blocks.jl")
+model_dir = "../blocks-model/"
+include("$model_dir/utils.jl")
+include("$model_dir/blocks.jl")
+include("$model_dir/data.jl")
+
 using Combinatorics
 using JSON
 
@@ -129,10 +132,8 @@ function apply_offset(blocks, offset)
     end
 end
 
-
-first.(primitives)
-
 basic_solutions = map(x->x["solution"], Dictionary(Dict(primitives)))
+
 compositions = map(perms) do ((n1, s1), (n2, s2))
     target, offset1, offset2 = attach(s1, s2)
     name = string(n1, "-", n2)
@@ -147,32 +148,78 @@ compositions = map(perms) do ((n1, s1), (n2, s2))
     )
 end |> Dict
 
-
-
 basic = Dict(primitives)
+write("static/json/all_stimuli.json", json((;basic, compositions)))
 
-write("../blocks-task/static/json/stimuli.json", json((;basic, compositions)))
+# %% ==================== iterate ====================
 
-# %% --------
+pnames = collect(keys(basic))
 
+compositions = map(perms) do ((n1, s1), (n2, s2))
+    target, offset1, offset2 = attach(s1, s2)
+    target = mat2string(target)
+    name = string(n1, "-", n2)
+    name => (;name, target)
+end |> Dict
 
-
-stimuli_alt = map([1,2,3,4,10]) do target_border
-    compositions = map(collect(perms)) do ((n1, s1), (n2, s2))
-        target, offset1, offset2 = attach(s1, s2; target_border)
-        basic_sol[n1][1]
-        (
-            name = string(n1, "-", n2),
-            offset1, offset2,
-            target = mat2string(target),
-            solution = union(
-                apply_offset(basic_sol[n1], offset1),
-                apply_offset(basic_sol[n2], offset2),
-            )
-        )
+function generate_stimuli(i)
+    Random.seed!(i)
+    prim = shuffle(pnames)
+    main = map(eachindex(prim)) do i
+        cn = string(prim[i], "-", prim[mod1(i+1, length(prim))])
+        compositions[cn]
     end
-    (;basic, target_border, compositions)
+    shuffle!(main)
+    (;main, examples=[])
+end
+
+gen1 = map(generate_stimuli, 1:20)
+mkpath("static/json/gen1/")
+
+foreach(0:19) do i
+    write("static/json/gen1/$i.json", json(generate_stimuli(i)))
 end
 
 
-write("../blocks-task/static/json/stimuli-alt.json", json(stimuli_alt))
+# %% --------
+
+participants = load_participants("v4.0")
+
+@rtransform! participants begin
+    :complete = !isnothing(findnextmatch(load_events(:uid), 1, "experiment.complete")[1])
+    :total_time = begin
+        events = load_events(:uid)
+        (events[end]["time"] - events[1]["time"]) / 60000
+    end
+end
+
+uids = (@rsubset participants :complete).uid
+
+all_trials = flatmap(uids) do uid
+    trials = filter(!get(:practice), load_trials(uid))
+    map(trials) do t
+        @assuming t.configuration (;t.puzzle, uid) => t.configuration
+    end |> skipmissing |> collect
+end;
+
+x = first.(all_trials)
+
+all_trials[1]
+
+choices = repeatedly(10000) do
+    sort(sample(x, 5, replace=false))
+end |> unique;
+
+choices[1]
+function score(examples)
+    n1, n2 = Set.(invert(split.(get.(examples, :puzzle), "-")))
+    length(union(n1, n2)) == 5 || return -1
+    sum(length, (n1, n2))
+end
+
+countmap(score.(choices))
+
+score10 = filter(choices) do c
+    score(c) == 10
+end
+
