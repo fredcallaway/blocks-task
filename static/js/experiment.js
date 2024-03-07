@@ -1,7 +1,8 @@
 
-const PARAMS = conditionParameters(condition, {
-  social: [false, true],
-  stimSet: [0, 1]
+const PARAMS = conditionParameters(CONDITION, {
+  social: false,
+  allowQuitSeconds: 120,
+  generation: 1
 })
 
 updateExisting(PARAMS, urlParams)
@@ -25,11 +26,7 @@ function makeGlobal(obj) {
 }
 
 function buildStimuli() {
-  // let allBasic = Object.keys(STIMULI.basic)
-
-  let allBasic = ["flipper", "moth", "knot", "spinner", "skull", "plane", "hospital", "arch", "longrect", "purple"]
-  let primitives = _.chunk(allBasic, 5)[PARAMS.stimSet]
-
+  let primitives = Object.keys(STIMULI.basic)
   let compositions = cartesian(primitives, primitives)
   .filter(([x, y]) => x != y)
   .map(x => x.join('-'))
@@ -46,22 +43,21 @@ function buildStimuli() {
     }
   })
   main.splice(3, 0, examples[3])
-  console.log('main', main)
 
-  N_TRIAL = main.length
-  return {
-    examples: examples.map(findTrial),
-    main: main.map(findTrial)
-  }
+  let stimuli = {primitives, examples, main}
+  logEvent('experiment.buildStimuli', {stimuli})
+  N_TRIAL = stimuli.main.length
+  makeGlobal({stimuli})
+  return _.mapValues(stimuli, names => names.map(findTrial))
 }
 
 async function runExperiment() {
   STIMULI = await $.getJSON(`static/json/stimuli.json`)
+  logEvent('experiment.initialize', {CONDITION, STIMULI, PARAMS})
   await handleSpecialMode() // never returns if in special mode
 
   enforceScreenSize(1200, 750)
   let stimuli = buildStimuli()
-  logEvent('experiment.stimuli', stimuli)
 
   async function instructions() {
     logEvent('experiment.instructions')
@@ -155,9 +151,10 @@ async function runExperiment() {
       }
     }
 
+    let prm = _.pick(PARAMS, ['allowQuitSeconds'])
     for (let trial of stimuli.main) {
       // trial.configuration = trial.solution
-      await new BlockPuzzle(trial).run(workspace)
+      await new BlockPuzzle({...prm, ...trial}).run(workspace)
       top.incrementCounter()
       saveData()
     }

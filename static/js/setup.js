@@ -2,19 +2,13 @@ _.compose = _.flowRight  // for psiturk
 const psiturk = new PsiTurk(uniqueId, adServerLoc, mode);
 const urlParams = mapObject(Object.fromEntries(new URLSearchParams(window.location.search)), maybeJson)
 const prolific = true;
+const local = (mode === "demo" || mode === "{{ mode }}")
 
-let local = false;
+const CONDITION =
+  urlParams.condition ??
+  condition == "{{ condition }}" ? 0 : parseInt(condition, 10)
 
-console.log('condition1', condition)
-if (mode === "demo" || mode === "{{ mode }}") {
-  local = true;
-} else {
-  condition = parseInt(condition, 10);
-  console.log('condition2', condition)
-}
-
-condition = urlParams.condition ?? parseInt(condition, 10) ?? 0
-console.log('condition3', condition)
+assert(typeof(CONDITION) == 'number', 'bad condition')
 
 // Test connection to server, then initialize the experiment.
 

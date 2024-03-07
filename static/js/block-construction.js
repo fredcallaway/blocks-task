@@ -335,12 +335,12 @@ class BlockPuzzle extends BlockDisplay {
       library: LIBRARIES.hard,
       target: 'blank',
       prompt: ``,
-      allowQuitSeconds: 90,
+      allowQuitSeconds: null,
       // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
       dev: false,
     })
     super(options)
-    this.tridId = crypto.randomUUID()
+    this.trialId = crypto.randomUUID()
     this.logEvent('blocks.construct', options)
     window.puzzle = this
 
@@ -473,7 +473,7 @@ class BlockPuzzle extends BlockDisplay {
         })
         if (res.value) {
           let prev = this.target
-          this.buildTarget(res.value)
+          this.buildTarget(res.value.replaceAll("\\n", "\n"))
           this.activeBlocks.clear()
           this.drawCanvas()
         }

@@ -25,7 +25,11 @@ class ConditionBuilder {
   chooseMulti(choicesObj) {
     let result = {};
     for (let [key, choices] of Object.entries(choicesObj)) {
-      result[key] = this.choose(choices);
+      if (Array.isArray(choices)) {
+        result[key] = this.choose(choices);
+      } else {
+        result[key] = choices;
+      }
     }
     return result;
   }
@@ -211,9 +215,9 @@ check = function(name, val) {
   return val;
 };
 
-assert = function(val) {
+assert = function(val, msg='(no details)') {
   if (!val) {
-    throw new Error('Assertion Error');
+    throw new Error('Assertion Error: ' + msg);
   }
   return val;
 };
