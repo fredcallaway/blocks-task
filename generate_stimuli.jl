@@ -183,7 +183,7 @@ end
 
 # %% --------
 
-generation = 2
+generation = 3
 
 uids = (@rsubset load_participants("v5.0-g$(generation-1)") :complete).uid
 
