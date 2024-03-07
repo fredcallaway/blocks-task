@@ -2,7 +2,7 @@
 const PARAMS = conditionParameters(CONDITION, {
   social: false,
   allowQuitSeconds: 120,
-  generation: 4
+  generation: 5
 })
 
 updateExisting(PARAMS, urlParams)
