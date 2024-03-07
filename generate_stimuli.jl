@@ -6,20 +6,11 @@ include("$model_dir/data.jl")
 using Combinatorics
 using JSON
 
+if !@isdefined(generation)
+    generation = parse(Int, ARGS[1])
+end
+
 # %% --------
-
-function string2mat(s)
-    mapreduce(vcat, split(strip(s), "\n")) do row
-        reshape(collect(strip(row)), 1, :) .== 'X'
-    end
-end
-
-function mat2string(X)
-    rows = map(eachrow(X)) do x
-        string(ifelse.(x .> 0, "X", ".")...)
-    end
-    join(rows, "\n")
-end
 
 function load_primitives(file="primitives.jsonl")
     map(readlines(file)) do line
@@ -29,9 +20,9 @@ function load_primitives(file="primitives.jsonl")
 end
 
 primitives = load_primitives()
-
+pnames = ["flipper", "moth", "longrect", "skull", "flags"]
 filter!(primitives) do x
-    first(x) in ["flipper", "moth", "longrect", "skull", "flags"]
+    first(x) in pnames
 end
 
 perms = @chain map(primitives) do (name, stim)
@@ -97,20 +88,17 @@ function attach(s1, s2; target_border=2)
     (;target=X, offset1, offset2)
 end
 
-# %% --------
 
-function plot_stim(X; zlim=(0,2), kws...)
-    heatmap(X, border=:none, labels=false, yflip=true; zlim, kws...)
-end
-
-
-map(perms) do ((n1, s1), (n2, s2))
-    X = attach(s1, s2).target
-    plot_stim(X)
-end |> gridplot
+# function plot_stim(X; zlim=(0,2), kws...)
+#     heatmap(X, border=:none, labels=false, yflip=true; zlim, kws...)
+# end
 
 
-# %% --------
+# map(perms) do ((n1, s1), (n2, s2))
+#     X = attach(s1, s2).target
+#     plot_stim(X)
+# end |> gridplot
+
 
 function get_offset(blocks, dim)
     minimum(blocks) do block
@@ -119,7 +107,6 @@ function get_offset(blocks, dim)
         end
     end
 end
-
 
 function apply_offset(blocks, offset)
     x = offset.x - get_offset(blocks, "x")
@@ -132,30 +119,7 @@ function apply_offset(blocks, offset)
     end
 end
 
-basic_solutions = map(x->x["solution"], Dictionary(Dict(primitives)))
-
-compositions = map(perms) do ((n1, s1), (n2, s2))
-    target, offset1, offset2 = attach(s1, s2)
-    name = string(n1, "-", n2)
-    name => (
-        name,
-        offset1, offset2,
-        target = mat2string(target),
-        solution = union(
-            apply_offset(basic_solutions[n1], offset1),
-            apply_offset(basic_solutions[n2], offset2),
-        )
-    )
-end |> Dict
-
-basic = Dict(primitives)
-write("static/json/all_stimuli.json", json((;basic, compositions)))
-
-# %% ==================== iterate ====================
-
-pnames = collect(keys(basic))
-
-compositions = map(perms) do ((n1, s1), (n2, s2))
+puzzles = map(perms) do ((n1, s1), (n2, s2))
     target, offset1, offset2 = attach(s1, s2)
     target = mat2string(target)
     name = string(n1, "-", n2)
@@ -167,94 +131,92 @@ function generate_stimuli(i::Int)
     prim = shuffle(pnames)
     main = map(eachindex(prim)) do i
         cn = string(prim[i], "-", prim[mod1(i+1, length(prim))])
-        compositions[cn]
+        puzzles[cn]
     end
     shuffle!(main)
     (;main, examples=[])
 end
 
-gen1 = map(generate_stimuli, 1:20)
-mkpath("static/json/gen1/")
+if generation == 1
+    basic_solutions = map(x->x["solution"], Dictionary(Dict(primitives)))
 
-foreach(0:19) do i
-    write("static/json/gen1/$i.json", json(generate_stimuli(i)))
-end
+    compositions = map(perms) do ((n1, s1), (n2, s2))
+        target, offset1, offset2 = attach(s1, s2)
+        name = string(n1, "-", n2)
+        name => (;
+            name,
+            offset1, offset2,
+            target = mat2string(target),
+            solution = union(
+                apply_offset(basic_solutions[n1], offset1),
+                apply_offset(basic_solutions[n2], offset2),
+            )
+        )
+    end |> Dict
 
+    basic = Dict(primitives)
+    write("static/json/all_stimuli.json", json((;basic, compositions)))
 
-# %% --------
-
-generation = 3
-
-uids = (@rsubset load_participants("v5.0-g$(generation-1)") :complete).uid
-
-@assert length(uids) == 15
-
-all_trials = flatmap(uids) do uid
-    trials = filter(!get(:practice), load_trials(uid))
-    map(trials) do t
-        @assuming t.configuration t.puzzle => t.configuration
-    end |> skipmissing |> collect
-end;
-
-
-choices = repeatedly(10000) do
-    sample(all_trials, 5, replace=false)
-end;
-
-function score(examples)
-    n1, n2 = Set.(invert(split.(first.(examples), "-")))
-    length(union(n1, n2)) == 5 || return -1
-    sum(length, (n1, n2))
-end
-
-
-score10 = filter(choices) do c
-    score(c) == 10
-end;
-
-@assert length(score10) ≥ 20
-examples = score10[1];
-
-
-function sample_main(examples::Vector)
-    used = first.(examples)
-    for i in rand(1:100000, 1000)
-        main = generate_stimuli(i).main
-        !any(in(used), first.(main)) && return main
+    mkpath("static/json/gen1/")
+    foreach(0:19) do i
+        write("static/json/gen1/$i.json", json(generate_stimuli(i)))
     end
-    error("couldn't sample main")
-end
 
-function generate_stimuli(i::Int, examples::Vector)
-    Random.seed!(i)
-    main = sample_main(examples)
-    @assert isempty(intersect(first.(main), first.(examples)))
-    examples = map(examples) do (name, solution)
-        (;compositions[name]...,
-        solution = apply_offset(solution, (;x=0, y=0)))
+else # generation > 1
+
+    uids = (@rsubset load_participants("v5.0-g$(generation-1)") :complete).uid
+
+    @assert length(uids) == 15
+
+    all_trials = flatmap(uids) do uid
+        trials = filter(!get(:practice), load_trials(uid))
+        map(trials) do t
+            @assuming t.configuration t.puzzle => t.configuration
+        end |> skipmissing |> collect
+    end;
+
+
+    choices = repeatedly(10000) do
+        sample(all_trials, 5, replace=false)
+    end;
+
+    function score(examples)
+        n1, n2 = Set.(invert(split.(first.(examples), "-")))
+        length(union(n1, n2)) == 5 || return -1
+        sum(length, (n1, n2))
     end
-    (;main, examples)
-    # (;main, examples)
+
+    score10 = filter(choices) do c
+        score(c) == 10
+    end;
+
+    @assert length(score10) ≥ 20
+
+    function sample_main(examples::Vector)
+        used = first.(examples)
+        for i in rand(1:100000, 1000)
+            main = generate_stimuli(i).main
+            !any(in(used), first.(main)) && return main
+        end
+        error("couldn't sample main")
+    end
+
+    function generate_stimuli(i::Int, examples::Vector)
+        Random.seed!(i)
+        main = sample_main(examples)
+        @assert isempty(intersect(first.(main), first.(examples)))
+        examples = map(examples) do (name, solution)
+            (;puzzles[name]...,
+            solution = apply_offset(solution, (;x=0, y=0)))
+        end
+        (;main, examples)
+        # (;main, examples)
+    end
+
+    mkpath("static/json/gen$generation/")
+    foreach(0:19) do i
+        stimuli = generate_stimuli(i, score10[i+1])
+        write("static/json/gen$generation/$i.json", json(stimuli))
+    end
+    println("wrote static/json/gen$generation/")
 end
-
-mkpath("static/json/gen$generation/")
-foreach(0:19) do i
-    stimuli = generate_stimuli(i, score10[i+1])
-    write("static/json/gen$generation/$i.json", json(stimuli))
-end
-
-
-# %% --------
-
-
-  let main = _.shuffle(compositions).filter(name => {
-    if (!used.has(name) && !used.has(name.split("-").reverse().join("-"))) {
-      used.add(name)
-      return true
-    }
-  })
-
-
-# map(score10[1:20]) do examples
-
-
