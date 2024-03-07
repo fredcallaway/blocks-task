@@ -162,7 +162,7 @@ compositions = map(perms) do ((n1, s1), (n2, s2))
     name => (;name, target)
 end |> Dict
 
-function generate_stimuli(i)
+function generate_stimuli(i::Int)
     Random.seed!(i)
     prim = shuffle(pnames)
     main = map(eachindex(prim)) do i
@@ -183,43 +183,78 @@ end
 
 # %% --------
 
-participants = load_participants("v4.0")
+generation = 2
 
-@rtransform! participants begin
-    :complete = !isnothing(findnextmatch(load_events(:uid), 1, "experiment.complete")[1])
-    :total_time = begin
-        events = load_events(:uid)
-        (events[end]["time"] - events[1]["time"]) / 60000
-    end
-end
+uids = (@rsubset load_participants("v5.0-g$(generation-1)") :complete).uid
 
-uids = (@rsubset participants :complete).uid
+@assert length(uids) == 15
 
 all_trials = flatmap(uids) do uid
     trials = filter(!get(:practice), load_trials(uid))
     map(trials) do t
-        @assuming t.configuration (;t.puzzle, uid) => t.configuration
+        @assuming t.configuration t.puzzle => t.configuration
     end |> skipmissing |> collect
 end;
 
-x = first.(all_trials)
-
-all_trials[1]
 
 choices = repeatedly(10000) do
-    sort(sample(x, 5, replace=false))
-end |> unique;
+    sample(all_trials, 5, replace=false)
+end;
 
-choices[1]
 function score(examples)
-    n1, n2 = Set.(invert(split.(get.(examples, :puzzle), "-")))
+    n1, n2 = Set.(invert(split.(first.(examples), "-")))
     length(union(n1, n2)) == 5 || return -1
     sum(length, (n1, n2))
 end
 
-countmap(score.(choices))
 
 score10 = filter(choices) do c
     score(c) == 10
+end;
+
+@assert length(score10) ≥ 20
+examples = score10[1];
+
+
+function sample_main(examples::Vector)
+    used = first.(examples)
+    for i in rand(1:100000, 1000)
+        main = generate_stimuli(i).main
+        !any(in(used), first.(main)) && return main
+    end
+    error("couldn't sample main")
 end
+
+function generate_stimuli(i::Int, examples::Vector)
+    Random.seed!(i)
+    main = sample_main(examples)
+    @assert isempty(intersect(first.(main), first.(examples)))
+    examples = map(examples) do (name, solution)
+        (;compositions[name]...,
+        solution = apply_offset(solution, (;x=0, y=0)))
+    end
+    (;main, examples)
+    # (;main, examples)
+end
+
+mkpath("static/json/gen$generation/")
+foreach(0:19) do i
+    stimuli = generate_stimuli(i, score10[i+1])
+    write("static/json/gen$generation/$i.json", json(stimuli))
+end
+
+
+# %% --------
+
+
+  let main = _.shuffle(compositions).filter(name => {
+    if (!used.has(name) && !used.has(name.split("-").reverse().join("-"))) {
+      used.add(name)
+      return true
+    }
+  })
+
+
+# map(score10[1:20]) do examples
+
 

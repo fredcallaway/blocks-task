@@ -6,7 +6,7 @@ const local = (mode === "demo" || mode === "{{ mode }}")
 
 const CONDITION =
   urlParams.condition ??
-  condition == "{{ condition }}" ? 0 : parseInt(condition, 10)
+  (condition == "{{ condition }}" ? 0 : parseInt(condition, 10))
 
 assert(typeof(CONDITION) == 'number', 'bad condition')
 
@@ -22,7 +22,7 @@ $(window).on('load', async () => {
   } else {
     await saveData()
     if (mode == 'live') {
-      await sleep(1000)
+      await sleep(3000)
       $('#load-icon').hide();
       let btn = button($('#display'), 'begin')
       btn.button.addClass('animate-bottom').css('margin-top', '40px')

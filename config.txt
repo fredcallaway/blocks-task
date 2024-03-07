@@ -18,12 +18,17 @@ table_name = participants
 [Prolific]
 name = Block Puzzles
 project_name = blocks
-reward = 300
+reward = 200
 total_available_places = 15
-estimated_completion_time = 15
+estimated_completion_time = 10
 description =
     In this study, you will solve a series of puzzles that involve
     building shapes out of blocks.
+
+    **Please do not accept this study unless you intend to do it right away.**
+    This study is part of chain, and we can only begin the next
+    step after this one is completed. We may reject your assignment if you
+    stay on one page/round of the experiment for several minutes.
 
 [Server Parameters]
 host = 0.0.0.0
@@ -39,7 +44,7 @@ secret_key = 'this is my secret key which is hard to guess, i should change this
 adserver_revproxy_host = memorygame29.herokuapp.com
 
 [Task Parameters]
-experiment_code_version = v5.0-g1
+experiment_code_version = v5.0-g2
 num_conds = 20
 num_counters = 1
 

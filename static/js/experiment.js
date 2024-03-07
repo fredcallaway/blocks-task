@@ -2,7 +2,7 @@
 const PARAMS = conditionParameters(CONDITION, {
   social: false,
   allowQuitSeconds: 120,
-  generation: 1
+  generation: 2
 })
 
 updateExisting(PARAMS, urlParams)
@@ -96,7 +96,7 @@ async function runExperiment() {
 
     let workspace = $('<div>').appendTo(DISPLAY)
 
-    if (PARAMS.social) {
+    if (PARAMS.generation > 1) {
       workspace.css({
         // 'border': 'thick black solid',
         'float': 'left',
