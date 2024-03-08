@@ -257,7 +257,10 @@ class CycleViewer {
     }).appendTo(div)
 
 
-    this.top = $("<div>").appendTo(this.div)
+    this.top = $("<div>")
+    .css('margin-bottom', 20)
+    .appendTo(this.div)
+
 
     this.btnPrev = $('<button>')
     .addClass('btn')

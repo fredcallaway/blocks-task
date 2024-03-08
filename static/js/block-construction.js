@@ -320,7 +320,7 @@ class BlockDisplayOnly extends BlockDisplay {
     options = {...options,
                width: target.width + 2,
                height: target.height,
-               tray_height: 0.1}
+               tray_height: 0.2}
     super(options)
     this.clearColliding(true)
     this.drawCanvas()

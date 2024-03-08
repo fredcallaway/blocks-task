@@ -1,9 +1,12 @@
 // code for demonstration widgets, not part of the actual experiment
 
+
+
 async function puzzleViewer(name) {
   if (name == 'alt') return altPuzzleViewer()
   let width = 240
-  let stimuli = _.mapValues(STIMULI, Object.values)
+  let all_stimuli = await $.getJSON(`static/json/all_stimuli.json`)
+  let stimuli = _.mapValues(all_stimuli, Object.values)
 
   let wrapper = $('<div>').css({
     'position': 'relative',
@@ -109,11 +112,42 @@ async function altPuzzleViewer() {
   cv.showItem(0)
 }
 
+async function genDataViewer() {
+  DISPLAY.empty()
+  let allData = await $.getJSON(`static/json/solutions2.json`)
+  console.log('allData', allData)
+
+  let cv = new CycleViewer(DISPLAY, allData, function(grp) {
+    console.log('grp', grp)
+    this.content.empty()
+    this.setTitle(`generation = ${grp.generation}`)
+
+    for (let pdata of grp.data) {
+      let col = $('<div>').css({
+        width: 180,
+        height: 290,
+        float: 'left',
+        border: 'medium black solid',
+        margin: 5
+      }).appendTo(this.content)
+      $('<p>').text(pdata.uid).css({'font-size': 12, 'font-weight': 'bold'}).appendTo(col)
+      col.click(() => {
+        dataViewer(pdata.uid)
+      })
+      console.log('pdata', pdata)
+      for (let trial of pdata.solutions) {
+        let div = $('<div>').appendTo(col)
+        trial = {...trial, grid: 7}
+        new BlockDisplayOnly(trial).attach(div)
+      }
+    }
+  })
+  cv.showItem(0)
+
+}
+
 async function dataViewer(which) {
-  if (!which) {
-    which = 'v3.1'
-  }
-  console.log('which is', which)
+  DISPLAY.empty()
   let wrapper = $('<div>').css({
     'position': 'relative',
     'margin': 'auto',
@@ -122,14 +156,26 @@ async function dataViewer(which) {
     // 'border': 'thin red solid'
   }).appendTo(DISPLAY)
 
+  $('<button>')
+  .appendTo(wrapper)
+  .css({
+    'position': 'absolute',
+    'left': '50px',
+    'top': '10px'
+  })
+  .addClass('btn')
+  .html('← generations')
+  .css('font-size', 18)
+  .click(() => genDataViewer())
+
   let title = $('<h1>').appendTo(wrapper)
+
 
   let content = $('<div>').css({
     'margin-left': '100px',
     'width': '1000px',
     // border: 'thick black solid'
   }).appendTo(wrapper)
-
 
   let btnPrev = $('<button>')
   .addClass('btn')
@@ -141,6 +187,7 @@ async function dataViewer(which) {
   })
   .appendTo(wrapper)
 
+
   let btnNext = $('<button>')
   .addClass('btn')
   .text('>>')
@@ -151,15 +198,16 @@ async function dataViewer(which) {
   })
   .appendTo(wrapper)
 
-  let [version, uid] = which.split('-');
-  let allData = await $.getJSON(`static/json/solutions/${version}.json`)
+  // let [version, uid] = which.split('-');
+  let allData = await $.getJSON(`static/json/solutions.json`)
+  makeGlobal({allData})
   let listen = new EventListeners()
   var queryParams = new URLSearchParams(window.location.search);
 
   async function show(i) {
     let data = allData[i]
     queryParams.set("data", `${data.uid}`);
-    history.replaceState(null, null, "?"+queryParams.toString());
+    history.pushState(null, null, "?"+queryParams.toString());
 
     btnPrev.unbind('click')
     btnPrev.click(() => {
@@ -184,9 +232,9 @@ async function dataViewer(which) {
     title.text(data.uid)
     let row1 = $('<div>').appendTo(content)
     $('<h1>').text("Examples").css('margin-top', '40px').appendTo(row1)
-    for (let name of data.examples) {
+    console.log('data.examples', data.examples)
+    for (let trial of data.examples) {
       let div = $('<div>').css('display', 'inline-block').appendTo(row1)
-      let trial = findTrial(name)
       trial = {...trial, grid: 20, configuration: trial.solution}
       new BlockDisplayOnly(trial).attach(div)
     }
@@ -195,17 +243,19 @@ async function dataViewer(which) {
     $('<h1>').text("Solutions").css('margin-top', '40px').appendTo(row2)
     for (let trial of data.solutions) {
       let div = $('<div>').css('display', 'inline-block').appendTo(row2)
-      trial = {...findTrial(trial.name), ...trial, grid: 20}
+      console.log('trial', trial)
+      trial = {...trial, grid: 20}
       new BlockDisplayOnly(trial).attach(div)
     }
   }
-  await show(Math.max(0,_.findIndex(allData, {uid})))
+  await show(Math.max(0,_.findIndex(allData, {uid: which})))
 }
 
 
 async function solveBasic() {
+  error("not implemented")
   let solutions = {}
-  for (let trial of STIMULI.basic) {
+  for (let trial of ALL_STIMULI.basic) {
     let puzzle = new BlockPuzzle(trial)
     await puzzle.run(DISPLAY)
     solutions[trial.name] = Array.from(puzzle.activeBlocks)
@@ -225,7 +275,11 @@ async function handleSpecialMode() {
     await puzzleViewer(urlParams.puzzle)
   }
   else if (urlParams.data != undefined) {
-    await dataViewer(urlParams.data)
+    if (urlParams.data == 'generations') {
+      await genDataViewer()
+    } else {
+        await dataViewer(urlParams.data)
+    }
   }
   else if (urlParams.dev != undefined) {
     await new BlockPuzzle({

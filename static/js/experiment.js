@@ -14,17 +14,10 @@ var BONUS = 0
 var STIMULI = null
 var N_TRIAL = 5
 
-function findTrial(name) {
-  return STIMULI.compositions[name] ?? STIMULI.basic[name]
-  // return _.find(STIMULI.basic.concat(STIMULI.compositions), {name})
-}
-
-
 function makeGlobal(obj) {
   Object.assign(window, obj)
 
 }
-
 
 async function runExperiment() {
   stimuli = await $.getJSON(`static/json/gen${PARAMS.generation}/${CONDITION}.json`)
