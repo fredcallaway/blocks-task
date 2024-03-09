@@ -114,6 +114,17 @@ class Block {
     });
   }
 
+  adjacentTo(x, y) {
+    return this.parts.some(part => {
+      return (
+        this.partContains(part, x+1, y) ||
+        this.partContains(part, x-1, y) ||
+        this.partContains(part, x, y+1) ||
+        this.partContains(part, x, y-1)
+      )
+    });
+  }
+
   isWithinBoundary(width, height) {
     return this.parts.every(part => {
       const partX = (this.x + part.x);
@@ -278,6 +289,7 @@ class BlockDisplay {
       target = new Block({x: 0, y: 0, parts, color: 'white', id: 'target'})
     } else {
       target = string2block(block, 0, 0, 'white', 'target')
+      console.log('target', block)
     }
     // center it
     assert(target.x == 0)
@@ -338,6 +350,10 @@ class BlockDisplay {
 
         if (otherBlock.contains(partX + .5, partY + .5)) {
           return true; // Collision detected
+        } else if (this.sameColorConstraint &&
+                   otherBlock.color == block.color &&
+                   otherBlock.adjacentTo(partX, partY)) {
+          return true;
         }
       }
     }
@@ -381,10 +397,11 @@ class BlockPuzzle extends BlockDisplay {
   constructor(options = {}) {
     _.defaults(options, {
       // library: TETRIS_BLOCKS,
-      library: 'five',
+      library: 'tetris',
       target: 'blank',
       prompt: ``,
       allowQuitSeconds: null,
+      sameColorConstraint: true,
       // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
       dev: false,
     })
@@ -667,11 +684,11 @@ class BlockPuzzle extends BlockDisplay {
 
   async done(win) {
     if (this.dev) {
-      if (!this.win) {
-        this.buildTarget('blank')
-      }
-      this.activeBlocks.clear()
-      this.drawCanvas()
+      // if (!this.win) {
+      //   this.buildTarget('blank')
+      // }
+      // this.activeBlocks.clear()
+      // this.drawCanvas()
     } else {
       if (win) {
         this.logEvent('blocks.done.success', {configuration: Array.from(this.activeBlocks)})
