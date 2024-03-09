@@ -204,7 +204,6 @@ async function dataViewer(which) {
   var queryParams = new URLSearchParams(window.location.search);
 
   async function show(i) {
-    console.log('show', i)
     let data = allData[i]
     queryParams.set("data", `${data.uid}`);
     history.pushState(null, null, "?"+queryParams.toString());
@@ -281,7 +280,8 @@ async function handleSpecialMode() {
   }
   else if (urlParams.dev != undefined) {
     await new BlockPuzzle({
-      library: urlParams.dev,
+      library: urlParams.dev || undefined,
+      target: urlParams.target?.replaceAll("\\n", "\n"),
       dev: true
     }).attach(DISPLAY).run()
   }
