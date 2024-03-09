@@ -16,16 +16,17 @@ function load_primitives(file="primitives.jsonl")
     map(readlines(file)) do line
         stim = JSON.parse(line)
         stim["name"] => stim
-    end
+    end |> Dict
 end
 
 primitives = load_primitives()
-pnames = ["flipper", "moth", "longrect", "skull", "flags"]
-filter!(primitives) do x
-    first(x) in pnames
-end
+pnames = collect(keys(primitives))
 
-perms = @chain map(primitives) do (name, stim)
+# filter!(primitives) do x
+#     first(x) in pnames
+# end
+
+perms = @chain map(collect(primitives)) do (name, stim)
     name, string2mat(stim["target"])
 end permutations(2) collect
 
@@ -99,6 +100,15 @@ end
 #     plot_stim(X)
 # end |> gridplot
 
+puzzles = map(perms) do ((n1, s1), (n2, s2))
+    target, offset1, offset2 = attach(s1, s2)
+    target = mat2string(target)
+    name = string(n1, "-", n2)
+    name => (;name, target)
+end |> Dict
+
+
+# %% --------
 
 function get_offset(blocks, dim)
     minimum(blocks) do block
@@ -119,27 +129,33 @@ function apply_offset(blocks, offset)
     end
 end
 
-puzzles = map(perms) do ((n1, s1), (n2, s2))
-    target, offset1, offset2 = attach(s1, s2)
-    target = mat2string(target)
-    name = string(n1, "-", n2)
-    name => (;name, target)
-end |> Dict
-
-function generate_stimuli(i::Int)
+function generate_main(i::Int)
     Random.seed!(i)
     prim = shuffle(pnames)
-    main = map(eachindex(prim)) do i
+    map(eachindex(prim)) do i
         cn = string(prim[i], "-", prim[mod1(i+1, length(prim))])
         puzzles[cn]
-    end
-    shuffle!(main)
-    (;main, examples=[])
+    end |> shuffle!
 end
 
-if generation == 1
-    basic_solutions = map(x->x["solution"], Dictionary(Dict(primitives)))
+compositions = map(perms) do ((n1, s1), (n2, s2))
+    target, offset1, offset2 = attach(s1, s2)
+    name = string(n1, "-", n2)
+    name => (;
+        name,
+        offset1, offset2,
+        target = mat2string(target),
+        solution = union(
+            apply_offset(basic_solutions[n1], offset1),
+            apply_offset(basic_solutions[n2], offset2),
+        )
+    )
+end |> Dict
 
+basic = Dict(primitives)
+write("static/json/all_stimuli.json", json((;basic, compositions)))
+
+if generation == 0
     compositions = map(perms) do ((n1, s1), (n2, s2))
         target, offset1, offset2 = attach(s1, s2)
         name = string(n1, "-", n2)
@@ -157,6 +173,8 @@ if generation == 1
     basic = Dict(primitives)
     write("static/json/all_stimuli.json", json((;basic, compositions)))
 
+elseif generation == 1
+    basic_solutions = valmap(getindex("solution"), primitives)
     mkpath("static/json/gen1/")
     foreach(0:19) do i
         write("static/json/gen1/$i.json", json(generate_stimuli(i)))
