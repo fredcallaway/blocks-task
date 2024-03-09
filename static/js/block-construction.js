@@ -142,32 +142,81 @@ const BLANK = `
   XXXXXXXXXXXXXXXXXXXXXXXXXX
 `
 
-const TETRIS_BLOCKS = [
-  `
-    XX
-    XX
-  `, `
-    .XX
-    XX.
-  `, `
-    XX.
-    .XX
-  `, `
-    .X
-    .X
-    XX
-  `, `
-    X
-    X
-    XX
-  `, `
-   X
-   X
-   X
-   X
-  `
-]
+const LIBRARIES = {
+  'tetris': [
+    `
+      XX
+      XX
+    `, `
 
+      X.
+      XX
+      .X
+    `, `
+      .X
+      XX
+      X.
+    `, `
+      X.
+      XX
+      X.
+    `, `
+      .X
+      .X
+      XX
+    `, `
+      X
+      X
+      XX
+    `, `
+     X
+     X
+     X
+     X
+    `
+  ],
+  'five': [
+    `,
+      .X
+      XXX
+      .X
+    `,
+     `
+      X
+      XX
+      XX
+    `, `
+      X
+      XX.
+      .XX
+    `, `
+      XX
+      .X
+      .XX
+    `, `
+      XX
+      X
+      XX
+    `, `
+      XXX
+      X
+      X
+    `
+  ]
+}
+
+function buildLibrary(blocks, height=0) {
+  if (typeof(blocks) == 'string') {
+    blocks = LIBRARIES[blocks]
+  }
+  let xPos = 1;
+  return blocks.map((s, i) => {
+    let block = string2block(s, xPos, 0, i, i);
+    block.y = (2 + height);
+    xPos += block.width + 1;
+    return block;
+  });
+}
 
 function string2block(s, x, y, color, id='block') {
     if (s == 'blank') {
@@ -332,21 +381,23 @@ class BlockPuzzle extends BlockDisplay {
   constructor(options = {}) {
     _.defaults(options, {
       // library: TETRIS_BLOCKS,
-      library: LIBRARIES.hard,
+      library: 'five',
       target: 'blank',
       prompt: ``,
       allowQuitSeconds: null,
       // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
       dev: false,
     })
-    console.log("TEST", options)
+    let library = buildLibrary(options.library);
+    options.tray_height = _(library).map(x => x.height).max() + 2
     super(options)
-    this.trialId = crypto.randomUUID()
-    this.logEvent('blocks.construct', options)
+    for (let block of library) {
+      block.y += this.height
+    }
     window.puzzle = this
-
-    this.target
-
+    this.logEvent('blocks.construct', options)
+    this.trialId = crypto.randomUUID()
+    this.library = library
 
     if (this.dev) {
       this.allowQuitSeconds = 0
@@ -358,7 +409,6 @@ class BlockPuzzle extends BlockDisplay {
       `
     }
 
-    this.buildLibrary(this.library);
     this.logEvent('blocks.target', this.target)
     this.buildDisplay()
     this.solved = make_promise()
@@ -376,16 +426,6 @@ class BlockPuzzle extends BlockDisplay {
   logEvent(event, info={}) {
     info.trialId = this.trialId
     logEvent(event, info)
-  }
-
-  buildLibrary(blocks) {
-    let xPos = 1;
-    this.library = blocks.map((s, i) => {
-      let block = string2block(s, xPos, 0, i, i);
-      block.y = (1 + this.height + this.tray_height - block.height - 1);
-      xPos += block.width + 1;
-      return block;
-    });
   }
 
   buildDisplay() {

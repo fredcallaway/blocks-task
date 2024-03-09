@@ -281,7 +281,7 @@ async function handleSpecialMode() {
   }
   else if (urlParams.dev != undefined) {
     await new BlockPuzzle({
-      library: LIBRARIES[urlParams.dev] ?? LIBRARIES.easy,
+      library: urlParams.dev,
       dev: true
     }).attach(DISPLAY).run()
   }
