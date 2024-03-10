@@ -262,6 +262,8 @@ class BlockDisplay {
     })
     window.bd = this
     Object.assign(this, options)
+    console.log('options', options)
+    console.log('this.configuration', this.configuration)
     this.activeBlocks = new Set((this.configuration ?? []).map(x => new Block(x)));
     if (this.target) {
       this.buildTarget(this.target)
@@ -289,7 +291,6 @@ class BlockDisplay {
       target = new Block({x: 0, y: 0, parts, color: 'white', id: 'target'})
     } else {
       target = string2block(block, 0, 0, 'white', 'target')
-      console.log('target', block)
     }
     // center it
     assert(target.x == 0)
@@ -380,15 +381,20 @@ class BlockDisplayOnly extends BlockDisplay {
       height: 10,
       background: 'white',
       borderStyle: 'none',
+      showSolution: false
     })
     let target = string2block(options.target, 0, 0, 'white', 'target')
     options = {...options,
                width: target.width + 2,
                height: target.height,
                tray_height: 0.2}
+    if (options.showSolution) {
+      options.configuration = options.solution
+    }
     super(options)
-    this.clearColliding(true)
+    // this.clearColliding(true)
     this.drawCanvas()
+    console.log(this.activeBlocks)
   }
 }
 

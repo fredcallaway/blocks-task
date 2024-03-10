@@ -10,6 +10,8 @@ if !@isdefined(generation)
     generation = parse(Int, ARGS[1])
 end
 
+TARGET_BORDER = 10
+
 # %% --------
 
 function load_primitives(file="primitives.jsonl")
@@ -52,7 +54,7 @@ function border_size(X)
     end
 end
 
-function attach(s1, s2; target_border=2)
+function attach(s1, s2; target_border=TARGET_BORDER)
     h1, w1 = size(s1)
     h2, w2 = size(s2)
     X = zeros(Int, h1+2h2, w1+w2)
@@ -118,7 +120,7 @@ function get_offset(blocks, dim)
     end
 end
 
-function apply_offset(blocks, offset)
+function apply_offset(blocks, offset=(;x=0, y=0))
     x = offset.x - get_offset(blocks, "x")
     y = offset.y - get_offset(blocks, "y")
     map(blocks) do block
@@ -127,6 +129,10 @@ function apply_offset(blocks, offset)
         block["y"] += y
         block
     end
+end
+
+for def in values(primitives)
+    def["solution"] = apply_offset(def["solution"])
 end
 
 function generate_main(i::Int)
@@ -138,24 +144,9 @@ function generate_main(i::Int)
     end |> shuffle!
 end
 
-compositions = map(perms) do ((n1, s1), (n2, s2))
-    target, offset1, offset2 = attach(s1, s2)
-    name = string(n1, "-", n2)
-    name => (;
-        name,
-        offset1, offset2,
-        target = mat2string(target),
-        solution = union(
-            apply_offset(basic_solutions[n1], offset1),
-            apply_offset(basic_solutions[n2], offset2),
-        )
-    )
-end |> Dict
-
-basic = Dict(primitives)
-write("static/json/all_stimuli.json", json((;basic, compositions)))
 
 if generation == 0
+    basic_solutions = valmap(getindex("solution"), primitives)
     compositions = map(perms) do ((n1, s1), (n2, s2))
         target, offset1, offset2 = attach(s1, s2)
         name = string(n1, "-", n2)
@@ -174,7 +165,6 @@ if generation == 0
     write("static/json/all_stimuli.json", json((;basic, compositions)))
 
 elseif generation == 1
-    basic_solutions = valmap(getindex("solution"), primitives)
     mkpath("static/json/gen1/")
     foreach(0:19) do i
         write("static/json/gen1/$i.json", json(generate_stimuli(i)))

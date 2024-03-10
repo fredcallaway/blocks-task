@@ -3,9 +3,11 @@
 
 
 async function puzzleViewer(name) {
+  let showSolution = false
   if (name == 'alt') return altPuzzleViewer()
   let width = 240
   let all_stimuli = await $.getJSON(`static/json/all_stimuli.json`)
+  makeGlobal({all_stimuli})
   let stimuli = _.mapValues(all_stimuli, Object.values)
 
   let wrapper = $('<div>').css({
@@ -34,7 +36,7 @@ async function puzzleViewer(name) {
         cursor: 'pointer',
         width: width,
       }).appendTo(basicDiv)
-      new BlockDisplayOnly({...stim, grid: 15}).attach(div)
+      new BlockDisplayOnly({...stim, grid: 15, showSolution}).attach(div)
       div.click(() => showPuzzle(stim))
     }
 
@@ -48,7 +50,7 @@ async function puzzleViewer(name) {
           cursor: 'pointer',
           width: '240px',
         }).appendTo(rowDiv)
-        new BlockDisplayOnly({...stim, grid: 15}).attach(div)
+        new BlockDisplayOnly({...stim, grid: 15, showSolution}).attach(div)
         div.click(() => showPuzzle(stim))
       }
     }

@@ -1,8 +1,8 @@
 
 const PARAMS = conditionParameters(CONDITION, {
-  social: false,
+  social: [true, false],
   allowQuitSeconds: 120,
-  generation: 5
+  // generation: 5
 })
 
 updateExisting(PARAMS, urlParams)
@@ -11,7 +11,6 @@ psiturk.recordUnstructuredData('params', PARAMS);
 const DISPLAY = $('#display')
 const PROLIFIC_CODE = 'CHDRYEDZ'
 var BONUS = 0
-var STIMULI = null
 var N_TRIAL = 5
 
 function makeGlobal(obj) {
@@ -19,8 +18,39 @@ function makeGlobal(obj) {
 
 }
 
+
+async function buildStimuli() {
+  let all_stimuli = await $.getJSON(`static/json/all_stimuli.json`)
+  let primitives = Object.keys(all_stimuli.basic)
+  let compositions = cartesian(primitives, primitives)
+  .filter(([x, y]) => x != y)
+  .map(x => x.join('-'))
+
+  let examples = _.shuffle(primitives.map(
+    (name, i) => name + "-" + primitives[(i+1) % primitives.length]
+  ))
+
+  let used = new Set(examples)
+  let main = _.shuffle(compositions).filter(name => {
+    if (!used.has(name) && !used.has(name.split("-").reverse().join("-"))) {
+      used.add(name)
+      return true
+    }
+  })
+  main.splice(3, 0, examples[3])
+
+  let stimuli = {primitives, examples, main}
+  // logEvent('experiment.buildStimuli', {stimuli})
+  // N_TRIAL = stimuli.main.length
+  // makeGlobal({stimuli})
+  // return _.mapValues(stimuli, names => names.map(findTrial))
+}
+
+
 async function runExperiment() {
-  stimuli = await $.getJSON(`static/json/gen${PARAMS.generation}/${CONDITION}.json`)
+  // let stimuli = await $.getJSON(`static/json/gen${PARAMS.generation}/${CONDITION}.json`)
+  let stimuli = buildStimuli()
+
 
   logEvent('experiment.initialize', {CONDITION, PARAMS, stimuli})
   await handleSpecialMode() // never returns if in special mode
@@ -32,7 +62,6 @@ async function runExperiment() {
     let trials = [
       {'name': 'easyrect', 'target': 'XXXXX\nXXXXX\nXXXXX'},
       {'name': 'easycross', 'target': '..XX..\n..XX..\nXXXXXX\nXXXXXX\n..XX..\n..XX..'},
-      // _.sample(STIMULI.basic)
     ]
     await new BlockInstructions(trials).run(DISPLAY)
   }
