@@ -4,6 +4,9 @@ DEPENDENCIES
   (jquery)
   <link href="https://unpkg.com/survey-jquery/defaultV2.min.css" type="text/css" rel="stylesheet">
   <script src="https://unpkg.com/survey-jquery/survey.jquery.min.js"></script>
+
+GUI to define json
+  https://surveyjs.io/create-free-survey
 */
 
 const EXAMPLE_SURVEY = {
@@ -47,13 +50,18 @@ const EXAMPLE_SURVEY = {
 }
 
 
-
-
 class SurveyTrial {
   constructor(json) {
-    this.survey = new Survey.Model(EXAMPLE_SURVEY);
+    window.ST = this
+    logEvent('survey.construct', {json})
+    this.survey = new Survey.Model(json);
     this.results = make_promise()
     this.survey.onComplete.add((sender) => this.results.resolve(sender.data));
+
+    this.width = 800
+
+    this.el = $('<div>', {id: '_survey_target'})
+    .css({width: this.width, margin: 'auto'})
 
     // Enable markdown in questions
     let converter = new showdown.Converter();
@@ -68,11 +76,13 @@ class SurveyTrial {
     });
   }
 
-
-  attach(element) {
-    this.el = $(element)
-    this.el.empty()
-    $('<div>', {id: '_survey_target'}).appendTo(this.el)
+  async run(element) {
+    logEvent('survey.run')
+    element.empty()
+    this.el.appendTo(element)
     this.survey.render('_survey_target');
+    let results = await this.results
+    logEvent('survey.results', {results})
   }
 }
+
