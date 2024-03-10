@@ -66,17 +66,17 @@ async function runExperiment() {
   enforceScreenSize(1200, 750)
 
   async function instructions() {
-    logEvent('experiment.instructions')
     let trials = [
-      {'name': 'easyrect', 'target': 'XXXXX\nXXXXX\nXXXXX'},
-      {'name': 'easycross', 'target': '..XX..\n..XX..\nXXXXXX\nXXXXXX\n..XX..\n..XX..'},
+      // {'name': 'easy1', 'target': '.XX.\nXXXX\nXXXX\n.XX.'},
+      {'name': 'practice1', 'target': 'XXXXX\nXXXXX\n.XXX.\n..X..\n..X..\n..X..'},
+      {'name': 'practice2', 'target': '.XX.\nXXXX\nXXXX\nXXXX\nXXXX\n.XX.'},
+
     ]
     await new BlockInstructions(trials).run(DISPLAY)
   }
 
   async function social() {
     if (!stimuli.examples.length) return
-    logEvent('experiment.social')
     DISPLAY.empty()
     $('<div>').html(markdown(`
       # Examples
@@ -111,7 +111,6 @@ async function runExperiment() {
   }
 
   async function main() {
-    logEvent('experiment.main')
     DISPLAY.empty()
     let top = new TopBar({
       nTrial: stimuli.main.length,
@@ -166,7 +165,6 @@ async function runExperiment() {
   }
 
   async function debrief() {
-    logEvent('experiment.debrief')
     let json = await $.getJSON('static/json/survey.json')
     await new SurveyTrial(json).run(DISPLAY)
   }
@@ -177,7 +175,9 @@ async function runExperiment() {
       blocks = blocks.slice(start)
     }
     for (const block of blocks) {
+      logEvent('experiment.timeline.start.' + block.name)
       await block()
+      logEvent('experiment.timeline.end.' + block.name)
     }
   }
 

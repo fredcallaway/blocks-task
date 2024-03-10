@@ -262,8 +262,6 @@ class BlockDisplay {
     })
     window.bd = this
     Object.assign(this, options)
-    console.log('options', options)
-    console.log('this.configuration', this.configuration)
     this.activeBlocks = new Set((this.configuration ?? []).map(x => new Block(x)));
     if (this.target) {
       this.buildTarget(this.target)
@@ -354,6 +352,7 @@ class BlockDisplay {
         } else if (this.sameColorConstraint &&
                    otherBlock.color == block.color &&
                    otherBlock.adjacentTo(partX, partY)) {
+          logEvent('blocks.adjacent', {}, false)
           return true;
         }
       }
@@ -394,7 +393,6 @@ class BlockDisplayOnly extends BlockDisplay {
     super(options)
     // this.clearColliding(true)
     this.drawCanvas()
-    console.log(this.activeBlocks)
   }
 }
 

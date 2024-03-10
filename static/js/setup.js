@@ -44,7 +44,7 @@ $(window).on('load', async () => {
 
 const eventCallbacks = []
 
-function logEvent(event, info={}){
+function logEvent(event, info={}, record=true){
   if (typeof(event) == 'object') {
     info = event;
   } else {
@@ -57,7 +57,7 @@ function logEvent(event, info={}){
   if (!event.includes('mousemove') && !QUIET) {
     console.log('logEvent', info.event, info);
   }
-  psiturk.recordTrialData(info);
+  if (record) psiturk.recordTrialData(info);
 }
 
 function registerEventCallback(f) {

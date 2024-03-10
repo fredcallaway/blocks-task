@@ -204,6 +204,9 @@ class BlockInstructions extends Instructions {
     this.instruct(`You can erase blocks by dragging them on top of another block or into the gray area. `)
     await eventPromise('blocks.drop.erase')
 
+    this.instruct(`One last thing. Two blocks of the same color can't be touching. Try it out.`)
+    await eventPromise('blocks.adjacent')
+
     // this.instruct(`You can also click the button at the bottom to clear the screen.`)
     // $('#blocks-btn-clear').addClass('btn-pulse')
     // await eventPromise('blocks.clear')
@@ -221,13 +224,13 @@ class BlockInstructions extends Instructions {
   }
 
   async stage_practice2() {
-    this.instruct(`Let's try another one.`)
+    this.instruct(`Let's try a harder one.`)
     await new BlockPuzzle({...this.trials[1], practice: true}).run(this.content)
     this.runNext()
   }
 
   async stage_giveup() {
-    this.instruct(`How about this one?`)
+    this.instruct(`Now this one is *really* hard...`)
 
     let target = `
       XXX
@@ -235,7 +238,7 @@ class BlockInstructions extends Instructions {
       XXX
     `
     let resolved = new BlockPuzzle(
-      {name: 'impossible', target, practice: true, allowQuitSeconds: 3}
+      {name: 'impossible', target, practice: true, allowQuitSeconds: 5}
     ).run(this.content)
 
     await this.sleep(5000)
