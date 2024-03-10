@@ -3,7 +3,7 @@
 
 
 async function puzzleViewer(name) {
-  let showSolution = false
+  let showSolution = !!urlParams.showSolution
   if (name == 'alt') return altPuzzleViewer()
   let width = 240
   let all_stimuli = await $.getJSON(`static/json/all_stimuli.json`)
@@ -11,7 +11,8 @@ async function puzzleViewer(name) {
   let stimuli = _.mapValues(all_stimuli, Object.values)
 
   let wrapper = $('<div>').css({
-    'position': 'relative',
+    'top': '0px',
+    // 'position': 'relative',
     'margin': 'auto',
     'width': stimuli.basic.length * width,
     'text-align': 'center',
@@ -26,10 +27,25 @@ async function puzzleViewer(name) {
   function showSelector() {
     wrapper.empty()
 
+    $('<button>')
+    .appendTo(wrapper)
+    .css({
+      'position': 'absolute',
+      'left': '50px',
+      'top': '10px'
+    })
+    .addClass('btn')
+    .html('toggle solutions')
+    .css('font-size', 18)
+    .click(() => {
+      showSolution = !showSolution
+      showSelector()
+    })
+
     // let basic = _.map(_.shuffle(), 'name')
     // let compositions = _.map(_.shuffle(stimuli.compositions), 'name')
 
-    let basicDiv = $('<div>').appendTo(wrapper)
+    let basicDiv = $('<div>').css({marginTop: 60}).appendTo(wrapper)
     for (let stim of stimuli.basic) {
       let div = $('<div>').css({
         display: 'inline-block',
@@ -168,7 +184,6 @@ async function dataViewer(which) {
   .click(() => {
     listen.clear()
     genDataViewer()
-
   })
 
   let title = $('<h1>').appendTo(wrapper)
