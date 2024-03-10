@@ -1,0 +1,50 @@
+{
+ "title": "Exit survey",
+ "description": "That's it! We have a few quick questions before you go. Thanks for participating!",
+ "pages": [
+  {
+   "name": "page1",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "notice",
+     "title": "Did you notice that some parts of the puzzles showed up multiple times?",
+     "isRequired": true,
+     "choices": [
+      "yes",
+      "no",
+      "not sure"
+     ]
+    },
+    {
+     "type": "panel",
+     "name": "panel1",
+     "elements": [
+      {
+       "type": "radiogroup",
+       "name": "copy",
+       "title": "Did you try to copy from the examples?",
+       "isRequired": true,
+       "choices": [
+        "yes",
+        "no",
+        "not sure"
+       ]
+      },
+      {
+       "type": "comment",
+       "name": "whynot",
+       "visibleIf": "{copy} = 'no'",
+       "title": "Can you explain why not?"
+      }
+     ]
+    },
+    {
+     "type": "comment",
+     "name": "feedback",
+     "title": "Do you have any other feedback? (optional)"
+    }
+   ]
+  }
+ ]
+}

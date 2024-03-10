@@ -254,7 +254,7 @@ class BlockDisplay {
     _.defaults(options, {
       grid: 30,
       width: 23,
-      height: 10,
+      height: 11,
       tray_height: 5,
       background: "#ADADAD",
       borderStyle: 'thick black solid',

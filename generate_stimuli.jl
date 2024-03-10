@@ -14,23 +14,44 @@ TARGET_BORDER = 10
 
 # %% --------
 
+function apply_offset(blocks, offset=(;x=0, y=0))
+    x = offset.x - get_offset(blocks, "x")
+    y = offset.y - get_offset(blocks, "y")
+    map(blocks) do block
+        block = copy(block)
+        block["x"] += x
+        block["y"] += y
+        block
+    end
+end
+
 function load_primitives(file="primitives.jsonl")
-    map(readlines(file)) do line
+    primitives = map(readlines(file)) do line
+        startswith(line, "#") && return missing
         stim = JSON.parse(line)
+        stim["solution"] = apply_offset(stim["solution"])
         stim["name"] => stim
-    end |> Dict
+    end |> skipmissing |> Dict
+end
+
+function get_offset(blocks, dim)
+    minimum(blocks) do block
+        block[dim] + minimum(block["parts"]) do p
+            p[dim]
+        end
+    end
 end
 
 primitives = load_primitives()
 pnames = collect(keys(primitives))
+basic_solutions = valmap(getindex("solution"), primitives)
 
 # filter!(primitives) do x
 #     first(x) in pnames
 # end
 
-perms = @chain map(collect(primitives)) do (name, stim)
-    name, string2mat(stim["target"])
-end permutations(2) collect
+
+
 
 # %% --------
 
@@ -54,86 +75,86 @@ function border_size(X)
     end
 end
 
-function attach(s1, s2; target_border=TARGET_BORDER)
+function plot_stim(X; zlim=(0,2), kws...)
+    heatmap(X, border=:none, labels=false, yflip=true; zlim, kws...)
+end
+
+function attach(n1, n2; target_border=TARGET_BORDER)
+    s1 = string2mat(primitives[n1]["target"])
+    s2 = string2mat(primitives[n2]["target"])
     h1, w1 = size(s1)
     h2, w2 = size(s2)
     X = zeros(Int, h1+2h2, w1+w2)
     X[1+h2:h2+h1, 1:w1] .= s1
     indices = collect(Iterators.product(1:h1+h2, w1-1:w1+1))[:]
     options = map(indices) do (y, x)
-        if !is_overlapping(X[y:y+h2-1, x:x+w2-1], s2)
-            X1 = copy(X)
-            X1[y:y+h2-1, x:x+w2-1] .+= (2 .* s2)
-            # trim
-            t = findfirst(x -> any(x .> 0), eachrow(X1))
-            b = findlast(x -> any(x .> 0), eachrow(X1))
-            r = findlast(x -> any(x .> 0), eachcol(X1))
-            X1 = X1[t:b, 1:r]
-            (X1, t, b, y, x)
-        else
-            missing
+        horizontal_offset = x - w1 - 1
+        is_overlapping(X[y:y+h2-1, x:x+w2-1], s2) && return missing
+
+        X1 = copy(X)
+        X1[y:y+h2-1, x:x+w2-1] .+= (2 .* s2)
+        # trim
+        t = findfirst(x -> any(x .> 0), eachrow(X1))
+        b = findlast(x -> any(x .> 0), eachrow(X1))
+        r = findlast(x -> any(x .> 0), eachcol(X1))
+        X1 = X1[t:b, 1:r]
+        offset1 = (;
+            y = h2 - t + 1,
+            x = 0
+        )
+        offset2 = (;
+            y = y - t,
+            x = x - 1
+        )
+        solution = union(
+            apply_offset(basic_solutions[n1], offset1),
+            apply_offset(basic_solutions[n2], offset2),
+        )
+
+        S = parse_solution(solution)
+        adjacent = any(CartesianIndices(S)) do idx
+            y, x = idx.I
+            if X1[y, x] == 1
+                color = S[y, x]
+                any(((y+1, x), (y-1, x), (y, x+1), (y, x-1))) do neighbor
+                    get(X1, neighbor, 0) == 2 && get(S, neighbor, 0) == color
+                    # ASSUME: either 1 or 2
+                end
+            else
+                false
+            end
         end
+        adjacent && return missing
+        (X1, solution, horizontal_offset)
     end
-    (X, t, b, y, x) = argmax(skipmissing(options)) do (X, _...)
-        # size(X, 1) > 15 && return -100
-        -abs(border_size(X) - target_border) - 0.1 * size(X, 1)
+    (X, solution, horizontal_offset) = argmax(skipmissing(options)) do (X, solution, horizontal_offset)
+        border_err = abs(border_size(X) - target_border)
+        # display(plot_stim(X))
+        # @show border_err horizontal_offset size(X, 1)
+        (horizontal_offset != 0) -  0.9 * border_err -  0.1 * size(X, 1)
         # border_size(X) - 0.1 * size(X, 1)
     end
-    offset1 = (;
-        y = h2 - t + 1,
-        x = 0
-    )
-
-    offset2 = (;
-        y = y - t,
-        x = x - 1
-    )
-    (;target=X, offset1, offset2)
+    (name = string(n1, "-", n2), target=mat2string(X .> 0), solution)
 end
 
-
-# function plot_stim(X; zlim=(0,2), kws...)
-#     heatmap(X, border=:none, labels=false, yflip=true; zlim, kws...)
-# end
-
-
-# map(perms) do ((n1, s1), (n2, s2))
-#     X = attach(s1, s2).target
-#     plot_stim(X)
-# end |> gridplot
-
-puzzles = map(perms) do ((n1, s1), (n2, s2))
-    target, offset1, offset2 = attach(s1, s2)
-    target = mat2string(target)
-    name = string(n1, "-", n2)
-    name => (;name, target)
-end |> Dict
-
+attach("4by5", "dude").target |> print
 
 # %% --------
 
-function get_offset(blocks, dim)
-    minimum(blocks) do block
-        block[dim] + minimum(block["parts"]) do p
-            p[dim]
-        end
-    end
-end
 
-function apply_offset(blocks, offset=(;x=0, y=0))
-    x = offset.x - get_offset(blocks, "x")
-    y = offset.y - get_offset(blocks, "y")
-    map(blocks) do block
-        block = copy(block)
-        block["x"] += x
-        block["y"] += y
-        block
-    end
-end
+puzzles = map(permutations(pnames, 2)) do (n1, n2)
+    stim = attach(n1, n2)
+    stim.name => stim
+    # target, offset1, offset2 = attach(n1, n2)
+    # target = mat2string(target)
+    # name = string(n1, "-", n2)
+    # name => (;name, target)
+end |> Dict
 
-for def in values(primitives)
-    def["solution"] = apply_offset(def["solution"])
-end
+write("static/json/all_stimuli.json", json((;basic=primitives, compositions=puzzles)))
+
+
+# %% --------
 
 function generate_main(i::Int)
     Random.seed!(i)
@@ -144,33 +165,12 @@ function generate_main(i::Int)
     end |> shuffle!
 end
 
-
-if generation == 0
-    basic_solutions = valmap(getindex("solution"), primitives)
-    compositions = map(perms) do ((n1, s1), (n2, s2))
-        target, offset1, offset2 = attach(s1, s2)
-        name = string(n1, "-", n2)
-        name => (;
-            name,
-            offset1, offset2,
-            target = mat2string(target),
-            solution = union(
-                apply_offset(basic_solutions[n1], offset1),
-                apply_offset(basic_solutions[n2], offset2),
-            )
-        )
-    end |> Dict
-
-    basic = Dict(primitives)
-    write("static/json/all_stimuli.json", json((;basic, compositions)))
-
-elseif generation == 1
+if generation == 1
     mkpath("static/json/gen1/")
     foreach(0:19) do i
         write("static/json/gen1/$i.json", json(generate_stimuli(i)))
     end
-
-else # generation > 1
+elseif generation > 1
 
     uids = (@rsubset load_participants("v5.0-g$(generation-1)") :complete).uid
 

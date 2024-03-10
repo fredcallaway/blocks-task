@@ -11,11 +11,15 @@ psiturk.recordUnstructuredData('params', PARAMS);
 const DISPLAY = $('#display')
 const PROLIFIC_CODE = 'CHDRYEDZ'
 var BONUS = 0
-var N_TRIAL = 5
+var N_TRIAL = 6
 
 function makeGlobal(obj) {
   Object.assign(window, obj)
 
+}
+
+function findTrial(name) {
+  return STIMULI.compositions[name] ?? STIMULI.basic[name]
 }
 
 
@@ -39,17 +43,21 @@ async function buildStimuli() {
   })
   main.splice(3, 0, examples[3])
 
+  if (!PARAMS.social) {
+    examples = []
+  }
+
   let stimuli = {primitives, examples, main}
-  // logEvent('experiment.buildStimuli', {stimuli})
-  // N_TRIAL = stimuli.main.length
-  // makeGlobal({stimuli})
-  // return _.mapValues(stimuli, names => names.map(findTrial))
+  logEvent('experiment.buildStimuli', {stimuli})
+  N_TRIAL = stimuli.main.length
+  return _.mapValues(stimuli, names => names.map(name => all_stimuli.compositions[name]))
 }
 
 
 async function runExperiment() {
   // let stimuli = await $.getJSON(`static/json/gen${PARAMS.generation}/${CONDITION}.json`)
-  let stimuli = buildStimuli()
+  let stimuli = await buildStimuli()
+  console.log('stimuli', stimuli)
 
 
   logEvent('experiment.initialize', {CONDITION, PARAMS, stimuli})
@@ -108,7 +116,7 @@ async function runExperiment() {
     let top = new TopBar({
       nTrial: stimuli.main.length,
       height: 70,
-      width: 1150,
+      width: 1200,
       help: `
         Drag the blocks from the bottom of the screen to fill in all the white squares.
         You can rotate the block you're currently holding by pressing space.
@@ -118,7 +126,7 @@ async function runExperiment() {
 
     let workspace = $('<div>').appendTo(DISPLAY)
 
-    if (PARAMS.generation > 1) {
+    if (stimuli.examples.length) {
       workspace.css({
         // 'border': 'thick black solid',
         'float': 'left',
@@ -130,7 +138,7 @@ async function runExperiment() {
         // 'border': 'thick red solid',
         'user-select': 'none',
         'float': 'left',
-        'width': '300px'
+        'width': '450px'
       })
       .appendTo(DISPLAY)
       $('<h2>').text("Examples").appendTo(sidebar).css('margin-top', '-40px')
@@ -138,7 +146,7 @@ async function runExperiment() {
 
       // let solutions = (await $.getJSON(`static/json/solutions/fred-v2.json`)).solutions
       for (let trial of stimuli.examples) {
-        let eDiv = $('<div>').css('display', 'inline-block').appendTo(exampleDiv)
+        let eDiv = $('<div>').css({display: 'inline-block', margin: 10}).appendTo(exampleDiv)
         let eTrial = {
           ...trial,
           configuration: trial.solution,
@@ -159,38 +167,8 @@ async function runExperiment() {
 
   async function debrief() {
     logEvent('experiment.debrief')
-    DISPLAY.empty()
-    $('<p>').appendTo(DISPLAY).html(markdown(`
-      # You're done!
-
-      Thanks for participating! We have a few quick questions before you go.
-    `))
-
-    let noticed = radio_buttons(DISPLAY, `
-      Did you notice that some parts of the puzzles showed up multiple times?
-    `, ['yes', 'no'])
-
-    let reuse = radio_buttons(DISPLAY,
-      PARAMS.social ?
-        `Did you try to copy from the examples?` :
-        `Did you try to reuse parts from your previous solutions?`,
-      ['yes', 'no'])
-
-    let difficulty = radio_buttons(DISPLAY, `
-      How difficult were the problems, overall?
-    `, ['too easy', 'just right', 'too hard'])
-
-    let feedback = text_box(DISPLAY, `
-      Do you have any other feedback? (optional)
-    `)
-
-    await button(DISPLAY, 'submit').clicked
-    logEvent('debrief.submitted', {
-      noticed: noticed.val(),
-      reuse: reuse?.val(),
-      difficulty: difficulty.val(),
-      feedback: feedback.val(),
-    })
+    let json = await $.getJSON('static/json/survey.json')
+    await new SurveyTrial(json).run(DISPLAY)
   }
 
   async function runTimeline(...blocks) {
