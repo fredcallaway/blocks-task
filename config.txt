@@ -25,6 +25,11 @@ description =
     In this study, you will solve a series of puzzles that involve
     building shapes out of blocks.
 
+    **Please do not accept this study unless you intend to do it right away.**
+    This study is part of chain, and we can only begin the next
+    step after this one is completed. We may reject your assignment if you
+    stay on one page/round of the experiment for several minutes.
+
 [Server Parameters]
 host = 0.0.0.0
 port = 22363
