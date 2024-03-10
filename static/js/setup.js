@@ -18,7 +18,7 @@ $(window).on('load', async () => {
   if (local) {
     $('#display').empty()
     await runExperiment()
-    $('#display').empty()
+    showCompletionScreen()
   } else {
     await saveData()
     if (mode == 'live') {
@@ -168,7 +168,7 @@ async function showCompletionScreen() {
     $("#load-icon").remove();
     $(window).off("beforeunload");
     $('#display').html(`
-      <div class='basic-content'>
+      <div class='text'>
         <h1>Thanks!</h1>
         <p>Your completion code is <b>${PROLIFIC_CODE}</b>. Click this link to submit:<br>
         <a href="https://app.prolific.co/submissions/complete?cc=${PROLIFIC_CODE}">
