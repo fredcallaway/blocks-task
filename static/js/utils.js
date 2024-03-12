@@ -42,7 +42,13 @@ function conditionParameters(condition, choicesObj) {
 function enforceScreenSize(width, height, display='#display') {
   display = $(display)
 
-  warning = $('<div>')
+
+  let warning = $('<div>')
+  .css({width: width, height: height, position: 'absolute', border: 'thick red dashed', left: 3, top: 3})
+  .appendTo(document.body)
+  .hide()
+
+  let message = $("<div>")
   .addClass('alert alert-warning center')
   .css({
     'width': 400,
@@ -55,11 +61,12 @@ function enforceScreenSize(width, height, display='#display') {
     <h4>Screen too small</h4>
 
     <p>Your window isn't big enough to run the experiment. Please try expanding the window.
-    It might help to use full screen mode.
-  `).hide()
-  .appendTo(document.body)
+    It might help to use full screen mode. You can also try zooming out
+    (<code>cmd</code>/<code>ctrl</code> + <code>-</code>).
+  `)
+  .appendTo(warning)
 
-  $('<button>').addClass('btn btn-primary').css('margin-top', '20px').text('enter fullscreen').appendTo(warning)
+  $('<button>').addClass('btn btn-primary').css('margin-top', '20px').text('enter fullscreen').appendTo(message)
   .click(() => {
     document.documentElement.requestFullscreen()
   })
