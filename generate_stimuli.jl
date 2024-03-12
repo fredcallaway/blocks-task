@@ -1,11 +1,12 @@
 model_dir = "../blocks-model/"
 include("$model_dir/utils.jl")
-include("$model_dir/blocks.jl")
+include("$model_dir/experiment.jl")
 include("$model_dir/data.jl")
 
 using Combinatorics
 using JSON
 
+generation = 0
 if !@isdefined(generation)
     generation = parse(Int, ARGS[1])
 end
@@ -14,53 +15,36 @@ TARGET_BORDER = 10
 
 # %% --------
 
-function apply_offset(blocks, offset=(;x=0, y=0))
-    x = offset.x - get_offset(blocks, "x")
-    y = offset.y - get_offset(blocks, "y")
-    map(blocks) do block
-        block = copy(block)
-        block["x"] += x
-        block["y"] += y
-        block
-    end
-end
-
 function load_primitives(file="primitives.jsonl")
     primitives = map(readlines(file)) do line
         startswith(line, "#") && return missing
         stim = JSON.parse(line)
-        stim["solution"] = apply_offset(stim["solution"])
-        stim["name"] => stim
+        shape = parse_solution(stim["solution"])
+        @assert shape.mask == string2mat(stim["target"])
+        stim["name"] => shape
     end |> skipmissing |> Dict
 end
 
-function get_offset(blocks, dim)
-    minimum(blocks) do block
-        block[dim] + minimum(block["parts"]) do p
-            p[dim]
-        end
-    end
-end
+# function get_offset(blocks, dim)
+#     minimum(blocks) do block
+#         block[dim] + minimum(block["parts"]) do p
+#             p[dim]
+#         end
+#     end
+# end
 
 primitives = load_primitives()
 pnames = collect(keys(primitives))
-basic_solutions = valmap(getindex("solution"), primitives)
 
 # filter!(primitives) do x
 #     first(x) in pnames
 # end
 
-
-
-
 # %% --------
 
-function is_overlapping(X, Y)
-    @assert size(X) == size(Y)
-    any(eachindex(X)) do i
-        X[i] > 0 && Y[i] > 0
-    end
-end
+s1 = primitives["dude"]
+s2 = primitives["spaceship"]
+compose(s1, s2)
 
 function border_size(X)
     sum(CartesianIndices(X)) do idx
@@ -75,72 +59,94 @@ function border_size(X)
     end
 end
 
-function plot_stim(X; zlim=(0,2), kws...)
+function attach(s1, s2; target_border=TARGET_BORDER)
+    h1, w1 = size(s1)
+    h2, w2 = size(s2)
+
+    argmin(Iterators.product(-h2:h1,w1-1:w1+1)) do (off_y, off_x)
+        shape = compose((PlacedPiece(s1, 0, 0), PlacedPiece(s2, off_y, off_x)))
+        ismissing(shape) && return -Inf
+        abs(border_size(shape.mask) - target_border)
+    end
+end
+
+
+# %% --------
+
+function is_overlapping(X, Y)
+    @assert size(X) == size(Y)
+    any(eachindex(X)) do i
+        X[i] > 0 && Y[i] > 0
+    end
+end
+
+
+function plot_stim(X; zlim=(0,max(2, maximum(X))), kws...)
     heatmap(X, border=:none, labels=false, yflip=true; zlim, kws...)
 end
 
-function attach(n1, n2; target_border=TARGET_BORDER)
-    s1 = string2mat(primitives[n1]["target"])
-    s2 = string2mat(primitives[n2]["target"])
+PINK =  Dict("x" => 0, "y" => 0, "color" => "#f781bf", "width" => 1, "height" => 4, "parts" => Any[Dict{String, Any}("x" => 0, "y" => 0), Dict{String, Any}("x" => 0, "y" => 1), Dict{String, Any}("x" => 0, "y" => 2), Dict{String, Any}("x" => 0, "y" => 3)])
+
+
+# %% --------
+
+
+function attach(s1, s2; target_border=TARGET_BORDER)
     h1, w1 = size(s1)
     h2, w2 = size(s2)
-    X = zeros(Int, h1+2h2, w1+w2)
+    X = zeros(Int, h1+2h2, w1+w2+1)
     X[1+h2:h2+h1, 1:w1] .= s1
     indices = collect(Iterators.product(1:h1+h2, w1-1:w1+1))[:]
     options = map(indices) do (y, x)
-        horizontal_offset = x - w1 - 1
+        # horizontal_offset = x - w1 - 1
         is_overlapping(X[y:y+h2-1, x:x+w2-1], s2) && return missing
-
         X1 = copy(X)
-        X1[y:y+h2-1, x:x+w2-1] .+= (2 .* s2)
+        X1[y:y+h2-1, x:x+w2-1] .= ((maximum(s1) + 1) .* s2)
+
         # trim
         t = findfirst(x -> any(x .> 0), eachrow(X1))
         b = findlast(x -> any(x .> 0), eachrow(X1))
         r = findlast(x -> any(x .> 0), eachcol(X1))
         X1 = X1[t:b, 1:r]
+
+        # @show h2 - t + 1
         offset1 = (;
             y = h2 - t + 1,
             x = 0
         )
         offset2 = (;
             y = y - t,
-            x = x - 1
-        )
-        solution = union(
-            apply_offset(basic_solutions[n1], offset1),
-            apply_offset(basic_solutions[n2], offset2),
+            x = x -1
         )
 
-        S = parse_solution(solution)
-        adjacent = any(CartesianIndices(S)) do idx
-            y, x = idx.I
-            if X1[y, x] == 1
-                color = S[y, x]
-                any(((y+1, x), (y-1, x), (y, x+1), (y, x-1))) do neighbor
-                    get(X1, neighbor, 0) == 2 && get(S, neighbor, 0) == color
-                    # ASSUME: either 1 or 2
-                end
-            else
-                false
-            end
-        end
-        adjacent && return missing
-        (X1, solution, horizontal_offset)
+        (X1, offset1, offset2)
     end
-    (X, solution, horizontal_offset) = argmax(skipmissing(options)) do (X, solution, horizontal_offset)
+    (X, offset1, offset2) = argmin(skipmissing(options)) do (X, offset1, offset2)
         border_err = abs(border_size(X) - target_border)
-        # display(plot_stim(X))
-        # @show border_err horizontal_offset size(X, 1)
-        (horizontal_offset != 0) -  0.9 * border_err -  0.1 * size(X, 1)
-        # border_size(X) - 0.1 * size(X, 1)
+        border_err +  0.1 * size(X, 1)
     end
-    (name = string(n1, "-", n2), target=mat2string(X .> 0), solution)
+    # display(plot_stim(X))
+    (X, offset1, offset2)
 end
 
-attach("4by5", "dude").target |> print
+targets = valmap(primitives) do stim
+    string2mat(stim["target"])
+end
+
+pink = trues(4, 1)
+
+
+X, offset1, offset2 = attach(targets["4by5"], pink)
+plot_stim(X)
+
+attach(X, targets["spaceship"])[1] |> plot_stim
+
+
+
 
 # %% --------
 
+attach("tower", "dude"; plot=true);
 
 puzzles = map(permutations(pnames, 2)) do (n1, n2)
     stim = attach(n1, n2)
