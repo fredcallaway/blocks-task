@@ -2,7 +2,6 @@
 const PARAMS = conditionParameters(CONDITION, {
   social: [true, false],
   allowQuitSeconds: 90,
-  // generation: 5
 })
 
 updateExisting(PARAMS, urlParams)
@@ -28,9 +27,9 @@ async function buildStimuli() {
   .filter(([x, y]) => x != y)
   .map(x => x.join('-'))
 
-  let examples = _.flatten([1,2].map(offset => primitives.map(
+  let examples = _.shuffle(_.flatten([1,2].map(offset => primitives.map(
     (name, i) => name + "-" + primitives[(i+offset) % primitives.length]
-  )))
+  ))))
   console.log('examples', examples)
 
   let used = new Set(examples)
@@ -49,16 +48,14 @@ async function buildStimuli() {
 
   let stimuli = {primitives, examples, main}
   logEvent('experiment.buildStimuli', {stimuli})
-  N_TRIAL = stimuli.main.length
   return _.mapValues(stimuli, names => names.map(name => all_stimuli.compositions[name]))
 }
 
 
 async function runExperiment() {
-  // let stimuli = await $.getJSON(`static/json/gen${PARAMS.generation}/${CONDITION}.json`)
-  let stimuli = await buildStimuli()
-  console.log('stimuli', stimuli)
-
+  let stimuli = await $.getJSON(`static/json/${CONDITION}.json`)
+  // let stimuli = await buildStimuli()
+  N_TRIAL = stimuli.main.length
 
   logEvent('experiment.initialize', {CONDITION, PARAMS, stimuli})
   await handleSpecialMode() // never returns if in special mode

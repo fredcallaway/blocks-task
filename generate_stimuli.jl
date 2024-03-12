@@ -113,18 +113,23 @@ function generate_main(i::Int)
     prim = shuffle(pnames)
     map(eachindex(prim)) do i
         cn = string(prim[i], "-", prim[mod1(i+1, length(prim))])
-        puzzles[cn]
+        compositions[cn]
     end |> shuffle!
 end
 
+
 if generation == 1
-    mkpath("static/json/gen1/")
     foreach(0:19) do i
-        write("static/json/gen1/$i.json", json(generate_stimuli(i)))
+        stimuli = (
+            examples = [],
+            main = generate_main(i),
+            generation = 1,
+        )
+        write("static/json/$i.json", json(stimuli))
     end
 elseif generation > 1
 
-    uids = (@rsubset load_participants("v5.0-g$(generation-1)") :complete).uid
+    uids = (@rsubset load_participants("v7.0-g$(generation-1)") :complete).uid
 
     @assert length(uids) == 15
 
