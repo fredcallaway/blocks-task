@@ -6,7 +6,8 @@ include("$model_dir/data.jl")
 using Combinatorics
 using JSON
 
-generation = 0
+generation = 2
+
 if !@isdefined(generation)
     generation = parse(Int, ARGS[1])
 end
@@ -147,51 +148,32 @@ elseif generation > 1
         end |> skipmissing |> collect
     end;
 
-    length(all_trials)
     n_primitive = length(primitives)
-    n_example = n_primitive
+    n_example = 2 * n_primitive
+    n_main = 4
 
-    choices = repeatedly(10000) do
-        sample(all_trials, n_example, replace=false)
-    end;
+    cnames = collect(keys(compositions))
 
-    function score(examples)
-        n1, n2 = Set.(invert(split.(first.(examples), "-")))
-        length(union(n1, n2)) == n_primitive || return -1
-        sum(length, (n1, n2))
-    end
-
-    good_choices = filter(choices) do c
-        score(c) == n_primitive * 2
-    end;
-
-    @assert length(good_choices) ≥ 20
-
-    function sample_main(examples::Vector)
-        used = first.(examples)
-        for i in rand(1000:1000000, 1000)
-            main = generate_main(i)
-            !any(in(used), first.(main)) && return main
-        end
-        error("couldn't sample main")
-    end
-
-
-    function generate_stimuli(i::Int, examples::Vector)
+    function generate_stimuli(i::Int)
         Random.seed!(i)
-        main = sample_main(examples)
-        @assert isempty(intersect(first.(main), first.(examples)))
-        examples = map(examples) do (name, solution)
+        train = sample(all_trials, n_example);
+        test = sample(setdiff(cnames, first.(train)), n_main; replace=false)
+
+        examples = map(train) do (name, solution)
             (;compositions[name]...,
               solution = flat_pieces(parse_solution(solution))
             )
         end
-        (;main, examples)
+
+        main = map(test) do name
+            compositions[name]
+        end
+        (;main, examples, generation)
     end
 
     foreach(0:19) do i
-        stimuli = generate_stimuli(generation * 1000 + i, good_choices[i+1])
+        stimuli = generate_stimuli(generation * 1000 + i)
         write("static/json/$i.json", json(stimuli))
     end
-    println("wrote static/json/")
+    println("wrote static/json/ for generation $generation")
 end
