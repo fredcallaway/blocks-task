@@ -1,7 +1,7 @@
 
 const PARAMS = conditionParameters(CONDITION, {
   social: [true, false],
-  allowQuitSeconds: 120,
+  allowQuitSeconds: 90,
   // generation: 5
 })
 
@@ -11,17 +11,15 @@ psiturk.recordUnstructuredData('params', PARAMS);
 const DISPLAY = $('#display')
 const PROLIFIC_CODE = 'CHDRYEDZ'
 var BONUS = 0
-var N_TRIAL = 6
+var N_TRIAL = 5
 
 function makeGlobal(obj) {
   Object.assign(window, obj)
-
 }
 
 function findTrial(name) {
   return STIMULI.compositions[name] ?? STIMULI.basic[name]
 }
-
 
 async function buildStimuli() {
   let all_stimuli = await $.getJSON(`static/json/all_stimuli.json`)
@@ -30,13 +28,15 @@ async function buildStimuli() {
   .filter(([x, y]) => x != y)
   .map(x => x.join('-'))
 
-  let examples = _.shuffle(primitives.map(
-    (name, i) => name + "-" + primitives[(i+1) % primitives.length]
-  ))
+  let examples = _.flatten([1,2].map(offset => primitives.map(
+    (name, i) => name + "-" + primitives[(i+offset) % primitives.length]
+  )))
+  console.log('examples', examples)
 
   let used = new Set(examples)
   let main = _.shuffle(compositions).filter(name => {
-    if (!used.has(name) && !used.has(name.split("-").reverse().join("-"))) {
+    if (!used.has(name)) {
+    // if (!used.has(name) && !used.has(name.split("-").reverse().join("-"))) {
       used.add(name)
       return true
     }
@@ -68,8 +68,8 @@ async function runExperiment() {
   async function instructions() {
     let trials = [
       // {'name': 'easy1', 'target': '.XX.\nXXXX\nXXXX\n.XX.'},
-      {'name': 'practice1', 'target': 'XXXXX\nXXXXX\n.XXX.\n..X..\n..X..\n..X..'},
-      {'name': 'practice2', 'target': '.XX.\nXXXX\nXXXX\nXXXX\nXXXX\n.XX.'},
+      {'name': 'plunger', 'target': 'XXXXX\nXXXXX\n.XXX.\n..X..\n..X..\n..X..'},
+      {'name': 'pagoda', 'target': '..XX..\nXXXXXX\n.XXXX.'},
 
     ]
     await new BlockInstructions(trials).run(DISPLAY)
@@ -103,7 +103,7 @@ async function runExperiment() {
       let eTrial = {
         ...trial,
         configuration: trial.solution,
-        grid: 20,
+        grid: 18,
       }
       new BlockDisplayOnly(eTrial).attach(eDiv)
     }

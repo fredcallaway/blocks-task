@@ -416,8 +416,8 @@ class BlockPuzzle extends BlockDisplay {
       block.y += this.height
     }
     window.puzzle = this
-    this.logEvent('blocks.construct', options)
     this.trialId = crypto.randomUUID()
+    this.logEvent('blocks.construct', options)
     this.library = library
 
     if (this.dev) {

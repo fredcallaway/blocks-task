@@ -163,10 +163,11 @@ async function dataViewer(which) {
   let listen = new EventListeners()
 
   DISPLAY.empty()
+  DISPLAY.css('width', 1400)
   let wrapper = $('<div>').css({
     'position': 'relative',
     'margin': 'auto',
-    'width': '1200px',
+    'width': '1400px',
     'text-align': 'center',
     // 'border': 'thin red solid'
   }).appendTo(DISPLAY)
@@ -189,8 +190,8 @@ async function dataViewer(which) {
   let title = $('<h1>').appendTo(wrapper)
 
   let content = $('<div>').css({
-    'margin-left': '100px',
-    'width': '1000px',
+    // 'margin-left': '100px',
+    'width': '100%',
     // border: 'thick black solid'
   }).appendTo(wrapper)
 
