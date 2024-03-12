@@ -8,6 +8,9 @@ updateExisting(PARAMS, urlParams)
 psiturk.recordUnstructuredData('params', PARAMS);
 
 const DISPLAY = $('#display')
+
+// DISPLAY.css({border: 'thick red dashed', width: 2000, height: 2000})
+
 const PROLIFIC_CODE = 'CHDRYEDZ'
 var BONUS = 0
 var N_TRIAL = 5
@@ -72,6 +75,19 @@ async function runExperiment() {
     await new BlockInstructions(trials).run(DISPLAY)
   }
 
+  function showExample(div, example, size=15) {
+    let eDiv = $('<div>').css({
+      'display': 'inline-block',
+      'margin': '10px'
+    }).appendTo(div)
+    let eTrial = {
+      ...example,
+      grid: size,
+      showSolution: true
+    }
+    return new BlockDisplayOnly(eTrial).attach(eDiv)
+  }
+
   async function social() {
     if (!stimuli.examples.length) return
     DISPLAY.empty()
@@ -87,23 +103,36 @@ async function runExperiment() {
       width: 1000,
       'text-align': 'center',
       'margin': 'auto',
-      'margin-top': '10px',
       'margin-bottom': '30px'
     }).appendTo(DISPLAY)
 
-    for (let trial of stimuli.examples) {
-      let eDiv = $('<div>').css({
-        'display': 'inline-block',
-        'margin': '10px'
+    let blockDisplays = stimuli.examples.map(example => showExample(exampleDiv, example))
 
-      }).appendTo(exampleDiv)
-      let eTrial = {
-        ...trial,
-        configuration: trial.solution,
-        grid: 18,
-      }
-      new BlockDisplayOnly(eTrial).attach(eDiv)
+
+    let btn = button(DISPLAY, 'continue')
+    await btn.clicked
+    btn.div.remove()
+
+    let testDiv = $('<div>').addClass('center')
+    .html('Please click on the example above that matches the one below:')
+    .appendTo(DISPLAY)
+
+    for (let bd of blockDisplays) {
+      bd.div.css({cursor: 'pointer'})
     }
+
+    let test = $('<div>').addClass('center').appendTo(testDiv)
+
+    for (let i of _.shuffle(_.range(stimuli.examples.length))) {
+      test.empty()
+      showExample(test, stimuli.examples[i])
+      let promise = make_promise()
+      blockDisplays[i].div.click(()=>promise.resolve())
+      await promise
+    }
+    testDiv.empty()
+
+
     await button(DISPLAY, 'continue').clicked
   }
 
@@ -141,14 +170,8 @@ async function runExperiment() {
       let exampleDiv = $('<div>').appendTo(sidebar)
 
       // let solutions = (await $.getJSON(`static/json/solutions/fred-v2.json`)).solutions
-      for (let trial of stimuli.examples) {
-        let eDiv = $('<div>').css({display: 'inline-block', margin: 10}).appendTo(exampleDiv)
-        let eTrial = {
-          ...trial,
-          configuration: trial.solution,
-          grid: 15,
-        }
-        new BlockDisplayOnly(eTrial).attach(eDiv)
+      for (let example of stimuli.examples) {
+        showExample(exampleDiv, example)
       }
     }
 

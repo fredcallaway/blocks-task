@@ -109,6 +109,30 @@ write("static/json/all_stimuli.json", json((;basic, compositions)))
 
 # %% --------
 
+COLOR_INDEX = Dict(
+  "#e41a1c" => 1,
+  "#377eb8" => 2,
+  "#4daf4a" => 3,
+  "#984ea3" => 4,
+  "#ff7f00" => 5,
+  "#FFEF33" => 6,
+  "#f781bf" => 7,
+  "#a65628" => 8,
+)
+
+# shp = all_solutions[1][2]
+function color_map(shp::Shape)
+    X = zeros(Int, size(shp.piece_map))
+    for pp in flat_pieces(shp)
+        h, w = size(pp)
+        X[pp.y+1:pp.y+h, pp.x+1:pp.x+w] .+= pp.piece.mask * COLOR_INDEX[pp.piece.color]
+    end
+    X
+end
+
+# %% --------
+
+
 function generate_main(i::Int)
     rng = Random.MersenneTwister(i)
     prim = shuffle(rng, pnames)
@@ -141,33 +165,36 @@ elseif generation > 1
 
     @assert length(uids) ≥ 14
 
-    all_trials = flatmap(uids) do uid
+    all_solutions = flatmap(uids) do uid
         trials = filter(!get(:practice), load_trials(uid))
         map(trials) do t
-            @assuming t.configuration t.puzzle => t.configuration
+            @assuming t.configuration t.puzzle => parse_solution(t.configuration)
         end |> skipmissing |> collect
     end;
 
     n_primitive = length(primitives)
-    n_example = 2 * n_primitive
+    n_example = 8
     n_main = 4
 
     cnames = collect(keys(compositions))
 
     function generate_stimuli(i::Int)
         Random.seed!(i)
-        train = sample(all_trials, n_example);
-        test = sample(setdiff(cnames, first.(train)), n_main; replace=false)
 
-        examples = map(train) do (name, solution)
+        chosen = sample(all_solutions, n_example; replace=false)
+        @assert length(unique(e->color_map(e[2]), chosen)) == length(chosen)
+
+        examples = map(chosen) do (name, solution)
             (;compositions[name]...,
-              solution = flat_pieces(parse_solution(solution))
+              solution = flat_pieces(solution)
             )
         end
+        unseen = shuffle(setdiff(cnames, get.(examples, :name)))
 
-        main = map(test) do name
+        main = map(unseen[1:4]) do name
             compositions[name]
         end
+
         (;main, examples, generation)
     end
 
