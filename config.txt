@@ -25,6 +25,8 @@ description =
     In this study, you will solve a series of puzzles that involve
     building shapes out of blocks.
 
+    **This study is difficult to complete on a trackpad.** We suggest using an external mouse.
+
     **Please do not accept this study unless you intend to do it right away.**
     This study is part of chain, and we can only begin the next
     step after this one is completed. We may reject your assignment if you

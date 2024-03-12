@@ -6,7 +6,7 @@ include("$model_dir/data.jl")
 using Combinatorics
 using JSON
 
-generation = 2
+generation = 3
 
 if !@isdefined(generation)
     generation = parse(Int, ARGS[1])
@@ -171,6 +171,7 @@ elseif generation > 1
             @assuming t.configuration t.puzzle => parse_solution(t.configuration)
         end |> skipmissing |> collect
     end;
+    @show length(all_solutions)
 
     n_primitive = length(primitives)
     n_example = 8
