@@ -114,23 +114,39 @@ async function runExperiment() {
     btn.div.remove()
 
     let testDiv = $('<div>').addClass('center')
-    .html('Please click on the example above that matches the one below:')
+    .html('Please click on the example above that is a 180 degree rotation of the one below:')
     .appendTo(DISPLAY)
+
+
+    async function mistake() {
+      logEvent('social.mistake')
+      await alert_failure_delay(1000)
+    }
 
     for (let bd of blockDisplays) {
       bd.div.css({cursor: 'pointer'})
+      bd.div.click(mistake)
     }
 
     let test = $('<div>').addClass('center').appendTo(testDiv)
+    if (urlParams.rotate) {
+      test.css('transform', 'rotate(180deg)')
+    }
+    makeGlobal({testDiv, test})
 
     for (let i of _.shuffle(_.range(stimuli.examples.length))) {
       test.empty()
       showExample(test, stimuli.examples[i])
       let promise = make_promise()
-      blockDisplays[i].div.click(()=>promise.resolve())
+      blockDisplays[i].div.off()
+      blockDisplays[i].div.click(() => promise.resolve())
       await promise
+      logEvent('social.correct')
+      blockDisplays[i].div.click(mistake)
+
     }
     testDiv.empty()
+
 
 
     await button(DISPLAY, 'continue').clicked

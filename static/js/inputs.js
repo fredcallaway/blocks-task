@@ -156,20 +156,40 @@ function alert_success(opts = {}) {
 }
 
 function alert_failure(opts = {}) {
-  let flavor = _.sample([
-    "better luck next time",
-    "shake it off and try again",
-    "failure is the spice that gives success its flavor",
-    "just a little detour on the road to greatness",
-    "everyone likes an underdog, get back in there"
+  let title = opts.title || "Let's try the next one"
+  let body = opts.body || _.sample([
+    "better luck next time!",
+    "shake it off and try again!",
+    "failure is the spice that gives success its flavor!",
+    "just a little detour on the road to greatness!",
+    "everyone likes an underdog, get back in there!"
   ])
-  return Swal.fire({
-    title: "Let's try the next one",
-    html: `<em>${flavor}!</em>`,
+  let swal = Swal.fire({
+    title,
+    html: `<em>${body}</em>`,
     icon: 'error',
     confirmButtonText: 'Continue',
     ...opts
   })
+}
+
+
+async function alert_failure_delay(delay, opts = {}) {
+  let swal = Swal.fire({
+    title: "Not quite",
+    html: `Try again`,
+    icon: 'error',
+    inputAutoFocus: false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
+    ...opts
+  })
+  $('.swal2-confirm').prop('disabled', true)
+  $('.swal2-confirm').text('...')
+  await sleep(delay)
+  $('.swal2-confirm').prop('disabled', false)
+  $('.swal2-confirm').text('continue')
 
 }
 
