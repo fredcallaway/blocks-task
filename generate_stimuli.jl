@@ -109,12 +109,13 @@ write("static/json/all_stimuli.json", json((;basic, compositions)))
 # %% --------
 
 function generate_main(i::Int)
-    Random.seed!(i)
-    prim = shuffle(pnames)
-    map(eachindex(prim)) do i
+    rng = Random.MersenneTwister(i)
+    prim = shuffle(rng, pnames)
+    trials = map(eachindex(prim)) do i
         cn = string(prim[i], "-", prim[mod1(i+1, length(prim))])
         compositions[cn]
-    end |> shuffle!
+    end
+    shuffle!(rng, trials)
 end
 
 
@@ -128,10 +129,16 @@ if generation == 1
         write("static/json/$i.json", json(stimuli))
     end
 elseif generation > 1
+    uids = @chain begin
+        load_participants("v7.0")
+        @rsubset begin
+            :complete
+            :generation === (generation - 1)
+        end
+        @with :uid
+    end
 
-    uids = (@rsubset load_participants("v7.0-g$(generation-1)") :complete).uid
-
-    @assert length(uids) == 15
+    @assert length(uids) ≥ 14
 
     all_trials = flatmap(uids) do uid
         trials = filter(!get(:practice), load_trials(uid))
@@ -140,48 +147,51 @@ elseif generation > 1
         end |> skipmissing |> collect
     end;
 
+    length(all_trials)
+    n_primitive = length(primitives)
+    n_example = n_primitive
 
     choices = repeatedly(10000) do
-        sample(all_trials, 5, replace=false)
+        sample(all_trials, n_example, replace=false)
     end;
 
     function score(examples)
         n1, n2 = Set.(invert(split.(first.(examples), "-")))
-        length(union(n1, n2)) == 5 || return -1
+        length(union(n1, n2)) == n_primitive || return -1
         sum(length, (n1, n2))
     end
 
-    score10 = filter(choices) do c
-        score(c) == 10
+    good_choices = filter(choices) do c
+        score(c) == n_primitive * 2
     end;
 
-    @assert length(score10) ≥ 20
+    @assert length(good_choices) ≥ 20
 
     function sample_main(examples::Vector)
         used = first.(examples)
-        for i in rand(1:100000, 1000)
-            main = generate_stimuli(i).main
+        for i in rand(1000:1000000, 1000)
+            main = generate_main(i)
             !any(in(used), first.(main)) && return main
         end
         error("couldn't sample main")
     end
+
 
     function generate_stimuli(i::Int, examples::Vector)
         Random.seed!(i)
         main = sample_main(examples)
         @assert isempty(intersect(first.(main), first.(examples)))
         examples = map(examples) do (name, solution)
-            (;puzzles[name]...,
-            solution = apply_offset(solution, (;x=0, y=0)))
+            (;compositions[name]...,
+              solution = flat_pieces(parse_solution(solution))
+            )
         end
         (;main, examples)
-        # (;main, examples)
     end
 
-    mkpath("static/json/gen$generation/")
     foreach(0:19) do i
-        stimuli = generate_stimuli(i, score10[i+1])
-        write("static/json/gen$generation/$i.json", json(stimuli))
+        stimuli = generate_stimuli(generation * 1000 + i, good_choices[i+1])
+        write("static/json/$i.json", json(stimuli))
     end
-    println("wrote static/json/gen$generation/")
+    println("wrote static/json/")
 end
