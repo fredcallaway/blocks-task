@@ -6,8 +6,6 @@ include("$model_dir/data.jl")
 using Combinatorics
 using JSON
 
-generation = 3
-
 if !@isdefined(generation)
     generation = parse(Int, ARGS[1])
 end
@@ -164,6 +162,7 @@ elseif generation > 1
     end
 
     @assert length(uids) ≥ 14
+    @show length(uids)
 
     all_solutions = flatmap(uids) do uid
         trials = filter(!get(:practice), load_trials(uid))
@@ -203,5 +202,6 @@ elseif generation > 1
         stimuli = generate_stimuli(generation * 1000 + i)
         write("static/json/$i.json", json(stimuli))
     end
+
     println("wrote static/json/ for generation $generation")
 end
