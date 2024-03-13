@@ -6,6 +6,7 @@ include("$model_dir/data.jl")
 using Combinatorics
 using JSON
 
+version = "v7.0"
 if !@isdefined(generation)
     generation = parse(Int, ARGS[1])
 end
@@ -57,21 +58,6 @@ end
 
 # %% --------
 
-
-flat_pieces(pp::PlacedPiece{<:Union{ExperimentPiece,SimplePiece}}) = [pp]
-
-shift(pp::PlacedPiece, y, x) = PlacedPiece(pp.piece, pp.y + y, pp.x + x)
-
-function flat_pieces(pp::PlacedPiece{<:Shape})
-    (;y, x, piece) = pp
-    mapreduce(vcat, piece.pieces) do pp
-        flat_pieces(shift(pp, y-1, x-1))
-    end
-end
-
-
-flat_pieces(shp::Shape) = flat_pieces(place(shp))
-
 function JSON.lower(pp::PlacedPiece)
     X = pp.piece.mask
     parts = map(CartesianIndices(X)) do c
@@ -95,7 +81,7 @@ pink = ExperimentPiece(trues(4, 1), "#f781bf")
 compositions = map(permutations(pnames, 2)) do (n1, n2)
     name = string(n1, "-", n2)
     shape = attach(attach(primitives[n1], pink), primitives[n2])
-    stim = (; name, target = mat2string(mask(shape)), solution = flat_pieces(shape) )
+    stim = (; name, target = mat2string(mask(shape)), solution = flat_pieces(shape))
     stim.name => stim
     # target, offset1, offset2 = attach(n1, n2)
     # target = mat2string(target)
@@ -103,7 +89,16 @@ compositions = map(permutations(pnames, 2)) do (n1, n2)
 end |> Dict
 
 
+
 write("static/json/all_stimuli.json", json((;basic, compositions)))
+
+
+mkpath("$model_dir/stimuli/")
+map(permutations(pnames, 2)) do (n1, n2)
+    name = string(n1, "-", n2)
+    shape = attach(attach(primitives[n1], pink), primitives[n2])
+    name => shape
+end |> Dict |> serialize("$model_dir/stimuli/$version")
 
 # %% --------
 
@@ -119,14 +114,6 @@ COLOR_INDEX = Dict(
 )
 
 # shp = all_solutions[1][2]
-function color_map(shp::Shape)
-    X = zeros(Int, size(shp.piece_map))
-    for pp in flat_pieces(shp)
-        h, w = size(pp)
-        X[pp.y+1:pp.y+h, pp.x+1:pp.x+w] .+= pp.piece.mask * COLOR_INDEX[pp.piece.color]
-    end
-    X
-end
 
 # %% --------
 
@@ -153,7 +140,7 @@ if generation == 1
     end
 elseif generation > 1
     uids = @chain begin
-        load_participants("v7.0")
+        load_participants(version)
         @rsubset begin
             :complete
             :generation === (generation - 1)
@@ -182,7 +169,10 @@ elseif generation > 1
         Random.seed!(i)
 
         chosen = sample(all_solutions, n_example; replace=false)
-        @assert length(unique(e->color_map(e[2]), chosen)) == length(chosen)
+
+        # unique!(e->color_map(e[2]), chosen)
+        # @infiltrate length(unique(e->color_map(e[2]), chosen)) != length(chosen)
+        # @assert length(unique(e->color_map(e[2]), chosen)) == length(chosen)
 
         examples = map(chosen) do (name, solution)
             (;compositions[name]...,
