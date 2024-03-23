@@ -400,7 +400,6 @@ class BlockDisplayOnly extends BlockDisplay {
 class BlockPuzzle extends BlockDisplay {
   constructor(options = {}) {
     _.defaults(options, {
-      // library: TETRIS_BLOCKS,
       library: 'tetris',
       target: 'blank',
       prompt: ``,
@@ -624,6 +623,23 @@ class BlockPuzzle extends BlockDisplay {
         }
       }
     });
+
+    if (this.dev) {
+      let shift = (x, y) => {
+        for (let block of this.activeBlocks) {
+          block.x += x
+          block.y += y
+        }
+        this.drawCanvas()
+      }
+
+      blockListeners.on('keydown', event => {
+        if (event.key === "ArrowLeft") shift(-1, 0)
+        else if (event.key === "ArrowRight") shift(+1, 0)
+        else if (event.key === "ArrowUp") shift(0, -1)
+        else if (event.key === "ArrowDown") shift(0, +1)
+      })
+    }
 
     this.canvas.addEventListener('mousedown', (e) => {
       this.mouseX = e.offsetX / this.grid;
