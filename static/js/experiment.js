@@ -15,6 +15,8 @@ const PROLIFIC_CODE = 'CHDRYEDZ'
 var BONUS = 0
 var N_TRIAL = 5
 
+alert_failure({'title': 'matching task breaks with identical examples'})
+
 function makeGlobal(obj) {
   Object.assign(window, obj)
 }
@@ -113,8 +115,14 @@ async function runExperiment() {
     await btn.clicked
     btn.div.remove()
 
+
+
     let testDiv = $('<div>').addClass('center')
-    .html('Please click on the example above that is a 180 degree rotation of the one below:')
+    .html(
+      PARAMS.rotateExamples ?
+        'Please click on the example above that is a 180 degree rotation of the one below:' :
+        'Please click on the example above that matches the one below:'
+    )
     .appendTo(DISPLAY)
 
 
@@ -129,9 +137,7 @@ async function runExperiment() {
     }
 
     let test = $('<div>').addClass('center').appendTo(testDiv)
-    if (urlParams.rotate) {
-      test.css('transform', 'rotate(180deg)')
-    }
+    if (PARAMS.rotateExamples) test.css('transform', 'rotate(180deg)')
     makeGlobal({testDiv, test})
 
     for (let i of _.shuffle(_.range(stimuli.examples.length))) {
