@@ -16,6 +16,9 @@ class Block {
     this.x = x;
     this.y = y;
     this.parts = parts; // Array of {x, y} parts relative to the block's position
+    if (typeof(color) == 'number') {
+      color = COLORS[color]
+    }
     this.color = color;
     this.id = id
     this.colliding = false;
@@ -153,66 +156,52 @@ const BLANK = `
   XXXXXXXXXXXXXXXXXXXXXXXXXX
 `
 
-const LIBRARIES = {
-  'tetris': [
-    `
-      XX
-      XX
-    `, `
 
-      X.
-      XX
-      .X
-    `, `
-      .X
-      XX
-      X.
-    `, `
-      X.
-      XX
-      X.
-    `, `
-      .X
-      .X
-      XX
-    `, `
-      X
-      X
-      XX
-    `, `
-     X
-     X
-     X
-     X
-    `
+
+const LIBRARIES = {
+  tetris: [
+    'XX\nXX\n',
+    'X.\nXX\n.X\n',
+    '.X\nXX\nX.\n',
+    'X.\nXX\nX.\n',
+    '.X\n.X\nXX\n',
+    'X.\nX.\nXX\n',
+    'X\nX\nX\nX\n',
   ],
-  'five': [
-    `,
-      .X
-      XXX
-      .X
-    `,
-     `
-      X
-      XX
-      XX
-    `, `
-      X
-      XX.
-      .XX
-    `, `
-      XX
-      .X
-      .XX
-    `, `
-      XX
-      X
-      XX
-    `, `
-      XXX
-      X
-      X
-    `
+  five: [
+    '.X.\nXXX\n.X.',
+    'X.\nXX\nXX\n',
+    'X..\nXX.\n.XX\n',
+    'XX.\n.X.\n.XX\n',
+    'XX\nX.\nXX\n',
+    'XXX\nX..\nX..\n',
+  ],
+  big: [
+'X',
+'.X\nXX\nXX',
+'XXX\n.XX\n..X',
+`X..
+XXX
+XXX
+X..
+X..
+`,
+`X..
+XX.
+XXX
+XX.
+X..
+`,
+`XX.
+XX.
+XXX
+XX..
+`,
+`XXX
+XX.
+XXX
+.X.
+`,
   ]
 }
 
@@ -252,9 +241,9 @@ function string2block(s, x, y, color, id='block') {
 class BlockDisplay {
   constructor(options = {}) {
     _.defaults(options, {
-      grid: 30,
-      width: 23,
-      height: 11,
+      grid: 25,
+      width: 30,
+      height: 15,
       tray_height: 5,
       background: "#ADADAD",
       borderStyle: 'thick black solid',
@@ -400,7 +389,7 @@ class BlockDisplayOnly extends BlockDisplay {
 class BlockPuzzle extends BlockDisplay {
   constructor(options = {}) {
     _.defaults(options, {
-      library: 'tetris',
+      library: 'big',
       target: 'blank',
       prompt: ``,
       allowQuitSeconds: null,
@@ -507,15 +496,15 @@ class BlockPuzzle extends BlockDisplay {
       .click(async (e) => {
         quickDisable(e)
         let res = await Swal.fire({
-          icon: 'qusetion',
+          icon: 'question',
           title: "Name your creation?",
           input: 'text',
           width: 200,
           showCancelButton: true
         })
         if (res.value) {
+          let solution = Array.from(puzzle.activeBlocks).map(block => _.pick(block, ['x', 'y', 'parts', 'color']))
           let target = this.captureStateCompact()
-          let solution = Array.from(puzzle.activeBlocks)
           navigator.clipboard.writeText(JSON.stringify({name: res.value, target, solution}))
         }
 
@@ -536,6 +525,7 @@ class BlockPuzzle extends BlockDisplay {
             showCancelButton: true
         })
         if (res.value) {
+
           let prev = this.target
           this.buildTarget(res.value.replaceAll("\\n", "\n"))
           this.activeBlocks.clear()

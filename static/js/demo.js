@@ -194,7 +194,7 @@ async function handleSpecialMode() {
   else if (urlParams.dev != undefined) {
     await new BlockPuzzle({
       library: urlParams.dev || undefined,
-      target: urlParams.target?.replaceAll("\\n", "\n"),
+      target: urlParams.target?.replaceAll("\\n", "\n").replace('n', '\n'),
       dev: true
     }).attach(DISPLAY).run()
   }
