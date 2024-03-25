@@ -404,7 +404,7 @@ class BlockPuzzle extends BlockDisplay {
       target: 'blank',
       prompt: ``,
       allowQuitSeconds: null,
-      sameColorConstraint: true,
+      sameColorConstraint: PARAMS.sameColorConstraint ?? false,
       // prompt: `Fill in all the white squares. Press <code>space</code> to rotate a piece`,
       dev: false,
     })

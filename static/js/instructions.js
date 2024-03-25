@@ -204,8 +204,10 @@ class BlockInstructions extends Instructions {
     this.instruct(`You can erase blocks by dragging them on top of another block or into the gray area. `)
     await eventPromise('blocks.drop.erase')
 
-    this.instruct(`One last thing. Two blocks of the same color can't be touching. Try it out.`)
-    await eventPromise('blocks.adjacent')
+    if (PARAMS.sameColorConstraint) {
+      this.instruct(`One last thing. Two blocks of the same color can't be touching. Try it out.`)
+      await eventPromise('blocks.adjacent')
+    }
 
     // this.instruct(`You can also click the button at the bottom to clear the screen.`)
     // $('#blocks-btn-clear').addClass('btn-pulse')

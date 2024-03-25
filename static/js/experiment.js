@@ -2,6 +2,7 @@
 const PARAMS = conditionParameters(CONDITION, {
   social: [true, false],
   allowQuitSeconds: 90,
+  sameColorConstraint: true,
 })
 
 updateExisting(PARAMS, urlParams)
@@ -14,8 +15,6 @@ const DISPLAY = $('#display')
 const PROLIFIC_CODE = 'CHDRYEDZ'
 var BONUS = 0
 var N_TRIAL = 5
-
-alert_failure({'title': 'matching task breaks with identical examples'})
 
 function makeGlobal(obj) {
   Object.assign(window, obj)
@@ -35,7 +34,6 @@ async function buildStimuli() {
   let examples = _.shuffle(_.flatten([1,2].map(offset => primitives.map(
     (name, i) => name + "-" + primitives[(i+offset) % primitives.length]
   ))))
-  console.log('examples', examples)
 
   let used = new Set(examples)
   let main = _.shuffle(compositions).filter(name => {
@@ -61,6 +59,7 @@ async function runExperiment() {
   let stimuli = await $.getJSON(`static/json/${CONDITION}.json`)
   // let stimuli = await buildStimuli()
   N_TRIAL = stimuli.main.length
+  makeGlobal({stimuli})
 
   logEvent('experiment.initialize', {CONDITION, PARAMS, stimuli})
   await handleSpecialMode() // never returns if in special mode
@@ -193,7 +192,7 @@ async function runExperiment() {
 
       // let solutions = (await $.getJSON(`static/json/solutions/fred-v2.json`)).solutions
       for (let example of stimuli.examples) {
-        showExample(exampleDiv, example)
+        showExample(exampleDiv, example, 12)
       }
     }
 
