@@ -2,7 +2,7 @@
 const PARAMS = conditionParameters(CONDITION, {
   social: [true, false],
   allowQuitSeconds: 90,
-  sameColorConstraint: true,
+  sameColorConstraint: false,
 })
 
 updateExisting(PARAMS, urlParams)
@@ -171,6 +171,7 @@ async function runExperiment() {
     }).prependTo(DISPLAY)
 
     let workspace = $('<div>').appendTo(DISPLAY)
+    stimuli.examples = []
 
     if (stimuli.examples.length) {
       workspace.css({
@@ -196,6 +197,8 @@ async function runExperiment() {
       }
     }
 
+    stimuli.main[0].target = "......XXX.....XXX\n......XXXXXXX.XXX\n..XXXXXXXXXXXXXX.\n..XXXXX.XXXXXXXX.\nXXXXXXX......XXX.\nXXX..............\nXXXX.............\n.XXX.............\n.XXX............."
+    stimuli.main[1].target = "........XXX.....\n.XXX....XXX.....\n.XXXXXXXXXX.....\n.XXXXXXXX.....XX\nXXX.XXXXXXXXX.XX\nXXX....XXXXXXXXX\n.......XXXXXXXX.\n............XXX."
     let prm = _.pick(PARAMS, ['allowQuitSeconds'])
     for (let trial of stimuli.main) {
       // trial.configuration = trial.solution

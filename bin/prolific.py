@@ -18,7 +18,7 @@ class Prolific(object):
     actual study id or an index such that 0 (the default value) is the most
     recently posted study, 1 is the one before that, etc...
     """
-    def __init__(self, token=None):
+    def __init__(self, token=None, project_id=None):
         super(Prolific, self).__init__()
         if token is None:
             token = find_token()

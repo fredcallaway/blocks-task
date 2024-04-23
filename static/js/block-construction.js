@@ -177,31 +177,13 @@ const LIBRARIES = {
     'XXX\nX..\nX..\n',
   ],
   big: [
-'X',
-'.X\nXX\nXX',
-'XXX\n.XX\n..X',
-`X..
-XXX
-XXX
-X..
-X..
-`,
-`X..
-XX.
-XXX
-XX.
-X..
-`,
-`XX.
-XX.
-XXX
-XX..
-`,
-`XXX
-XX.
-XXX
-.X.
-`,
+    "X",
+    "XX",
+    "XXX\nXXX",
+    ".X.\nXXX\nXXX",
+    "X..\nXXX\nXXX",
+    "XX.\nXXX\nXXX",
+    "XXX\nXXX\nXXX",
   ]
 }
 
