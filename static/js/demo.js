@@ -174,7 +174,7 @@ async function solveBasic() {
 }
 
 async function handleSpecialMode() {
-  let busy = make_promise()
+  let busy = makePromise()
 
   if (urlParams.basic) {
     await solveBasic()

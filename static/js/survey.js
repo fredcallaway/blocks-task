@@ -55,7 +55,7 @@ class SurveyTrial {
     window.ST = this
     logEvent('survey.construct', {json})
     this.survey = new Survey.Model(json);
-    this.results = make_promise()
+    this.results = makePromise()
     this.survey.onComplete.add((sender) => this.results.resolve(sender.data));
 
     this.width = 800

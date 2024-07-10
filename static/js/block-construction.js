@@ -402,7 +402,7 @@ class BlockPuzzle extends BlockDisplay {
 
     this.logEvent('blocks.target', this.target)
     this.buildDisplay()
-    this.solved = make_promise()
+    this.solved = makePromise()
 
     this.isDragging = false;
     this.currentBlock = null; // The block currently being dragged

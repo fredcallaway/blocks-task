@@ -88,7 +88,7 @@ function enforceScreenSize(width, height, display='#display') {
 }
 
 
-function make_promise() {
+function makePromise() {
   let resolve, reject;
   const promise = new Promise((res, rej) => {
     resolve = res;
@@ -97,6 +97,14 @@ function make_promise() {
   promise.resolve = resolve
   promise.reject = reject
   return promise
+}
+
+function clickPromise(selector) {
+     return new Promise((resolve) => {
+         $(selector).one('click', function (event) {
+             resolve(event);
+         });
+     });
 }
 
 function hex2rgb(hex) {

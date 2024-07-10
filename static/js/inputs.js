@@ -24,7 +24,7 @@ class Button extends Input {
     .text(text)
     .appendTo(this.div)
 
-    this.clicked = make_promise()
+    this.clicked = makePromise()
     // this.clicked.button = this  // for convenience
     this.button.click(() => {
       this.button.prop('disabled', true)

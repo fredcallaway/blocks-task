@@ -142,10 +142,8 @@ async function runExperiment() {
     for (let i of _.shuffle(_.range(stimuli.examples.length))) {
       test.empty()
       showExample(test, stimuli.examples[i])
-      let promise = make_promise()
       blockDisplays[i].div.off()
-      blockDisplays[i].div.click(() => promise.resolve())
-      await promise
+      await clickPromise(blockDisplays[i].div)
       logEvent('social.correct')
       blockDisplays[i].div.click(mistake)
 
